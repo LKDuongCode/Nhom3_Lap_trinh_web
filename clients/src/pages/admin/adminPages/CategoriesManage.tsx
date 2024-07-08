@@ -20,7 +20,7 @@ export default function CategoriesManage() {
 
   // state quản lí mở đóng form-------------------------------------------
 
-  // lấy dữ liệu redux-----------------------------------------------------
+  // lấy dữ liệu redux--------------------------------------------
   let categories: Category[] = useSelector((state: CombineType) => {
     return state.categories.data;
   });
