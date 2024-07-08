@@ -1,0 +1,157 @@
+{
+    "users": [
+        {
+          "user_id": 12345678,
+          "user_name": "Davidbeg",
+          "email": "davidBBgi@gmail.com",
+          "password": "123456",
+          "role": true,
+          "status": true,
+          "full_name": "David Begie Lee",
+          "avata": "",
+          "phone": "0869257506",
+          "address": "Ohayo street 1",
+          "created_at": "10/10/2023",
+          "updated_at": "21/12/2023"
+        },
+        {
+          "user_id": 12345679,
+          "user_name": "JohnDoe",
+          "email": "johnDoe@gmail.com",
+          "password": "abcdef",
+          "role": false,
+          "status": true,
+          "full_name": "John Doe",
+          "avata": "",
+          "phone": "0869257507",
+          "address": "Maple street 2",
+          "created_at": "11/10/2023",
+          "updated_at": "22/12/2023"
+        },
+        {
+          "user_id": 12345680,
+          "user_name": "JaneSmith",
+          "email": "janeSmith@gmail.com",
+          "password": "ghijkl",
+          "role": false,
+          "status": true,
+          "full_name": "Jane Smith",
+          "avata": "",
+          "phone": "0869257508",
+          "address": "Pine street 3",
+          "created_at": "12/10/2023",
+          "updated_at": "23/12/2023"
+        },
+        {
+          "user_id": 12345681,
+          "user_name": "AliceJohnson",
+          "email": "aliceJohnson@gmail.com",
+          "password": "mnopqr",
+          "role": false,
+          "status": true,
+          "full_name": "Alice Johnson",
+          "avata": "",
+          "phone": "0869257509",
+          "address": "Birch street 4",
+          "created_at": "13/10/2023",
+          "updated_at": "24/12/2023"
+        },
+        {
+          "user_id": 12345682,
+          "user_name": "BobBrown",
+          "email": "bobBrown@gmail.com",
+          "password": "stuvwx",
+          "role": false,
+          "status": true,
+          "full_name": "Bob Brown",
+          "avata": "",
+          "phone": "0869257510",
+          "address": "Oak street 5",
+          "created_at": "14/10/2023",
+          "updated_at": "25/12/2023"
+        },
+        {
+          "user_id": 12345683,
+          "user_name": "CharlieDavis",
+          "email": "charlieDavis@gmail.com",
+          "password": "yzabcd",
+          "role": false,
+          "status": true,
+          "full_name": "Charlie Davis",
+          "avata": "",
+          "phone": "0869257511",
+          "address": "Elm street 6",
+          "created_at": "15/10/2023",
+          "updated_at": "26/12/2023"
+        }
+      ],
+     
+      "categories": [
+        {
+          "category_id": 1234567,
+          "category_name": "SmartPhone",
+          "description": "this is category of phone",
+          "status": true,
+          "productsInfo": [
+            {
+              "product_id": 123456,
+              "product_name": "Iphone XX"
+            },
+            {
+              "product_id": 234567,
+              "product_name": "Iphone XX"
+            }
+          ]
+        }
+    
+        
+      ],
+    
+      "products": [
+        {
+          "product_id": 123456,
+          "product_name": "Iphone XX",
+          "description": "this is iphone",
+          "unit_price": 100,
+          "stock_quantity": 5,
+          "product_image": "link",
+          "created_at": "10/10/2023",
+          "updated_at": "21/12/2023"
+        }
+        
+      ],
+      "orders": [
+        {
+          "order_id": 12345,
+          "serial_number": 12345678910,
+          "user_id": 12345678,
+          "order_at": "12/6/2024",
+          "total_price": 200,
+          "order_status": 4,
+          "order_note": "this is very good for you",
+          "order_details": [
+            {
+                "order_detail_id":1234,
+                "product_id":123456
+            }
+          ],
+          "receive_name": "Duong",
+          "receive_address": "New Yek ,USS",
+          "receive_phone": "0345350131",
+          "created_at": "10/10/2023",
+          "updated_at": "21/12/2023"
+        }
+    
+      ],
+      "order_detail": [
+        {
+          "order_detail_id": 1234,
+          "product_id": 123456,
+          "product_name": "Iphone XX",
+          "unit_price": 100,
+          "order_quantity": 2
+        }
+     
+      ]
+    }
+    

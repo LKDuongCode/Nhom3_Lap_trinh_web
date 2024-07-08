@@ -1,0 +1,36 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+/* cần đặt các import khác sau đó mới import tailwin, nếu không sẽ bug */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Montserrat", sans-serif;
+}
+a {
+  text-decoration: none;
+}
+li {
+  list-style: none;
+}
+
+input {
+  outline: none;
+}
+
+body {
+  background-color: #f1f5f9;
+}
+
+.coverAll {
+  position: fixed; /* Vị trí cố định để modal luôn hiển thị trên màn hình */
+  top: 0;
+  left: 0;
+  width: 100%; /* Chiều rộng 100% của màn hình */
+  height: 100%; /* Chiều cao 100% của màn hình */
+  background-color: rgba(0, 0, 0, 0.5); /* Màu nền với độ mờ */
+  z-index: 9999; /* Độ sâu để hiển thị trên các phần tử khác */
+}
