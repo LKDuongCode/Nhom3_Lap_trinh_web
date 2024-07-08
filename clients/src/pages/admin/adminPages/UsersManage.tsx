@@ -13,7 +13,7 @@ export default function UsersManage() {
   let [checkLock, setCheckLock] = useState<boolean>(false);
   let [checkUnlock, setCheckUnlock] = useState<boolean>(false);
   // state quản lí mở đóng form-------------------------------------------
-  
+
   const dispatch = useDispatch();
 
   //lấy dữ liệu từ redux-------------------------------------------------
@@ -25,7 +25,7 @@ export default function UsersManage() {
   }, [dispatch]);
   //lấy dữ liệu từ redux-------------------------------------------------
 
-  //thêm user mới-----------------------------------------------
+  //thêm mới user-----------------------------------------------
   const [newUser, setNewUser] = useState<any>({
     user_name: "",
     email: "",
