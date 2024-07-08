@@ -29,8 +29,8 @@ export default function UsersManage() {
   }, []);
   //lấy dữ liệu từ redux-------------------------------------------------
 
-  //thêm user mới-----------------------------------------------
-  let [newUser, setNewUser] = useState<any>({
+  //thêm mới user-----------------------------------------------
+  const [newUser, setNewUser] = useState<any>({
     user_name: "",
     email: "",
     password: "",
