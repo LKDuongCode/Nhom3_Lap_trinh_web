@@ -129,9 +129,9 @@
   ],
   "categories": [
     {
-      "category_id": 1234567,
+      "id": 1234567,
       "category_name": "SmartPhone",
-      "description": "this is category of phone",
+      "description": "This is the category of smartphones, including a variety of models from different brands known for their advanced features and sleek designs.",
       "status": true,
       "productsInfo": [
         {
@@ -140,7 +140,55 @@
         },
         {
           "product_id": 234567,
-          "product_name": "Iphone XX"
+          "product_name": "Samsung Galaxy S21"
+        }
+      ]
+    },
+    {
+      "id": 1234569,
+      "category_name": "Tablet",
+      "description": "This is the category of tablets, offering portable and versatile devices perfect for both entertainment and productivity on the go.",
+      "status": true,
+      "productsInfo": [
+        {
+          "product_id": 567890,
+          "product_name": "iPad Pro"
+        },
+        {
+          "product_id": 678901,
+          "product_name": "Samsung Galaxy Tab S7"
+        }
+      ]
+    },
+    {
+      "id": 1234570,
+      "category_name": "Smartwatch",
+      "description": "This is the category of smartwatches, showcasing innovative wearable technology that keeps you connected and tracks your fitness.",
+      "status": true,
+      "productsInfo": [
+        {
+          "product_id": 789012,
+          "product_name": "Apple Watch Series 6"
+        },
+        {
+          "product_id": 890123,
+          "product_name": "Samsung Galaxy Watch 3"
+        }
+      ]
+    },
+    {
+      "id": 1234571,
+      "category_name": "Accessories",
+      "description": "This is the category of accessories, providing essential and complementary products like headphones, chargers, and protective cases for your devices.",
+      "status": true,
+      "productsInfo": [
+        {
+          "product_id": 901234,
+          "product_name": "AirPods Pro"
+        },
+        {
+          "product_id": 123457,
+          "product_name": "Anker Power Bank"
         }
       ]
     }

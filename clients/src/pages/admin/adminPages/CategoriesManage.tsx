@@ -1,13 +1,100 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Category } from "../../../interface/categoriesType";
+import { useDispatch, useSelector } from "react-redux";
+import { CombineType } from "../../../interface/combineType";
+import { fetchCategories } from "../../../services/categories/getCategories.service";
+import "../../../style/modal/addModal.scss";
+import { addToCategories } from "../../../services/categories/addCategory.service";
+import { deleteAcategory } from "../../../services/categories/deleteCategory.service";
+import { updateAcategory } from "../../../services/categories/updateCategory.service";
 
 export default function CategoriesManage() {
+  const dispatch = useDispatch();
   // state quản lí mở đóng form-------------------------------------------
   let [checkSucccess, setCheckSuccess] = useState<boolean>(false);
   let [checkAddForm, setCheckAddForm] = useState<boolean>(false);
+  let [checkUpdateForm, setCheckUpdateForm] = useState<boolean>(false);
   let [checkDelete, setCheckDelete] = useState<boolean>(false);
   let [checkLock, setCheckLock] = useState<boolean>(false);
   let [checkUnlock, setCheckUnlock] = useState<boolean>(false);
+
   // state quản lí mở đóng form-------------------------------------------
+
+  // lấy dữ liệu redux-----------------------------------------------------
+  let categories: Category[] = useSelector((state: CombineType) => {
+    return state.categories.data;
+  });
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, []);
+  // lấy dữ liệu redux-----------------------------------------------------
+
+  // thêm mới category------------------------------------------------------
+  //lấy dữ liệu người dùng
+  let [newCategory, setNewCategory] = useState<any>({
+    category_name: "",
+    description: "",
+    status: true,
+    productsInfo: [],
+  });
+  const handleCreateCategory = (e: any) => {
+    let { value, name } = e.target;
+    setNewCategory((preCategory: any) => ({
+      ...preCategory,
+      [name]: value,
+    }));
+  };
+  //nút thêm mới
+  const hanleAddCategory = () => {
+    setCheckAddForm(false);
+    dispatch(addToCategories(newCategory));
+  };
+  // thêm mới category------------------------------------------------------
+
+  // xóa category----------------------------------------------------------------------------------------
+  const handleDeleteCategory = (id: number) => {
+    dispatch(deleteAcategory(id));
+  };
+  // xóa category----------------------------------------------------------------------------------------
+
+  //cập nhật category ----------------------------------------------------------------------------
+  let [updateCategory, setUpdateCategory] = useState<any>({
+    id: 0,
+    category_name: "",
+    description: "",
+  });
+
+  //hàm lấy dữ liệu phần tử được click và hiện form.
+  const handleGetACategory = (id: number) => {
+    let curCategory: Category | undefined = categories.find(
+      (category: Category) => {
+        return category.id === id;
+      }
+    );
+    setUpdateCategory({
+      id: curCategory?.id,
+      category_name: curCategory?.category_name,
+      description: curCategory?.description,
+    });
+    setCheckUpdateForm(true);
+  };
+
+  //hàm thay đổi input và textarea
+  const handleChangeUpdate = (e: any) => {
+    let { value, name } = e.target;
+    setUpdateCategory((preCategory: any) => ({
+      ...preCategory,
+      [name]: value,
+    }));
+  };
+
+  //hàm gọi dispatch thay đổi
+  const handleUpdateCategory = () => {
+    setCheckUpdateForm(false);
+    dispatch(updateAcategory(updateCategory));
+  };
+
+  //cập nhật category ----------------------------------------------------------------------------
   return (
     <>
       <section className="rounded-md  bg-white py-4 shadow-default mt-24 px-5 border-spacing-2 border-stone-300 border-solid mx-5 ">
@@ -87,7 +174,7 @@ export default function CategoriesManage() {
 
         {/* bảng */}
         <table className="min-w-full border-y-stone-300 border-2 border-solid border-x-transparent">
-          <thead className="bg-white border-b">
+          <thead className="bg-gray-100 border-b">
             <tr>
               <th
                 scope="col"
@@ -99,32 +186,20 @@ export default function CategoriesManage() {
                 scope="col"
                 className=" font-medium text-gray-900 px-6 py-4 text-left"
               >
-                Username
+                Category's name
               </th>
 
               <th
                 scope="col"
                 className=" font-medium text-gray-900 px-6 py-4 text-left"
               >
-                Email
+                Description
               </th>
               <th
                 scope="col"
                 className=" font-medium text-gray-900 px-6 py-4 text-left"
               >
-                Address
-              </th>
-              <th
-                scope="col"
-                className=" font-medium text-gray-900 px-6 py-4 text-left"
-              >
-                Date Created
-              </th>
-              <th
-                scope="col"
-                className=" font-medium text-gray-900 px-6 py-4 text-left"
-              >
-                Role
+                Status
               </th>
               <th
                 scope="col"
@@ -135,102 +210,138 @@ export default function CategoriesManage() {
             </tr>
           </thead>
           <tbody>
-            <tr className="bg-gray-100 border-b">
-              <td className="px-6 py-4 whitespace-nowrap  font-medium text-gray-900">
-                1
-              </td>
-              <td className=" text-gray-900  px-6 py-4 whitespace-nowrap">
-                Mark
-              </td>
-              <td className=" text-gray-900  px-6 py-4 whitespace-nowrap">
-                Otto@gmail.com
-              </td>
-              <td className=" text-gray-900  px-6 py-4 whitespace-nowrap">
-                New York
-              </td>
-              <td className=" text-gray-900  px-6 py-4 whitespace-nowrap">
-                17/02/2023
-              </td>
-              <td className=" text-gray-900  px-6 py-4 whitespace-nowrap">
-                User
-              </td>
-              <td className=" text-gray-900  px-6 py-4 whitespace-nowrap">
-                <button
-                  className="
-            border-2
-            border-amber-400
-            border-solid
-            font-semibold
-            text-xs
-            leading-4
-            rounded-3xl
-            px-2
-            py-0.5
-            bg-transparent
-            h-max
-            mr-2
-            w-1/2
-            hover:text-white
-            hover:bg-amber-300
-          "
+            {categories.map((category: Category, index: number) => {
+              return (
+                <tr
+                  className={`${
+                    (index + 1) % 2 === 0 ? "bg-gray-100" : "bg-white"
+                  } border-b`}
+                  key={category.id}
                 >
-                  <svg
-                    className="size-6 text-amber-500 "
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    {" "}
-                    <rect
-                      x="3"
-                      y="11"
-                      width="18"
-                      height="11"
-                      rx="2"
-                      ry="2"
-                    />{" "}
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                  </svg>
-                </button>
+                  <td className="px-6 py-4 whitespace-nowrap  font-medium text-gray-900">
+                    {index + 1}
+                  </td>
+                  <td className=" text-gray-900  px-6 py-4 whitespace-nowrap">
+                    {category.category_name}
+                  </td>
+                  <td className=" text-gray-900  px-6 py-4 max-w-[600px]">
+                    {category.description}
+                  </td>
+                  <td className={`text-gray-900  px-6 py-4 whitespace-nowrap `}>
+                    <p
+                      className={`"flex justify-center size-max py-1 px-2 rounded-e-full rounded-s-full font-medium " ${
+                        category.status
+                          ? "text-green-500  bg-green-100"
+                          : "text-red-500  bg-red-100"
+                      }`}
+                    >
+                      {category.status ? "Active" : "Inactive"}
+                    </p>
+                  </td>
 
-                <button
-                  className="
-            border-2
-            border-lime-500
-            border-solid
-            font-semibold
-            text-xs
-            leading-4
-            rounded-3xl
-            bg-transparent
-            h-max
-            px-2
-            py-0.5
-            mr-2
-            w-1/2
-            hover:bg-lime-400
-            hover:text-white
-          "
-                >
-                  <svg
-                    className="size-6 text-lime-500  "
-                    viewBox="0 0 24 24"
-                    stroke-width="2"
-                    stroke="currentColor"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    {" "}
-                    <path stroke="none" d="M0 0h24v24H0z" />{" "}
-                    <path d="M15 11l4 4l-4 4m4 -4h-11a4 4 0 0 1 0 -8h1" />
-                  </svg>
-                </button>
-              </td>
-            </tr>
+                  <td className=" text-gray-900  px-6 py-4 whitespace-nowrap">
+                    <button
+                      className="
+                border-2
+                border-orange-400
+                border-solid
+                rounded-2xl
+                bg-transparent
+                h-max
+                mr-2
+                px-3
+                py-1
+                hover:text-white
+                hover:bg-orange-100
+              "
+                    >
+                      <svg
+                        className="size-4 text-orange-500 "
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        {" "}
+                        <rect
+                          x="3"
+                          y="11"
+                          width="18"
+                          height="11"
+                          rx="2"
+                          ry="2"
+                        />{" "}
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={() => handleGetACategory(category.id)}
+                      className="
+                border-2
+                border-indigo-400
+                border-solid
+                rounded-2xl
+                bg-transparent
+                h-max
+                mr-2
+                px-3
+                py-1
+                hover:text-white
+                hover:bg-indigo-100
+              "
+                    >
+                      <svg
+                        className="h-4 w-4 text-indigo-500"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                        />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={() => handleDeleteCategory(category.id)}
+                      className="
+                border-2
+                border-red-400
+                border-solid
+                rounded-3xl
+                bg-transparent
+                h-max
+     
+                px-3
+                py-1
+                hover:text-white
+                hover:bg-red-100
+              "
+                    >
+                      <svg
+                        className="h-4 w-4 text-red-500"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        {" "}
+                        <polyline points="3 6 5 6 21 6" />{" "}
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />{" "}
+                        <line x1="10" y1="11" x2="10" y2="17" />{" "}
+                        <line x1="14" y1="11" x2="14" y2="17" />
+                      </svg>
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
 
@@ -307,158 +418,107 @@ export default function CategoriesManage() {
             </p>
             <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
               <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white uppercase text-center">
-                add a new user
+                add a new category
               </h1>
-              <form className="space-y-4 md:space-y-6" action="#">
-                <div className="flex gap-4">
-                  <div className="w-2/3">
-                    <label
-                      htmlFor="email"
-                      className="block mb-2  font-medium text-gray-900 dark:text-white"
-                    >
-                      Full Name
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      id="email"
-                      className="bg-gray-50 border border-gray-300 border-solid text-gray-900 rounded-lg  focus:border-blue-600 block w-full p-2.5 "
-                      placeholder="name@company.com"
-                    />
-                  </div>
-                  <div className="h-28 w-56  flex gap-4">
-                    <img
-                      src="https://images.pexels.com/photos/837358/pexels-photo-837358.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
-                      alt=""
-                      className="h-full w-[66%] rounded-md"
-                    />
-                    <div className="flex items-end">
-                      <button
-                        className="
-        border-none
-        font-semibold
-        text-xs
-        text-white
-        leading-4
-        rounded-[0.25rem]
-        px-2
-        py-1
-      bg-indigo-500
-        h-max
-      "
-                      >
-                        Upload
-                      </button>
-                    </div>
-                  </div>
+              <div className="space-y-4 md:space-y-6">
+                <div>
+                  <label className="block mb-2  font-medium text-gray-900 dark:text-white">
+                    Category's name
+                  </label>
+                  <input
+                    onChange={handleCreateCategory}
+                    name="category_name"
+                    type="text"
+                    className="bg-gray-50 border border-gray-300 border-solid text-gray-900 rounded-lg  focus:border-blue-600 block w-full p-2.5 "
+                    placeholder="Name of category..."
+                  />
                 </div>
-                <div className="flex gap-3">
-                  <div className="flex-1">
-                    <label
-                      htmlFor="email"
-                      className="block mb-2  font-medium text-gray-900 dark:text-white"
-                    >
-                      Username
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      id="email"
-                      className="bg-gray-50 border border-gray-300 border-solid text-gray-900 rounded-lg  focus:border-blue-600 block w-full p-2.5 "
-                      placeholder="name@company.com"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <label
-                      htmlFor="email"
-                      className="block mb-2  font-medium text-gray-900 dark:text-white"
-                    >
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      id="email"
-                      className="bg-gray-50 border border-gray-300 border-solid text-gray-900 rounded-lg  focus:border-blue-600 block w-full p-2.5 "
-                      placeholder="name@company.com"
-                    />
-                  </div>
-                </div>
-                <div className="flex gap-3">
-                  <div className="flex-1">
-                    <label
-                      htmlFor="email"
-                      className="block mb-2  font-medium text-gray-900 dark:text-white"
-                    >
-                      Phone numbers
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      id="email"
-                      className="bg-gray-50 border border-gray-300 border-solid text-gray-900 rounded-lg  focus:border-blue-600 block w-full p-2.5 "
-                      placeholder="name@company.com"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <label
-                      htmlFor="email"
-                      className="block mb-2  font-medium text-gray-900 dark:text-white"
-                    >
-                      Address
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      id="email"
-                      className="bg-gray-50 border border-gray-300 border-solid text-gray-900 rounded-lg  focus:border-blue-600 block w-full p-2.5 "
-                      placeholder="name@company.com"
-                    />
-                  </div>
-                </div>
-                <div className="flex gap-3">
-                  <div className="flex-1">
-                    <label
-                      htmlFor="email"
-                      className="block mb-2  font-medium text-gray-900 dark:text-white"
-                    >
-                      Password
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      id="email"
-                      className="bg-gray-50 border border-gray-300 border-solid text-gray-900 rounded-lg  focus:border-blue-600 block w-full p-2.5 "
-                      placeholder="name@company.com"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <label
-                      htmlFor="email"
-                      className="block mb-2  font-medium text-gray-900 dark:text-white"
-                    >
-                      Confirm Password
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      id="email"
-                      className="bg-gray-50 border border-gray-300 border-solid text-gray-900 rounded-lg  focus:border-blue-600 block w-full p-2.5 "
-                      placeholder="name@company.com"
-                    />
-                  </div>
+                <div>
+                  <label className="block mb-2  font-medium text-gray-900 dark:text-white">
+                    Description
+                  </label>
+                  <textarea
+                    name="description"
+                    onChange={handleCreateCategory}
+                    className="bg-gray-50 border border-gray-300 border-solid text-gray-900 rounded-lg  focus:border-blue-600 block w-full p-2.5 outline-none min-h-32"
+                    placeholder="Write some description...."
+                  ></textarea>
                 </div>
 
                 <button
-                  onClick={() => {
-                    setCheckAddForm(false);
-                  }}
-                  type="submit"
+                  onClick={hanleAddCategory}
                   className="w-full text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:outline-none focus:bg-indigo-500 font-medium rounded-lg  px-5 py-2.5 text-center border-transparent"
                 >
-                  ADD
+                  ADD NOW
                 </button>
-              </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* update form */}
+      {checkUpdateForm && (
+        <div className="addModal">
+          <div className=" bg-white rounded-lg shadow dark:border md:mt-0 xl:p-0 w-1/2 dark:bg-gray-800 dark:border-gray-700">
+            {/* close */}
+            <p
+              className="float-right p-4"
+              onClick={() => {
+                setCheckUpdateForm(false);
+              }}
+            >
+              <svg
+                className="h-6 w-6 text-slate-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </p>
+            <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
+              <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white uppercase text-center">
+                update a category
+              </h1>
+              <div className="space-y-4 md:space-y-6">
+                <div>
+                  <label className="block mb-2  font-medium text-gray-900 dark:text-white">
+                    Category's name
+                  </label>
+                  <input
+                    name="category_name"
+                    onChange={handleChangeUpdate}
+                    value={updateCategory.category_name}
+                    type="text"
+                    className="bg-gray-50 border border-gray-300 border-solid text-gray-900 rounded-lg  focus:border-blue-600 block w-full p-2.5 "
+                    placeholder="Name of category..."
+                  />
+                </div>
+                <div>
+                  <label className="block mb-2  font-medium text-gray-900 dark:text-white">
+                    Description
+                  </label>
+                  <textarea
+                    onChange={handleChangeUpdate}
+                    value={updateCategory.description}
+                    name="description"
+                    className="bg-gray-50 border border-gray-300 border-solid text-gray-900 rounded-lg  focus:border-blue-600 block w-full p-2.5 outline-none min-h-32"
+                    placeholder="Write some description...."
+                  ></textarea>
+                </div>
+
+                <button
+                  className="w-full text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:bg-green-500 font-medium rounded-lg  px-5 py-2.5 text-center border-transparent"
+                  onClick={handleUpdateCategory}
+                >
+                  UPDATE NOW
+                </button>
+              </div>
             </div>
           </div>
         </div>

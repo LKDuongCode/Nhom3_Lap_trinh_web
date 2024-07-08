@@ -4,7 +4,7 @@ import { fetchUsers } from "../../services/users/getUsers.service";
 import { addToUsers } from "../../services/users/addUsers.service";
 import { lockAnUser, unlockAnUser } from "../../services/users/lockUsers.service";
 
-//state khởi tạo category
+//state khởi tạo
 let initUsers : StateUserType= {
     loading: false,
     data: [],
