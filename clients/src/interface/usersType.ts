@@ -1,6 +1,6 @@
 // type cho state users----------------------------------------------------
 export type User  = {
-    user_id: number;
+    id: number;
     user_name: string;
     email: string;
     password: string;
