@@ -4,7 +4,11 @@ import { CombineType } from "../../../interface/combineType";
 import { User } from "../../../interface/usersType";
 import { fetchUsers } from "../../../services/users/getUsers.service";
 import "../../../style/modal/addModal.scss";
-
+import { addToUsers } from "../../../services/users/addUsers.service";
+import {
+  lockAnUser,
+  unlockAnUser,
+} from "../../../services/users/lockUsers.service";
 export default function UsersManage() {
   // state quản lí mở đóng form-------------------------------------------
   let [checkSucccess, setCheckSuccess] = useState<boolean>(false);
@@ -22,7 +26,7 @@ export default function UsersManage() {
   });
   useEffect(() => {
     dispatch(fetchUsers());
-  }, [dispatch]);
+  }, []);
   //lấy dữ liệu từ redux-------------------------------------------------
 
   //thêm mới user-----------------------------------------------
@@ -36,11 +40,11 @@ export default function UsersManage() {
     avatar: "https://vectorified.com/images/unknown-avatar-icon-6.jpg",
     phone: "",
     address: "",
-    created_at: "",
+    created_at: new Date().toDateString(),
     updated_at: "",
   });
   //hàm lấy dữ liệu
-  let handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target;
     setNewUser((preUser: any) => ({
       ...preUser,
@@ -53,6 +57,16 @@ export default function UsersManage() {
     dispatch(addToUsers(newUser));
   };
   //thêm user mới-----------------------------------------------
+
+  // khóa tài khoản và mở khóa -------------------------------------------------------------------
+  const handleLock = (id: number) => {
+    dispatch(lockAnUser(id));
+  };
+
+  const handleUnlock = (id: number) => {
+    dispatch(unlockAnUser(id));
+  };
+  // khóa tài khoản và mở khóa -------------------------------------------------------------------
 
   return (
     <>
@@ -187,7 +201,7 @@ export default function UsersManage() {
                   className={`${
                     (index + 1) % 2 === 0 ? "bg-white" : "bg-gray-100"
                   } border-b`}
-                  key={user.user_id}
+                  key={user.id}
                 >
                   <td className="px-6 py-4 whitespace-nowrap  font-medium text-gray-900">
                     {index + 1}
@@ -208,8 +222,10 @@ export default function UsersManage() {
                     {user.role ? "Admin" : "User"}
                   </td>
                   <td className=" text-gray-900  px-6 py-4 whitespace-nowrap">
-                    <button
-                      className="
+                    {!user.status && (
+                      <button
+                        onClick={() => handleUnlock(user.id)}
+                        className="
                 border-2
                 border-amber-400
                 border-solid
@@ -226,28 +242,72 @@ export default function UsersManage() {
                 hover:text-white
                 hover:bg-amber-300
               "
-                    >
-                      <svg
-                        className="size-6 text-amber-500 "
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
                       >
-                        {" "}
-                        <rect
-                          x="3"
-                          y="11"
-                          width="18"
-                          height="11"
-                          rx="2"
-                          ry="2"
-                        />{" "}
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                      </svg>
-                    </button>
+                        <svg
+                          className="size-6 text-amber-500 "
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          {" "}
+                          <rect
+                            x="3"
+                            y="11"
+                            width="18"
+                            height="11"
+                            rx="2"
+                            ry="2"
+                          />{" "}
+                          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                        </svg>
+                      </button>
+                    )}
+                    {user.status && (
+                      <button
+                        onClick={() => handleLock(user.id)}
+                        className="
+                border-2
+                border-amber-400
+                border-solid
+                font-semibold
+                text-xs
+                leading-4
+                rounded-3xl
+                px-2
+                py-0.5
+                bg-transparent
+                h-max
+                mr-2
+                w-1/2
+                hover:text-white
+                hover:bg-amber-300
+              "
+                      >
+                        <svg
+                          className="h-6 w-6 text-amber-500"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          {" "}
+                          <rect
+                            x="3"
+                            y="11"
+                            width="18"
+                            height="11"
+                            rx="2"
+                            ry="2"
+                          />{" "}
+                          <path d="M7 11V7a5 5 0 0 1 9.9-1" />
+                        </svg>
+                      </button>
+                    )}
 
                     <button
                       className="
@@ -459,7 +519,9 @@ export default function UsersManage() {
                 </div>
 
                 <button
-                  onClick={clickAdd}
+                  onClick={() => {
+                    clickAdd(), setCheckAddForm(false);
+                  }}
                   className="w-full text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:outline-none focus:bg-indigo-500 font-medium rounded-lg  px-5 py-2.5 text-center border-transparent"
                 >
                   ADD
@@ -831,7 +893,4 @@ export default function UsersManage() {
       )}
     </>
   );
-}
-function addToUsers(newUser: any): any {
-  throw new Error("Function not implemented.");
 }
