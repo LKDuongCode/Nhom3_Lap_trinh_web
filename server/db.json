@@ -135,11 +135,11 @@
       "status": true,
       "productsInfo": [
         {
-          "product_id": 123456,
+          "id": 123456,
           "product_name": "Iphone XX"
         },
         {
-          "product_id": 234567,
+          "id": 234567,
           "product_name": "Samsung Galaxy S21"
         }
       ]
@@ -151,11 +151,11 @@
       "status": true,
       "productsInfo": [
         {
-          "product_id": 567890,
+          "id": 567890,
           "product_name": "iPad Pro"
         },
         {
-          "product_id": 678901,
+          "id": 678901,
           "product_name": "Samsung Galaxy Tab S7"
         }
       ]
@@ -167,11 +167,11 @@
       "status": true,
       "productsInfo": [
         {
-          "product_id": 789012,
+          "id": 789012,
           "product_name": "Apple Watch Series 6"
         },
         {
-          "product_id": 890123,
+          "id": 890123,
           "product_name": "Samsung Galaxy Watch 3"
         }
       ]
@@ -183,11 +183,11 @@
       "status": true,
       "productsInfo": [
         {
-          "product_id": 901234,
+          "id": 901234,
           "product_name": "AirPods Pro"
         },
         {
-          "product_id": 123457,
+          "id": 123457,
           "product_name": "Anker Power Bank"
         }
       ]
@@ -195,14 +195,94 @@
   ],
   "products": [
     {
-      "product_id": 123456,
-      "product_name": "Iphone XX",
-      "description": "this is iphone",
-      "unit_price": 100,
-      "stock_quantity": 5,
-      "product_image": "link",
-      "created_at": "10/10/2023",
-      "updated_at": "21/12/2023"
+      "id": 123457,
+      "product_name": "Samsung Smart TV",
+      "description": "A cutting-edge Smart TV from Samsung, featuring a stunning 4K display, integrated streaming services, and voice control for a seamless viewing experience.",
+      "unit_price": 800,
+      "stock_quantity": 10,
+      "product_image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuMieku-ACXF0hKvXWf_R2AobXfND7fjWLlQ&s",
+      "created_at": "11/10/2023",
+      "updated_at": "22/12/2023"
+    },
+    {
+      "id": 123458,
+      "product_name": "Sony PlayStation 5",
+      "description": "The latest PlayStation console from Sony, offering breathtaking graphics, fast load times, and an immersive gaming experience with its new DualSense controller.",
+      "unit_price": 500,
+      "stock_quantity": 15,
+      "product_image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSAl7c8GHtPm2iinJ4ax_sE4S7eHjqB1OEcA&s",
+      "created_at": "12/10/2023",
+      "updated_at": "23/12/2023"
+    },
+    {
+      "id": 123459,
+      "product_name": "Bose QuietComfort 35 II",
+      "description": "High-quality noise-cancelling headphones from Bose, providing superior sound quality and comfort, perfect for music lovers and frequent travelers.",
+      "unit_price": 300,
+      "stock_quantity": 20,
+      "product_image": "https://lh4.googleusercontent.com/proxy/Ea6_FTYyI2xnM3In9XGwHyDqolo6X-OTIQfd1jXxDOgt1Qf9RKdlN-H0HqE98BPAygratC3SVyGVplDkpSMZ_9Ygn8f5qRawkxgWxxYntA3t-vWj-zCxJoQpqxaFveHYz0cShZuBDzZ3yK9eonnEt3AxCuFb8VvZYmOPef3TITZgtw",
+      "created_at": "13/10/2023",
+      "updated_at": "24/12/2023"
+    },
+    {
+      "id": 123460,
+      "product_name": "Apple MacBook Pro",
+      "description": "Apple's most powerful laptop, featuring the M1 chip for incredible performance, a stunning Retina display, and long battery life for professionals on the go.",
+      "unit_price": 2000,
+      "stock_quantity": 8,
+      "product_image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfJfYYuUT-GC29I175DW7mMYpnmR0tExYYWQ&s",
+      "created_at": "14/10/2023",
+      "updated_at": "25/12/2023"
+    },
+    {
+      "id": 123461,
+      "product_name": "Amazon Echo Dot",
+      "description": "A compact smart speaker with Alexa, designed to fit perfectly into small spaces while delivering crisp vocals and balanced bass for full sound.",
+      "unit_price": 50,
+      "stock_quantity": 25,
+      "product_image": "https://queenmobile.vn/wp-content/uploads/2023/11/amazon-echo-dot-5th-gen-charcoal-image-3.jpg",
+      "created_at": "15/10/2023",
+      "updated_at": "26/12/2023"
+    },
+    {
+      "id": 123462,
+      "product_name": "Dell XPS 13",
+      "description": "A sleek and powerful ultrabook from Dell, featuring a stunning InfinityEdge display, advanced thermal design, and exceptional build quality.",
+      "unit_price": 1500,
+      "stock_quantity": 12,
+      "product_image": "https://usalaptop.vn/wp-content/uploads/2022/12/1-600x420.jpg",
+      "created_at": "16/10/2023",
+      "updated_at": "27/12/2023"
+    },
+    {
+      "id": 123463,
+      "product_name": "GoPro HERO9 Black",
+      "description": "The most versatile GoPro ever, with 5K video, a new front display, and a larger rear touchscreen, perfect for capturing stunning footage and photos.",
+      "unit_price": 400,
+      "stock_quantity": 18,
+      "product_image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQu6wshrVP7zo1O-QAy7PK6ajUAl4f_SEVR4A&s",
+      "created_at": "17/10/2023",
+      "updated_at": "28/12/2023"
+    },
+    {
+      "id": 123464,
+      "product_name": "Nikon D3500",
+      "description": "An entry-level DSLR camera from Nikon, offering exceptional image quality, easy-to-use controls, and a lightweight, compact design for photographers of all levels.",
+      "unit_price": 450,
+      "stock_quantity": 14,
+      "product_image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzdhchigUEstNDXW_6fMEmFqzjp8p0H2p4Dg&s",
+      "created_at": "18/10/2023",
+      "updated_at": "29/12/2023"
+    },
+    {
+      "product_name": "laptop",
+      "description": "werty",
+      "unit_price": "12",
+      "stock_quantity": "12",
+      "product_image": "https://firebasestorage.googleapis.com/v0/b/project-module4-react.appspot.com/o/products%2FupdateImg%2FOIP.jpg?alt=media&token=b51572bf-4937-4fde-9552-026b456a443c",
+      "created_at": "09/07/2024",
+      "updated_at": "09/07/2024",
+      "id": 123465
     }
   ],
   "orders": [
@@ -217,7 +297,7 @@
       "order_details": [
         {
           "order_detail_id": 1234,
-          "product_id": 123456
+          "id": 123456
         }
       ],
       "receive_name": "Duong",
@@ -230,7 +310,7 @@
   "order_detail": [
     {
       "order_detail_id": 1234,
-      "product_id": 123456,
+      "id": 123456,
       "product_name": "Iphone XX",
       "unit_price": 100,
       "order_quantity": 2

@@ -1,26 +1,233 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import "../../../style/modal/addModal.scss";
+import { Product } from "../../../interface/productsType";
+import { useDispatch, useSelector } from "react-redux";
+import { CombineType } from "../../../interface/combineType";
+import { fetchProducts } from "../../../services/products/getProducts.service";
+import { addToProducts } from "../../../services/products/addProducts.service";
+import { deleteAproduct } from "../../../services/products/deleteProducts.service";
+import { updateAproduct } from "../../../services/products/updateProducts.service";
+import { formatDate } from "../../../func/format";
+import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
+import { storage } from "../../../config/fireBase";
 
 export default function ProductsManage() {
+  const dispatch = useDispatch();
   // state quản lí mở đóng form-------------------------------------------
   let [checkSucccess, setCheckSuccess] = useState<boolean>(false);
   let [checkAddForm, setCheckAddForm] = useState<boolean>(false);
+  let [checkUpdateForm, setCheckUpdateForm] = useState<boolean>(false);
   let [checkDelete, setCheckDelete] = useState<boolean>(false);
+  let [checkLock, setCheckLock] = useState<boolean>(false);
+  let [checkUnlock, setCheckUnlock] = useState<boolean>(false);
   // state quản lí mở đóng form-------------------------------------------
+
+  // lấy dữ liệu redux--------------------------------------------
+  let products: Product[] = useSelector((state: CombineType) => {
+    return state.products.data;
+  });
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, []);
+  // lấy dữ liệu redux-------------------------------------------------
+
+  // thêm mới product------------------------------------------------------
+  //state upload ảnh++++++++++++++++++++++
+  let [image, setImage] = useState<any>();
+  let [imageUrl, setImageUrl] = useState<any>(null);
+  const handleGetImg = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value: any = e.target.files?.[0];
+    setImage(value);
+  };
+  //hàm upload
+  const uploadImg = () => {
+    //tên không được trùng.
+    const imageRef = ref(storage, `products/addProduct/${image.name}`);
+    uploadBytes(imageRef, image).then((snapShot) => {
+      getDownloadURL(snapShot.ref).then((url) => {
+        setImageUrl(url);
+      });
+    });
+  };
+  //state upload ảnh++++++++++++++++++++++
+
+  let [newProduct, setNewProduct] = useState<any>({
+    product_name: "",
+    description: "",
+    unit_price: 0,
+    stock_quantity: 0,
+    product_image: "",
+    created_at: formatDate(new Date()),
+    updated_at: formatDate(new Date()),
+  });
+
+  //set lại giá trị ảnh sau khi nó có giá trị.
+  useEffect(() => {
+    setNewProduct((preProduct: any) => ({
+      ...preProduct,
+      product_image: imageUrl,
+    }));
+  }, [imageUrl]);
+
+  const handleCreateProduct = (e: any) => {
+    let { value, name } = e.target;
+    setNewProduct((preProduct: any) => ({
+      ...preProduct,
+      [name]: value,
+    }));
+  };
+
+  //nút thêm mới
+  const hanleAddProduct = () => {
+    setImageUrl(null);
+    setCheckAddForm(false);
+    dispatch(addToProducts(newProduct));
+  };
+  // thêm mới product------------------------------------------------------
+
+  // xóa product----------------------------------------------------------------------------------------
+  const handleDeleteProduct = (id: number) => {
+    dispatch(deleteAproduct(id));
+  };
+  // xóa product----------------------------------------------------------------------------------------
+
+  //cập nhật product ----------------------------------------------------------------------------
+  //hàm update ảnh++++++++++++++++++++++++++++++++++
+  let [imageUpdate, setImageUpdate] = useState<any>();
+  let [imageUrlUpdate, setImageUrlUpdate] = useState<any>(null);
+  let [updateProduct, setUpdateProduct] = useState<any>({
+    id: 0,
+    product_name: "",
+    description: "",
+    unit_price: 0,
+    stock_quantity: 0,
+    product_image: "",
+    updated_at: formatDate(new Date()),
+  });
+
+  const handleGetImgUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value: any = e.target.files?.[0];
+    setImageUpdate(value);
+  };
+
+  const uploadImgUpdate = () => {
+    if (imageUpdate) {
+      const imageRef = ref(storage, `products/updateImg/${imageUpdate.name}`);
+      uploadBytes(imageRef, imageUpdate).then((snapShot) => {
+        getDownloadURL(snapShot.ref).then((url) => {
+          setImageUrlUpdate(url);
+        });
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (imageUrlUpdate) {
+      setUpdateProduct((prevProduct: any) => ({
+        ...prevProduct,
+        product_image: imageUrlUpdate,
+      }));
+    }
+  }, [imageUrlUpdate]);
+
+  //hàm update ảnh++++++++++++++++++++++++++++++++++
+
+  //hàm lấy dữ liệu phần tử được click và hiện form.
+  const handleGetAProduct = (id: number) => {
+    let curProduct: Product | undefined = products.find((product: Product) => {
+      return product.id === id;
+    });
+
+    if (curProduct) {
+      setUpdateProduct({
+        id: curProduct.id,
+        product_name: curProduct.product_name,
+        description: curProduct.description,
+        unit_price: curProduct.unit_price,
+        stock_quantity: curProduct.stock_quantity,
+        product_image: curProduct.product_image,
+        updated_at: formatDate(new Date()),
+      });
+    } else {
+      console.error("Product not found");
+    }
+    setCheckUpdateForm(true);
+  };
+  //hàm thay đổi input
+  const handleChangeUpdate = (e: any) => {
+    let { value, name } = e.target;
+    setUpdateProduct((preProduct: any) => ({
+      ...preProduct,
+      [name]: value,
+    }));
+  };
+
+  console.log(updateProduct.product_image);
+
+  //hàm gọi dispatch thay đổi
+  const handleUpdateProduct = () => {
+    setImageUrlUpdate(null);
+    setCheckUpdateForm(false);
+    dispatch(updateAproduct(updateProduct));
+  };
+
+  //cập nhật product ----------------------------------------------------------------------------
   return (
     <>
       <section className="rounded-md  bg-white py-4 shadow-default mt-24 px-5 border-spacing-2 border-stone-300 border-solid mx-5 ">
-        <h2 className=" font-semibold bg-indigo-500 px-5 pt-5 rounded-t-md text-white">
-          Products Management
-        </h2>
+        <div className=" font-semibold bg-indigo-500 px-5 pt-5 rounded-t-md text-white flex justify-between items-center py-5">
+          <h2>Users Management</h2>
+          <button
+            className="
+        border-none
+        font-semibold
+        text-sm
+        leading-5
+        rounded-[0.375rem]
+        px-[10px]
+        py-[6px]
+      bg-indigo-800
+        h-max 
+        flex gap-1 items-center justify-center
+        text-white
+      "
+            onClick={() => setCheckAddForm(true)}
+          >
+            <svg
+              className="size-5 "
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+
+            <p className="text-lg">New</p>
+          </button>
+        </div>
         {/* thanh tìm kiếm và số trang phân -----------------------------------*/}
         <div className="flex justify-between items-center border-b-2 border-stone-300 border-solid px-8 py-4 border-x-transparent border-t-transparent bg-indigo-600">
-          <div className="w-1/2">
+          <div className="w-3/5">
             <input
               type="text"
               className="w-full rounded-md border border-stone-300 border-solid px-5 py-3 outline-none focus:border-blue-500 dark:border-stone-300 text-base font-medium"
               placeholder="Search..."
               defaultValue=""
             />
+          </div>
+
+          <div className="flex items-center font-medium">
+            <p className=" mr-2 pl-2 text-white dark:text-white">Sort By</p>
+            <select className="bg-indigo-400 pl-2 border-none outline-none font-medium text-base text-stone-100">
+              <option className="text-black bg-slate-100">Username</option>
+              <option className="text-black bg-slate-100">Username</option>
+              <option className="text-black bg-slate-100">Username</option>
+            </select>
           </div>
           <div className="flex items-center font-medium">
             <select className="bg-transparent pl-2 border-none outline-none font-medium text-base text-stone-100">
@@ -43,975 +250,149 @@ export default function ProductsManage() {
         {/* thanh tìm kiếm và số trang phân -------------------------------------*/}
 
         {/* bảng */}
-        <table
-          role="table"
-          className="datatable-table w-full table-auto  overflow-hidden break-words px-4 md:table-fixed md:overflow-auto md:px-8 text-gray-600 font-medium "
-        >
-          <thead>
-            <tr role="row">
+        <table className="min-w-full border-y-stone-300 border-2 border-solid border-x-transparent">
+          <thead className="bg-gray-100 border-b">
+            <tr>
               <th
-                colSpan={1}
-                role="columnheader"
-                title="Toggle SortBy"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent"
-                style={{ cursor: "pointer" }}
+                scope="col"
+                className="text-xl font-medium text-gray-900 px-6 py-4 text-left w-5"
               >
-                <div className="flex items-center pt-7 pl-2.5 pb-4">
-                  <span> Name</span>
-                  <div className="ml-2 inline-flex flex-col gap-1">
-                    <svg
-                      className="fill-current"
-                      width={10}
-                      height={5}
-                      viewBox="0 0 10 5"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M5 0L0 5H10L5 0Z" fill="" />
-                    </svg>
-
-                    <svg
-                      className="fill-current"
-                      width={10}
-                      height={5}
-                      viewBox="0 0 10 5"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M5 5L10 0L-4.37114e-07 8.74228e-07L5 5Z"
-                        fill=""
-                      />
-                    </svg>
-                  </div>
-                </div>
+                #
               </th>
               <th
-                colSpan={1}
-                role="columnheader"
-                title="Toggle SortBy"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent"
-                style={{ cursor: "pointer" }}
+                scope="col"
+                className=" font-medium text-gray-900 px-6 py-4 text-left"
               >
-                <div className="flex items-center pt-7 pl-2.5 pb-4">
-                  <span> Name</span>
-                  <div className="ml-2 inline-flex flex-col gap-1">
-                    <svg
-                      className="fill-current"
-                      width={10}
-                      height={5}
-                      viewBox="0 0 10 5"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M5 0L0 5H10L5 0Z" fill="" />
-                    </svg>
+                Product's name
+              </th>
 
-                    <svg
-                      className="fill-current"
-                      width={10}
-                      height={5}
-                      viewBox="0 0 10 5"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M5 5L10 0L-4.37114e-07 8.74228e-07L5 5Z"
-                        fill=""
-                      />
-                    </svg>
-                  </div>
-                </div>
+              <th
+                scope="col"
+                className=" font-medium text-gray-900 px-6 py-4 text-left"
+              >
+                Description
               </th>
               <th
-                colSpan={1}
-                role="columnheader"
-                title="Toggle SortBy"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent"
-                style={{ cursor: "pointer" }}
+                scope="col"
+                className=" font-medium text-gray-900 px-6 py-4 text-left"
               >
-                <div className="flex items-center pt-7 pl-2.5 pb-4">
-                  <span> Name</span>
-                  <div className="ml-2 inline-flex flex-col gap-1">
-                    <svg
-                      className="fill-current"
-                      width={10}
-                      height={5}
-                      viewBox="0 0 10 5"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M5 0L0 5H10L5 0Z" fill="" />
-                    </svg>
-
-                    <svg
-                      className="fill-current"
-                      width={10}
-                      height={5}
-                      viewBox="0 0 10 5"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M5 5L10 0L-4.37114e-07 8.74228e-07L5 5Z"
-                        fill=""
-                      />
-                    </svg>
-                  </div>
-                </div>
+                Price
               </th>
               <th
-                colSpan={1}
-                role="columnheader"
-                title="Toggle SortBy"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent"
-                style={{ cursor: "pointer" }}
+                scope="col"
+                className=" font-medium text-gray-900 px-6 py-4 text-left"
               >
-                <div className="flex items-center pt-7 pl-2.5 pb-4">
-                  <span> Name</span>
-                  <div className="ml-2 inline-flex flex-col gap-1">
-                    <svg
-                      className="fill-current"
-                      width={10}
-                      height={5}
-                      viewBox="0 0 10 5"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M5 0L0 5H10L5 0Z" fill="" />
-                    </svg>
-
-                    <svg
-                      className="fill-current"
-                      width={10}
-                      height={5}
-                      viewBox="0 0 10 5"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M5 5L10 0L-4.37114e-07 8.74228e-07L5 5Z"
-                        fill=""
-                      />
-                    </svg>
-                  </div>
-                </div>
+                Quantity
               </th>
               <th
-                colSpan={1}
-                role="columnheader"
-                title="Toggle SortBy"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent"
-                style={{ cursor: "pointer" }}
+                scope="col"
+                className=" font-medium text-gray-900 px-6 py-4 text-left"
               >
-                <div className="flex items-center pt-7 pl-2.5 pb-4">
-                  <span> Name</span>
-                  <div className="ml-2 inline-flex flex-col gap-1">
-                    <svg
-                      className="fill-current"
-                      width={10}
-                      height={5}
-                      viewBox="0 0 10 5"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M5 0L0 5H10L5 0Z" fill="" />
-                    </svg>
-
-                    <svg
-                      className="fill-current"
-                      width={10}
-                      height={5}
-                      viewBox="0 0 10 5"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M5 5L10 0L-4.37114e-07 8.74228e-07L5 5Z"
-                        fill=""
-                      />
-                    </svg>
-                  </div>
-                </div>
+                Created
               </th>
               <th
-                colSpan={1}
-                role="columnheader"
-                title="Toggle SortBy"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent"
-                style={{ cursor: "pointer" }}
+                scope="col"
+                className=" font-medium text-gray-900 px-6 py-4 text-left"
               >
-                <div className="flex items-center pt-7 pl-2.5 pb-4">
-                  <span> Function</span>
-                </div>
+                Action
               </th>
             </tr>
           </thead>
+          <tbody>
+            {products.map((product: Product, index: number) => {
+              return (
+                <tr
+                  className={`${
+                    (index + 1) % 2 === 0 ? "bg-gray-100" : "bg-white"
+                  } border-b`}
+                  key={product.id}
+                >
+                  <td className="px-6 py-4 whitespace-nowrap  font-medium text-gray-900">
+                    {index + 1}
+                  </td>
+                  <td className=" text-gray-900  px-6 py-4 whitespace-nowrap">
+                    {product.product_name}
+                  </td>
+                  <td className=" text-gray-900  px-6 py-4 max-w-[600px]  overflow-hidden text-ellipsis whitespace-nowrap">
+                    {product.description}
+                  </td>
+                  <td className=" text-gray-900  px-6 py-4 max-w-[600px]">
+                    {product.unit_price}
+                  </td>
+                  <td className=" text-gray-900  px-6 py-4 max-w-[600px]">
+                    {product.stock_quantity}
+                  </td>
+                  <td className=" text-gray-900  px-6 py-4 max-w-[600px]">
+                    {product.updated_at}
+                  </td>
 
-          <tbody role="rowgroup">
-            <tr role="row">
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent  "
-              >
-                <button
-                  className="
-            border-2
-            border-amber-400
-            border-solid
-            font-semibold
-            text-xs
-            leading-4
-            rounded-3xl
-        
-            py-1
-            bg-transparent
-            h-max
-            mr-2
-            hover:text-white
-            hover:bg-amber-300
-          "
-                >
-                  <svg
-                    className="h-6 w-16 text-amber-500 hover:text-white"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    {" "}
-                    <rect
-                      x="3"
-                      y="11"
-                      width="18"
-                      height="11"
-                      rx="2"
-                      ry="2"
-                    />{" "}
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                  </svg>
-                </button>
-
-                <button
-                  className="
-            border-2
-            border-lime-500
-            border-solid
-            font-semibold
-            text-xs
-            leading-4
-            rounded-3xl
-            bg-transparent
-            h-max
-            py-1
-            mr-2
-            hover:bg-lime-400
-          "
-                >
-                  <svg
-                    className="h-6 w-16 text-lime-500 hover:text-white "
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    stroke-width="2"
-                    stroke="currentColor"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    {" "}
-                    <path stroke="none" d="M0 0h24v24H0z" />{" "}
-                    <path d="M15 11l4 4l-4 4m4 -4h-11a4 4 0 0 1 0 -8h1" />
-                  </svg>
-                </button>
-              </td>
-            </tr>
-            <tr role="row">
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent  "
-              >
-                <button
-                  className="
-            border-2
-            border-amber-400
-            border-solid
-            font-semibold
-            text-xs
-            leading-4
-            rounded-3xl
-        
-            py-1
-            bg-transparent
-            h-max
-            mr-2
-            hover:text-white
-            hover:bg-amber-300
-          "
-                >
-                  <svg
-                    className="h-6 w-16 text-amber-500 hover:text-white"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    {" "}
-                    <rect
-                      x="3"
-                      y="11"
-                      width="18"
-                      height="11"
-                      rx="2"
-                      ry="2"
-                    />{" "}
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                  </svg>
-                </button>
-
-                <button
-                  className="
-            border-2
-            border-lime-500
-            border-solid
-            font-semibold
-            text-xs
-            leading-4
-            rounded-3xl
-            bg-transparent
-            h-max
-            py-1
-            mr-2
-            hover:bg-lime-400
-          "
-                >
-                  <svg
-                    className="h-6 w-16 text-lime-500 hover:text-white "
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    stroke-width="2"
-                    stroke="currentColor"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    {" "}
-                    <path stroke="none" d="M0 0h24v24H0z" />{" "}
-                    <path d="M15 11l4 4l-4 4m4 -4h-11a4 4 0 0 1 0 -8h1" />
-                  </svg>
-                </button>
-              </td>
-            </tr>
-            <tr role="row">
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent  "
-              >
-                <button
-                  className="
-            border-2
-            border-amber-400
-            border-solid
-            font-semibold
-            text-xs
-            leading-4
-            rounded-3xl
-        
-            py-1
-            bg-transparent
-            h-max
-            mr-2
-            hover:text-white
-            hover:bg-amber-300
-          "
-                >
-                  <svg
-                    className="h-6 w-16 text-amber-500 hover:text-white"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    {" "}
-                    <rect
-                      x="3"
-                      y="11"
-                      width="18"
-                      height="11"
-                      rx="2"
-                      ry="2"
-                    />{" "}
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                  </svg>
-                </button>
-
-                <button
-                  className="
-            border-2
-            border-lime-500
-            border-solid
-            font-semibold
-            text-xs
-            leading-4
-            rounded-3xl
-            bg-transparent
-            h-max
-            py-1
-            mr-2
-            hover:bg-lime-400
-          "
-                >
-                  <svg
-                    className="h-6 w-16 text-lime-500 hover:text-white "
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    stroke-width="2"
-                    stroke="currentColor"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    {" "}
-                    <path stroke="none" d="M0 0h24v24H0z" />{" "}
-                    <path d="M15 11l4 4l-4 4m4 -4h-11a4 4 0 0 1 0 -8h1" />
-                  </svg>
-                </button>
-              </td>
-            </tr>
-            <tr role="row">
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent  "
-              >
-                <button
-                  className="
-            border-2
-            border-amber-400
-            border-solid
-            font-semibold
-            text-xs
-            leading-4
-            rounded-3xl
-        
-            py-1
-            bg-transparent
-            h-max
-            mr-2
-            hover:text-white
-            hover:bg-amber-300
-          "
-                >
-                  <svg
-                    className="h-6 w-16 text-amber-500 hover:text-white"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    {" "}
-                    <rect
-                      x="3"
-                      y="11"
-                      width="18"
-                      height="11"
-                      rx="2"
-                      ry="2"
-                    />{" "}
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                  </svg>
-                </button>
-
-                <button
-                  className="
-            border-2
-            border-lime-500
-            border-solid
-            font-semibold
-            text-xs
-            leading-4
-            rounded-3xl
-            bg-transparent
-            h-max
-            py-1
-            mr-2
-            hover:bg-lime-400
-          "
-                >
-                  <svg
-                    className="h-6 w-16 text-lime-500 hover:text-white "
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    stroke-width="2"
-                    stroke="currentColor"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    {" "}
-                    <path stroke="none" d="M0 0h24v24H0z" />{" "}
-                    <path d="M15 11l4 4l-4 4m4 -4h-11a4 4 0 0 1 0 -8h1" />
-                  </svg>
-                </button>
-              </td>
-            </tr>
-            <tr role="row">
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent  "
-              >
-                <button
-                  className="
-            border-2
-            border-amber-400
-            border-solid
-            font-semibold
-            text-xs
-            leading-4
-            rounded-3xl
-        
-            py-1
-            bg-transparent
-            h-max
-            mr-2
-            hover:text-white
-            hover:bg-amber-300
-          "
-                >
-                  <svg
-                    className="h-6 w-16 text-amber-500 hover:text-white"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    {" "}
-                    <rect
-                      x="3"
-                      y="11"
-                      width="18"
-                      height="11"
-                      rx="2"
-                      ry="2"
-                    />{" "}
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                  </svg>
-                </button>
-
-                <button
-                  className="
-            border-2
-            border-lime-500
-            border-solid
-            font-semibold
-            text-xs
-            leading-4
-            rounded-3xl
-            bg-transparent
-            h-max
-            py-1
-            mr-2
-            hover:bg-lime-400
-          "
-                >
-                  <svg
-                    className="h-6 w-16 text-lime-500 hover:text-white "
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    stroke-width="2"
-                    stroke="currentColor"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    {" "}
-                    <path stroke="none" d="M0 0h24v24H0z" />{" "}
-                    <path d="M15 11l4 4l-4 4m4 -4h-11a4 4 0 0 1 0 -8h1" />
-                  </svg>
-                </button>
-              </td>
-            </tr>
-            <tr role="row">
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent  "
-              >
-                <button
-                  className="
-            border-2
-            border-amber-400
-            border-solid
-            font-semibold
-            text-xs
-            leading-4
-            rounded-3xl
-        
-            py-1
-            bg-transparent
-            h-max
-            mr-2
-            hover:text-white
-            hover:bg-amber-300
-          "
-                >
-                  <svg
-                    className="h-6 w-16 text-amber-500 hover:text-white"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    {" "}
-                    <rect
-                      x="3"
-                      y="11"
-                      width="18"
-                      height="11"
-                      rx="2"
-                      ry="2"
-                    />{" "}
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                  </svg>
-                </button>
-
-                <button
-                  className="
-            border-2
-            border-lime-500
-            border-solid
-            font-semibold
-            text-xs
-            leading-4
-            rounded-3xl
-            bg-transparent
-            h-max
-            py-1
-            mr-2
-            hover:bg-lime-400
-          "
-                >
-                  <svg
-                    className="h-6 w-16 text-lime-500 hover:text-white "
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    stroke-width="2"
-                    stroke="currentColor"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    {" "}
-                    <path stroke="none" d="M0 0h24v24H0z" />{" "}
-                    <path d="M15 11l4 4l-4 4m4 -4h-11a4 4 0 0 1 0 -8h1" />
-                  </svg>
-                </button>
-              </td>
-            </tr>
-            <tr role="row">
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent p-5"
-              >
-                Brielle Kuphal
-              </td>
-              <td
-                role="cell"
-                className="border-[1px] border-solid border-stone-300 border-x-transparent border-t-transparent  "
-              >
-                <button
-                  className="
-            border-2
-            border-amber-400
-            border-solid
-            font-semibold
-            text-xs
-            leading-4
-            rounded-3xl
-        
-            py-1
-            bg-transparent
-            h-max
-            mr-2
-            hover:text-white
-            hover:bg-amber-300
-          "
-                >
-                  <svg
-                    className="h-6 w-16 text-amber-500 hover:text-white"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    {" "}
-                    <rect
-                      x="3"
-                      y="11"
-                      width="18"
-                      height="11"
-                      rx="2"
-                      ry="2"
-                    />{" "}
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                  </svg>
-                </button>
-
-                <button
-                  className="
-            border-2
-            border-lime-500
-            border-solid
-            font-semibold
-            text-xs
-            leading-4
-            rounded-3xl
-            bg-transparent
-            h-max
-            py-1
-            mr-2
-            hover:bg-lime-400
-          "
-                >
-                  <svg
-                    className="h-6 w-16 text-lime-500 hover:text-white "
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    stroke-width="2"
-                    stroke="currentColor"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    {" "}
-                    <path stroke="none" d="M0 0h24v24H0z" />{" "}
-                    <path d="M15 11l4 4l-4 4m4 -4h-11a4 4 0 0 1 0 -8h1" />
-                  </svg>
-                </button>
-              </td>
-            </tr>
+                  <td className=" text-gray-900  px-6 py-4 whitespace-nowrap">
+                    <button
+                      onClick={() => handleGetAProduct(product.id)}
+                      className="
+                border-2
+                border-indigo-400
+                border-solid
+                rounded-2xl
+                bg-transparent
+                h-max
+                mr-2
+                px-3
+                py-1
+                hover:text-white
+                hover:bg-indigo-100
+              "
+                    >
+                      <svg
+                        className="h-4 w-4 text-indigo-500"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                        />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={() => handleDeleteProduct(product.id)}
+                      className="
+                border-2
+                border-red-400
+                border-solid
+                rounded-3xl
+                bg-transparent
+                h-max
+     
+                px-3
+                py-1
+                hover:text-white
+                hover:bg-red-100
+              "
+                    >
+                      <svg
+                        className="h-4 w-4 text-red-500"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        {" "}
+                        <polyline points="3 6 5 6 21 6" />{" "}
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />{" "}
+                        <line x1="10" y1="11" x2="10" y2="17" />{" "}
+                        <line x1="14" y1="11" x2="14" y2="17" />
+                      </svg>
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
 
@@ -1064,12 +445,13 @@ export default function ProductsManage() {
       {/* add form */}
       {checkAddForm && (
         <div className="addModal">
-          <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+          <div className=" bg-white rounded-lg shadow dark:border md:mt-0 xl:p-0 w-1/2 dark:bg-gray-800 dark:border-gray-700">
             {/* close */}
             <p
               className="float-right p-4"
               onClick={() => {
                 setCheckAddForm(false);
+                setImageUrl(null);
               }}
             >
               <svg
@@ -1090,63 +472,281 @@ export default function ProductsManage() {
               <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white uppercase text-center">
                 add a new product
               </h1>
-              <form className="space-y-4 md:space-y-6" action="#">
+              <div className="space-y-4 md:space-y-6">
                 <div>
-                  <label
-                    htmlFor="email"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Name
+                  <label className="block mb-2  font-medium text-gray-900 dark:text-white">
+                    Product's name
                   </label>
                   <input
-                    type="email"
-                    name="email"
-                    id="email"
+                    onChange={handleCreateProduct}
+                    name="product_name"
+                    type="text"
                     className="bg-gray-50 border border-gray-300 border-solid text-gray-900 rounded-lg  focus:border-blue-600 block w-full p-2.5 "
-                    placeholder="name@company.com"
+                    placeholder="Name of product..."
                   />
                 </div>
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Name
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    id="email"
-                    className="bg-gray-50 border border-gray-300 border-solid text-gray-900 rounded-lg  focus:border-blue-600 block w-full p-2.5 "
-                    placeholder="name@company.com"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Name
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    id="email"
-                    className="bg-gray-50 border border-gray-300 border-solid text-gray-900 rounded-lg  focus:border-blue-600 block w-full p-2.5 "
-                    placeholder="name@company.com"
-                  />
+                <div className="grid grid-cols-2 gap-x-3">
+                  <div className="row-span-2">
+                    <label className="block mb-2  font-medium text-gray-900 dark:text-white">
+                      Description
+                    </label>
+                    <textarea
+                      name="description"
+                      onChange={handleCreateProduct}
+                      className="bg-gray-50 border border-gray-300 border-solid text-gray-900 rounded-lg  focus:border-blue-600 block w-full p-2.5 outline-none min-h-28"
+                      placeholder="Write some description...."
+                    ></textarea>
+                  </div>
+                  <div className="grid grid-cols-3 gap-3">
+                    <div className="col-span-2">
+                      <label className="block mb-2  font-medium text-gray-900 dark:text-white">
+                        Price
+                      </label>
+                      <div className="flex gap-1">
+                        <input
+                          onChange={handleCreateProduct}
+                          min={0}
+                          name="unit_price"
+                          type="number"
+                          className="bg-gray-50 border border-gray-300 border-solid text-green-600 rounded-lg  focus:border-blue-600 block w-full p-2.5 text-center font-semibold "
+                        />
+                        <p className="text-2xl font-bold text-green-400">$</p>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block mb-2  font-medium text-gray-900 dark:text-white">
+                        Quantity
+                      </label>
+                      <input
+                        onChange={handleCreateProduct}
+                        min={0}
+                        name="stock_quantity"
+                        type="number"
+                        className="bg-gray-50 border border-gray-300 border-solid text-gray-900 rounded-lg  focus:border-blue-600 block w-full p-2.5 text-center font-semibold "
+                      />
+                    </div>
+
+                    <div className="col-span-3 ">
+                      <div className="file-upload-wrapper mt-3 flex flex-col">
+                        <div className="flex gap-3 items-center">
+                          <label
+                            htmlFor="file-upload"
+                            className=" bg-indigo-500 font-semibold text-white py-2 px-4 rounded cursor-pointer"
+                          >
+                            Image
+                          </label>
+                          {image && (
+                            <button
+                              className="size-max border-transparent cursor-pointer bg-green-500 rounded px-2 py-1"
+                              onClick={uploadImg}
+                            >
+                              <svg
+                                className="size-6 text-white"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              >
+                                {" "}
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />{" "}
+                                <polyline points="17 8 12 3 7 8" />{" "}
+                                <line x1="12" y1="3" x2="12" y2="15" />
+                              </svg>
+                            </button>
+                          )}
+                          {imageUrl && (
+                            <p className="font-medium text-sm text-green-500">
+                              Upload Success !
+                            </p>
+                          )}
+                        </div>
+                        <input
+                          id="file-upload"
+                          onChange={handleGetImg}
+                          type="file"
+                          className="hidden"
+                        />
+                        <span
+                          id="file-name"
+                          className="ml-2 text-gray-900 overflow-hidden text-ellipsis whitespace-nowrap mt-3"
+                        >
+                          {imageUrl === null ? "No file chosen" : image.name}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <button
-                  onClick={() => {
-                    setCheckAddForm(false);
-                  }}
-                  type="submit"
-                  className="w-full text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:outline-none focus:bg-indigo-500 font-medium rounded-lg text-sm px-5 py-2.5 text-center border-transparent"
+                  onClick={hanleAddProduct}
+                  className="w-full text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:outline-none focus:bg-indigo-500 font-medium rounded-lg  px-5 py-2.5 text-center border-transparent"
                 >
-                  ADD
+                  ADD NOW
                 </button>
-              </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* update form */}
+      {checkUpdateForm && (
+        <div className="addModal">
+          <div className=" bg-white rounded-lg shadow dark:border md:mt-0 xl:p-0 w-1/2 dark:bg-gray-800 dark:border-gray-700">
+            {/* close */}
+            <p
+              className="float-right p-4"
+              onClick={() => {
+                setCheckUpdateForm(false);
+                setImageUrlUpdate(null);
+              }}
+            >
+              <svg
+                className="h-6 w-6 text-slate-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </p>
+            <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
+              <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white uppercase text-center">
+                update a product
+              </h1>
+              <div className="space-y-4 md:space-y-6">
+                <div>
+                  <label className="block mb-2  font-medium text-gray-900 dark:text-white">
+                    Product's name
+                  </label>
+                  <input
+                    value={updateProduct.product_name}
+                    onChange={handleChangeUpdate}
+                    name="product_name"
+                    type="text"
+                    className="bg-gray-50 border border-gray-300 border-solid text-gray-900 rounded-lg  focus:border-blue-600 block w-full p-2.5 "
+                    placeholder="Name of product..."
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-x-3">
+                  <div className="row-span-2">
+                    <label className="block mb-2  font-medium text-gray-900 dark:text-white">
+                      Description
+                    </label>
+                    <textarea
+                      value={updateProduct.description}
+                      name="description"
+                      onChange={handleChangeUpdate}
+                      className="bg-gray-50 border border-gray-300 border-solid text-gray-900 rounded-lg  focus:border-blue-600 block w-full p-2.5 outline-none min-h-[300px]"
+                      placeholder="Write some description...."
+                    ></textarea>
+                  </div>
+                  <div className="grid grid-cols-3 gap-3">
+                    <div className="col-span-2">
+                      <label className="block mb-2  font-medium text-gray-900 dark:text-white">
+                        Price
+                      </label>
+                      <div className="flex gap-1">
+                        <input
+                          onChange={handleChangeUpdate}
+                          value={updateProduct.unit_price}
+                          min={0}
+                          name="unit_price"
+                          type="number"
+                          className="bg-gray-50 border border-gray-300 border-solid text-green-600 rounded-lg  focus:border-blue-600 block w-full p-2.5 text-center font-semibold "
+                        />
+                        <p className="text-2xl font-bold text-green-400">$</p>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block mb-2  font-medium text-gray-900 dark:text-white">
+                        Quantity
+                      </label>
+                      <input
+                        value={updateProduct.stock_quantity}
+                        onChange={handleChangeUpdate}
+                        min={0}
+                        name="stock_quantity"
+                        type="number"
+                        className="bg-gray-50 border border-gray-300 border-solid text-gray-900 rounded-lg  focus:border-blue-600 block w-full p-2.5 text-center font-semibold "
+                      />
+                    </div>
+
+                    <div className="col-span-3 ">
+                      <div className="file-upload-wrapper mt-3 flex flex-col">
+                        <div className="flex gap-3 items-center">
+                          <label
+                            htmlFor="file-upload"
+                            className=" bg-indigo-500 font-semibold text-white py-2 px-4 rounded cursor-pointer"
+                          >
+                            Image
+                          </label>
+                          {imageUpdate && (
+                            <button
+                              className="size-max border-transparent cursor-pointer bg-green-500 rounded px-2 py-1"
+                              onClick={uploadImgUpdate}
+                            >
+                              <svg
+                                className="size-6 text-white"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              >
+                                {" "}
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />{" "}
+                                <polyline points="17 8 12 3 7 8" />{" "}
+                                <line x1="12" y1="3" x2="12" y2="15" />
+                              </svg>
+                            </button>
+                          )}
+                          {imageUrlUpdate && (
+                            <p className="font-medium text-sm text-green-500">
+                              Upload Success !
+                            </p>
+                          )}
+                        </div>
+                        <input
+                          id="file-upload"
+                          name="product_image"
+                          onChange={handleGetImgUpdate}
+                          type="file"
+                          className="hidden"
+                        />
+                        <span
+                          id="file-name"
+                          className="ml-2 text-gray-900 overflow-hidden text-ellipsis whitespace-nowrap mt-3"
+                        >
+                          {imageUrlUpdate === null
+                            ? "No file chosen"
+                            : imageUpdate.name}
+                        </span>
+
+                        <img
+                          src={updateProduct.product_image}
+                          alt=""
+                          className="w-56 h-40 border-solid mt-3 rounded"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  onClick={handleUpdateProduct}
+                  className="w-full text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:bg-green-500 font-medium rounded-lg  px-5 py-2.5 text-center border-transparent"
+                >
+                  UPDATE NOW
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -1211,7 +811,7 @@ export default function ProductsManage() {
                           Warning
                         </h3>
                         <div className="mt-2">
-                          <p className="text-sm text-gray-500">
+                          <p className=" text-gray-500">
                             Are you sure you want to delete? All of your data
                             will be permanently removed. This action cannot be
                             undone.
@@ -1223,7 +823,7 @@ export default function ProductsManage() {
                   <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                     <button
                       type="button"
-                      className=" border-none inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
+                      className=" border-none inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2  font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
                       onClick={() => {
                         setCheckDelete(false);
                       }}
@@ -1232,7 +832,7 @@ export default function ProductsManage() {
                     </button>
                     <button
                       type="button"
-                      className=" border-none mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                      className=" border-none mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2  font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
                       onClick={() => {
                         setCheckDelete(false);
                       }}
@@ -1301,7 +901,7 @@ export default function ProductsManage() {
                         Successful
                       </h3>
                       <div className="mt-2">
-                        <p className="text-sm text-gray-500 text-center">
+                        <p className=" text-gray-500 text-center">
                           Are you sure you want to delete? All of your data will
                           be permanently removed. This action cannot be undone.
                         </p>
