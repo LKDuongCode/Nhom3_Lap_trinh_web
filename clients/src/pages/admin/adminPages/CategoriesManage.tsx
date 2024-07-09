@@ -27,7 +27,7 @@ export default function CategoriesManage() {
   useEffect(() => {
     dispatch(fetchCategories());
   }, []);
-  // lấy dữ liệu redux-----------------------------------------------------
+  // lấy dữ liệu redux-------------------------------------------------
 
   // thêm mới category------------------------------------------------------
   //lấy dữ liệu người dùng
