@@ -9,6 +9,18 @@ import ProductsManage from "./pages/admin/adminPages/ProductsManage";
 import DetailAccount from "./pages/admin/adminPages/DetailAccount";
 import BillsAD from "./pages/admin/adminPages/BillsAD";
 import AdminLogin from "./pages/admin/adminPages/AdminLogin";
+import NotFoundPage from "./pages/NotFoundPage";
+import UsersLogin from "./pages/users/UsersLogin";
+import UsersRegister from "./pages/users/UsersRegister";
+import UsersHome from "./pages/users/UsersHome";
+import CategoriesUS from "./pages/users/usersPages/CategoriesUS";
+import ProductList from "./pages/users/usersPages/ProductList";
+import DetailProducts from "./pages/users/usersPages/DetailProducts";
+import Bills from "./pages/users/usersPages/Bills";
+import CartsUS from "./pages/users/usersPages/CartsUS";
+import AboutUS from "./pages/users/usersPages/AboutUS";
+import SupportUS from "./pages/users/usersPages/SupportUS";
+import Homepages from "./pages/users/usersPages/Homepages";
 
 export default function App() {
   return (
@@ -16,8 +28,11 @@ export default function App() {
       <Routes>
         {/* login và sign up------------------------------------------------------------------------ */}
         <Route path="/adminLogin" element={<AdminLogin></AdminLogin>}></Route>
-        <Route path="/usersLogin"></Route>
-        <Route path="/usersRegister"></Route>
+        <Route path="/usersLogin" element={<UsersLogin></UsersLogin>}></Route>
+        <Route
+          path="/usersRegister"
+          element={<UsersRegister></UsersRegister>}
+        ></Route>
         {/* login và sign up------------------------------------------------------------------------ */}
 
         {/* admin router----------------------------------------------------------------------------- */}
@@ -45,21 +60,30 @@ export default function App() {
         {/* admin router----------------------------------------------------------------------------- */}
 
         {/* users router----------------------------------------------------------------------------- */}
-        <Route path="">
-          <Route index></Route>
-          <Route path="categories"></Route>
-          <Route path="productsList"></Route>
-          <Route path="productDetail"></Route>
+        <Route path="" element={<UsersHome></UsersHome>}>
+          <Route index element={<Homepages></Homepages>}></Route>
+          <Route
+            path="categories"
+            element={<CategoriesUS></CategoriesUS>}
+          ></Route>
+          <Route
+            path="productsList"
+            element={<ProductList></ProductList>}
+          ></Route>
+          <Route
+            path="productDetail"
+            element={<DetailProducts></DetailProducts>}
+          ></Route>
 
-          <Route path="bills"></Route>
-          <Route path="carts"></Route>
-          <Route path="supports"></Route>
-          <Route path="aboutus"></Route>
+          <Route path="bills" element={<Bills></Bills>}></Route>
+          <Route path="carts" element={<CartsUS></CartsUS>}></Route>
+          <Route path="supports" element={<SupportUS></SupportUS>}></Route>
+          <Route path="aboutus" element={<AboutUS></AboutUS>}></Route>
         </Route>
         {/* users router----------------------------------------------------------------------------- */}
 
         {/* not found page */}
-        <Route path="*"></Route>
+        <Route path="*" element={<NotFoundPage></NotFoundPage>}></Route>
       </Routes>
     </div>
   );

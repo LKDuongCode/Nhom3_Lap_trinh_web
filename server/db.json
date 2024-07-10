@@ -125,6 +125,20 @@
       "created_at": "Mon Jul 08 2024",
       "updated_at": "",
       "id": 12345686
+    },
+    {
+      "user_name": "newAcc",
+      "email": "tran@gmail.com",
+      "password": "123",
+      "role": false,
+      "status": true,
+      "full_name": "newAcc fullname",
+      "avatar": "https://vectorified.com/images/unknown-avatar-icon-6.jpg",
+      "phone": "unknow",
+      "address": "unknow",
+      "created_at": "Wed Jul 10 2024",
+      "updated_at": "",
+      "id": 12345687
     }
   ],
   "categories": [
