@@ -1,44 +1,60 @@
-import { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Cart, Product } from "../../interface/productsType";
+import { fetchProducts } from "../../services/products/getProducts.service";
+import { CombineType } from "../../interface/combineType";
+import { fetchCarts } from "../../services/cart/getCarts.service";
 
 export default function HeaderUser() {
+  //quản lí ẩn hiện thanh tìm kiếm và logo--------------------------------------------------------
   const navigate = useNavigate();
-  //fix nav khi cuộn đến vị trí nhất định
+  let [locationPage, setLocationPage] = useState<string>(window.location.href);
   useEffect(() => {
-    const handleScroll = () => {
-      const navbar = document.getElementById("navbar");
-      if (navbar) {
-        const sticky = navbar.offsetTop;
-        if (window.pageYOffset > sticky) {
-          navbar.classList.add(
-            "fixed",
-            "top-0",
-            "left-0",
-            "right-0",
-            "shadow-lg",
-            "z-10"
-          );
-        } else {
-          navbar.classList.remove(
-            "fixed",
-            "top-0",
-            "left-0",
-            "right-0",
-            "shadow-lg"
-          );
-        }
-      }
-    };
+    setLocationPage(window.location.href);
+  }, [location]);
+  //quản lí ẩn hiện thanh tìm kiếm--------------------------------------------------------
 
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+  // lấy dữ liệu redux favorite--------------------------------------------
+  const dispatch = useDispatch();
+  let products: Product[] = useSelector((state: CombineType) => {
+    return state.products.data;
+  });
+  useEffect(() => {
+    dispatch(fetchProducts());
   }, []);
+
+  //mảng chứa các đối tượng yếu thích
+  let [favoProducts, setFavoProduct] = useState<Product[]>([]);
+  useEffect(() => {
+    if (products.length > 0) {
+      let favorites = products.filter((product) => product.favorite === true);
+      setFavoProduct(favorites);
+    }
+  }, [products]);
+
+  // lấy dữ liệu redux favorite-------------------------------------------------
+
+  // lấy dữ liệu redux--------------------------------------------
+
+  let cartsDb: Cart[] = useSelector((state: CombineType) => {
+    return state.carts.data;
+  });
+  useEffect(() => {
+    dispatch(fetchCarts());
+  }, []);
+
+  //mảng chứa carts
+  let [carts, setCarts] = useState<Cart[]>([]);
+  useEffect(() => {
+    if (cartsDb.length > 0) {
+      setCarts([...cartsDb]);
+    }
+  }, [cartsDb]);
+  // lấy dữ liệu redux-------------------------------------------------
   return (
-    <div className=" w-full z-50 bg-[#F1F5F9]">
-      <nav className="bg-gray-800 fixed w-full px-4" id="navbar">
+    <div className=" w-full bg-[#F1F5F9] z-50">
+      <nav className="bg-gray-800 fixed w-full px-4 shadow-lg left-0 right-0 top-0 z-50">
         <div className="container flex justify-between w-full">
           <div className="flex">
             <div className="px-8 py-4 bg-primary md:flex items-center cursor-pointer relative group hidden hover:bg-indigo-500">
@@ -163,18 +179,18 @@ export default function HeaderUser() {
           </div>
 
           <div className="flex items-center space-x-4 ">
-            <a
-              href="#"
+            <Link
               className="text-center text-white hover:text-indigo-400 transition relative"
+              to={"wishList"}
             >
               <div className="text-2xl">
                 <i className="fa-regular fa-heart" />
               </div>
               <div className="text-xs leading-3">Wishlist</div>
               <div className="absolute right-0 -top-1 w-5 h-5 rounded-full flex items-center justify-center bg-indigo-500 text-white text-xs">
-                8
+                {favoProducts.length}
               </div>
-            </a>
+            </Link>
             <a
               onClick={() => navigate("/carts")}
               className="text-center text-white hover:text-indigo-400 transition relative"
@@ -184,7 +200,7 @@ export default function HeaderUser() {
               </div>
               <div className="text-xs leading-3">Cart</div>
               <div className="absolute -right-3 -top-1 w-5 h-5 rounded-full flex items-center justify-center bg-indigo-500 text-white text-xs">
-                2
+                {carts.length}
               </div>
             </a>
             <div className=" py-4 bg-primary md:flex items-center cursor-pointer relative group hidden ">
@@ -279,50 +295,49 @@ export default function HeaderUser() {
           </div>
         </div>
       </nav>
-      <header className="py-4 shadow-sm ">
-        <div className="container flex items-center justify-between gap-40">
-          <a
-            href="http://localhost:5173/"
-            className="flex gap-2 items-center bg-black py-2 px-5 rounded-e-md max-w-56"
-          >
-            <img
-              src="https://firebasestorage.googleapis.com/v0/b/project-module4-react.appspot.com/o/logoPJ.png?alt=media&token=22c13780-c3e2-4039-b539-f70386cea016"
-              alt="Logo"
-              className="size-12 bg-purple-300 rounded-full"
-            />
-            <p className="font-extrabold text-white text-2xl">DUONG'S SHOP</p>
-          </a>
-          <div className="flex w-full ">
-            <div className="w-full max-w-3xl relative flex flex-3 ">
-              <span className="absolute left-4 top-4 text-lg text-indigo-500">
-                <i className="fa-solid fa-magnifying-glass" />
-              </span>
-              <input
-                type="text"
-                name="search"
-                id="search"
-                className="w-full border-stone-200 border-solid border-b-transparent   pl-12 py-4 pr-3 rounded-l-md focus:outline-none hidden md:flex text-base"
-                placeholder="Search something ..."
+      {location.pathname === "/" && (
+        <div className="py-4 shadow-sm mt-20">
+          <div className="container flex items-center justify-between gap-40">
+            <a
+              href="http://localhost:5173/"
+              className="flex gap-2 items-center bg-black py-2 px-5 rounded-e-md max-w-56"
+            >
+              <img
+                src="https://firebasestorage.googleapis.com/v0/b/project-module4-react.appspot.com/o/logoPJ.png?alt=media&token=22c13780-c3e2-4039-b539-f70386cea016"
+                alt="Logo"
+                className="size-12 bg-purple-300 rounded-full"
               />
-              <button className="bg-indigo-600 border-solid border-indigo-500 text-white px-8 rounded-r-md hover:bg-transparent hover:text-indigo-600 transition  flex justify-center items-center text-base font-medium">
-                <p>Search</p>
-              </button>
+              <p className="font-extrabold text-white text-2xl">DUONG'S SHOP</p>
+            </a>
+            <div className="flex w-full ">
+              <div className="w-full max-w-3xl relative flex flex-3 ">
+                <span className="absolute left-4 top-4 text-lg text-indigo-500">
+                  <i className="fa-solid fa-magnifying-glass" />
+                </span>
+                <input
+                  type="text"
+                  className="w-full border-stone-200 border-solid border-b-transparent   pl-12 py-4 pr-3 rounded-l-md focus:outline-none  flex text-base"
+                  placeholder="Search something ..."
+                />
+                <button className="bg-indigo-600 border-solid border-indigo-500 text-white px-8 rounded-r-md hover:bg-transparent hover:text-indigo-600 transition  flex justify-center items-center text-base font-medium">
+                  <p>Search</p>
+                </button>
+              </div>
             </div>
+            <a
+              href="http://localhost:5173/"
+              className="flex gap-2 items-center bg-black py-2 px-7 rounded-s-md max-w-56"
+            >
+              <img
+                src="https://firebasestorage.googleapis.com/v0/b/project-module4-react.appspot.com/o/logoPJ.png?alt=media&token=22c13780-c3e2-4039-b539-f70386cea016"
+                alt="Logo"
+                className="size-12 bg-purple-300 rounded-full"
+              />
+              <p className="font-extrabold text-white text-2xl"> SALE 30%</p>
+            </a>
           </div>
-          <a
-            href="http://localhost:5173/"
-            className="flex gap-2 items-center bg-black py-2 px-7 rounded-s-md max-w-56"
-          >
-            <img
-              src="https://firebasestorage.googleapis.com/v0/b/project-module4-react.appspot.com/o/logoPJ.png?alt=media&token=22c13780-c3e2-4039-b539-f70386cea016"
-              alt="Logo"
-              className="size-12 bg-purple-300 rounded-full"
-            />
-            <p className="font-extrabold text-white text-2xl"> SALE 30%</p>
-          </a>
         </div>
-      </header>
-      {/* navbar */}
+      )}
     </div>
   );
 }

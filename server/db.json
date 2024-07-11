@@ -147,156 +147,383 @@
       "category_name": "SmartPhone",
       "description": "This is the category of smartphones, including a variety of models from different brands known for their advanced features and sleek designs.",
       "status": true,
-      "productsInfo": [
-        {
-          "id": 123456,
-          "product_name": "Iphone XX"
-        },
-        {
-          "id": 234567,
-          "product_name": "Samsung Galaxy S21"
-        }
-      ]
+      "category_img": "https://cdn.24h.com.vn/upload/2-2024/images/2024-06-09/1-1717894093-34-width740height495.jpg"
+    },
+    {
+      "id": 1234568,
+      "category_name": "Laptop",
+      "description": "This category includes a wide range of laptops, from ultra-portables to high-performance gaming laptops, designed to meet various computing needs.",
+      "status": true,
+      "category_img": "https://tiki.vn/blog/wp-content/uploads/2023/08/laptop-cho-sinh-vien-gia-tot.jpg"
     },
     {
       "id": 1234569,
-      "category_name": "Tablet",
-      "description": "This is the category of tablets, offering portable and versatile devices perfect for both entertainment and productivity on the go.",
-      "status": true,
-      "productsInfo": [
-        {
-          "id": 567890,
-          "product_name": "iPad Pro"
-        },
-        {
-          "id": 678901,
-          "product_name": "Samsung Galaxy Tab S7"
-        }
-      ]
-    },
-    {
-      "id": 1234570,
-      "category_name": "Smartwatch",
-      "description": "This is the category of smartwatches, showcasing innovative wearable technology that keeps you connected and tracks your fitness.",
-      "status": true,
-      "productsInfo": [
-        {
-          "id": 789012,
-          "product_name": "Apple Watch Series 6"
-        },
-        {
-          "id": 890123,
-          "product_name": "Samsung Galaxy Watch 3"
-        }
-      ]
-    },
-    {
-      "id": 1234571,
       "category_name": "Accessories",
-      "description": "This is the category of accessories, providing essential and complementary products like headphones, chargers, and protective cases for your devices.",
+      "description": "The accessories category features a selection of accessories known for their portability, versatility, and ease of use, suitable for both entertainment and productivity.",
       "status": true,
-      "productsInfo": [
-        {
-          "id": 901234,
-          "product_name": "AirPods Pro"
-        },
-        {
-          "id": 123457,
-          "product_name": "Anker Power Bank"
-        }
-      ]
+      "category_img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeIyy9HB1sa_bi5BTyyyfvolrnctvS9wI9uw&s"
     }
   ],
   "products": [
     {
       "id": 123457,
-      "product_name": "Samsung Smart TV",
-      "description": "A cutting-edge Smart TV from Samsung, featuring a stunning 4K display, integrated streaming services, and voice control for a seamless viewing experience.",
-      "unit_price": 800,
-      "stock_quantity": 10,
-      "product_image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuMieku-ACXF0hKvXWf_R2AobXfND7fjWLlQ&s",
-      "created_at": "11/10/2023",
+      "product_name": "iPhone X",
+      "category_id": 1234567,
+      "favorite": false,
+      "description": "Apple's iPhone X features a stunning OLED display, Face ID, and a powerful A11 Bionic chip, offering a premium smartphone experience.",
+      "unit_price": 999,
+      "stock_quantity": 15,
+      "product_image": "https://cdn.24h.com.vn/upload/2-2024/images/2024-06-05/1717562587-279-iphone-x-vs-iphone-12-pro-chenh-nhau-5-trieu-khac-biet-the-nao-1-1711760254-550-width800height533-1717562587-width800height533.jpg",
+      "created_at": "10/11/2023",
       "updated_at": "22/12/2023"
     },
     {
       "id": 123458,
-      "product_name": "Sony PlayStation 5",
-      "description": "The latest PlayStation console from Sony, offering breathtaking graphics, fast load times, and an immersive gaming experience with its new DualSense controller.",
-      "unit_price": 500,
-      "stock_quantity": 15,
-      "product_image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSAl7c8GHtPm2iinJ4ax_sE4S7eHjqB1OEcA&s",
-      "created_at": "12/10/2023",
+      "product_name": "Samsung Galaxy S21",
+      "category_id": 1234567,
+      "favorite": false,
+      "description": "Samsung Galaxy S21 comes with a high-resolution display, advanced camera features, and a sleek design, making it a top choice for smartphone enthusiasts.",
+      "unit_price": 799,
+      "stock_quantity": 20,
+      "product_image": "https://i5.walmartimages.com/asr/dcf28e36-4c71-49d1-931b-4649b866db89.22d7e2d5e09fe373b2541876b509ebfb.jpeg",
+      "created_at": "12/11/2023",
       "updated_at": "23/12/2023"
     },
     {
       "id": 123459,
-      "product_name": "Bose QuietComfort 35 II",
-      "description": "High-quality noise-cancelling headphones from Bose, providing superior sound quality and comfort, perfect for music lovers and frequent travelers.",
-      "unit_price": 300,
-      "stock_quantity": 20,
-      "product_image": "https://lh4.googleusercontent.com/proxy/Ea6_FTYyI2xnM3In9XGwHyDqolo6X-OTIQfd1jXxDOgt1Qf9RKdlN-H0HqE98BPAygratC3SVyGVplDkpSMZ_9Ygn8f5qRawkxgWxxYntA3t-vWj-zCxJoQpqxaFveHYz0cShZuBDzZ3yK9eonnEt3AxCuFb8VvZYmOPef3TITZgtw",
-      "created_at": "13/10/2023",
+      "product_name": "Google Pixel 6",
+      "category_id": 1234567,
+      "favorite": false,
+      "description": "The Google Pixel 6 features a unique design, Google's own Tensor chip, and an outstanding camera system for excellent photo and video quality.",
+      "unit_price": 699,
+      "stock_quantity": 25,
+      "product_image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTV5G5tm2C9oPcediIi0-8XRBU58VQjHbmdTA&s",
+      "created_at": "14/11/2023",
       "updated_at": "24/12/2023"
     },
     {
       "id": 123460,
-      "product_name": "Apple MacBook Pro",
-      "description": "Apple's most powerful laptop, featuring the M1 chip for incredible performance, a stunning Retina display, and long battery life for professionals on the go.",
-      "unit_price": 2000,
-      "stock_quantity": 8,
-      "product_image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfJfYYuUT-GC29I175DW7mMYpnmR0tExYYWQ&s",
-      "created_at": "14/10/2023",
+      "product_name": "OnePlus 9",
+      "category_id": 1234567,
+      "favorite": true,
+      "description": "OnePlus 9 offers a fast and smooth performance with its Snapdragon 888 processor, 120Hz Fluid AMOLED display, and Hasselblad camera partnership.",
+      "unit_price": 729,
+      "stock_quantity": 18,
+      "product_image": "https://www.duchuymobile.com/images/companies/1/1-tin-moi/2021/thang-2/19-2/oneplus-9-mau-tim.jpg?1616406509040",
+      "created_at": "16/11/2023",
       "updated_at": "25/12/2023"
     },
     {
       "id": 123461,
-      "product_name": "Amazon Echo Dot",
-      "description": "A compact smart speaker with Alexa, designed to fit perfectly into small spaces while delivering crisp vocals and balanced bass for full sound.",
-      "unit_price": 50,
-      "stock_quantity": 25,
-      "product_image": "https://queenmobile.vn/wp-content/uploads/2023/11/amazon-echo-dot-5th-gen-charcoal-image-3.jpg",
-      "created_at": "15/10/2023",
+      "product_name": "Sony Xperia 1 III",
+      "category_id": 1234567,
+      "favorite": false,
+      "description": "Sony Xperia 1 III delivers an impressive 4K HDR OLED display, a versatile camera system, and high-performance hardware for media enthusiasts.",
+      "unit_price": 1299,
+      "stock_quantity": 12,
+      "product_image": "https://giggster.com/guide/cms-data/assets/d157c910-acee-4266-a4b7-bf94865abdd3?width=2351&height=1763",
+      "created_at": "18/11/2023",
       "updated_at": "26/12/2023"
     },
     {
       "id": 123462,
-      "product_name": "Dell XPS 13",
-      "description": "A sleek and powerful ultrabook from Dell, featuring a stunning InfinityEdge display, advanced thermal design, and exceptional build quality.",
-      "unit_price": 1500,
-      "stock_quantity": 12,
-      "product_image": "https://usalaptop.vn/wp-content/uploads/2022/12/1-600x420.jpg",
-      "created_at": "16/10/2023",
+      "product_name": "Xiaomi Mi 11",
+      "category_id": 1234567,
+      "favorite": true,
+      "description": "Xiaomi Mi 11 combines flagship performance with a stunning AMOLED display, excellent camera capabilities, and fast charging technology.",
+      "unit_price": 749,
+      "stock_quantity": 22,
+      "product_image": "https://viostore.vn/wp-content/uploads/2024/03/3-5.png",
+      "created_at": "20/11/2023",
       "updated_at": "27/12/2023"
     },
     {
       "id": 123463,
-      "product_name": "GoPro HERO9 Black",
-      "description": "The most versatile GoPro ever, with 5K video, a new front display, and a larger rear touchscreen, perfect for capturing stunning footage and photos.",
-      "unit_price": 400,
-      "stock_quantity": 18,
-      "product_image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQu6wshrVP7zo1O-QAy7PK6ajUAl4f_SEVR4A&s",
-      "created_at": "17/10/2023",
+      "product_name": "Oppo Find X3 Pro",
+      "category_id": 1234567,
+      "favorite": false,
+      "description": "Oppo Find X3 Pro offers a stunning display, advanced camera features, and powerful performance, making it a top contender in the premium smartphone market.",
+      "unit_price": 1099,
+      "stock_quantity": 17,
+      "product_image": "https://cdn.tgdd.vn/Products/Images/42/232190/oppo-find-x3-pro-black-001-1-600x600.jpg",
+      "created_at": "22/11/2023",
       "updated_at": "28/12/2023"
     },
     {
       "id": 123464,
-      "product_name": "Nikon D3500",
-      "description": "An entry-level DSLR camera from Nikon, offering exceptional image quality, easy-to-use controls, and a lightweight, compact design for photographers of all levels.",
-      "unit_price": 450,
-      "stock_quantity": 14,
-      "product_image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzdhchigUEstNDXW_6fMEmFqzjp8p0H2p4Dg&s",
-      "created_at": "18/10/2023",
+      "product_name": "Motorola Edge Plus",
+      "category_id": 1234567,
+      "favorite": false,
+      "description": "Motorola Edge Plus features a curved OLED display, a powerful Snapdragon 865 processor, and a long-lasting battery for an excellent user experience.",
+      "unit_price": 999,
+      "stock_quantity": 13,
+      "product_image": "https://cdn.tgdd.vn/Products/Images/42/218356/600-motorola-edge-plus-600x600.jpg",
+      "created_at": "24/11/2023",
       "updated_at": "29/12/2023"
     },
     {
-      "product_name": "laptop",
-      "description": "werty",
-      "unit_price": "12",
-      "stock_quantity": "12",
-      "product_image": "https://firebasestorage.googleapis.com/v0/b/project-module4-react.appspot.com/o/products%2FupdateImg%2FOIP.jpg?alt=media&token=b51572bf-4937-4fde-9552-026b456a443c",
-      "created_at": "09/07/2024",
-      "updated_at": "09/07/2024",
-      "id": 123465
+      "id": 123465,
+      "product_name": "Nokia 8.3 5G",
+      "category_id": 1234567,
+      "favorite": false,
+      "description": "Nokia 8.3 5G offers a reliable and durable design, a clean Android experience, and 5G connectivity, making it a great choice for tech enthusiasts.",
+      "unit_price": 649,
+      "stock_quantity": 19,
+      "product_image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTidcc9mOk-eADEj_lF-5R_ziNCSlHOFVksCg&s",
+      "created_at": "26/11/2023",
+      "updated_at": "30/12/2023"
+    },
+    {
+      "id": 123466,
+      "product_name": "Huawei P40 Pro",
+      "category_id": 1234567,
+      "favorite": false,
+      "description": "Huawei P40 Pro features an advanced camera system, a high-performance Kirin 990 5G chipset, and a beautiful OLED display for an exceptional mobile experience.",
+      "unit_price": 899,
+      "stock_quantity": 14,
+      "product_image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSObb17Ka5ccqxRPzWcF5FJPHsOjccDP-MOvQ&s",
+      "created_at": "28/11/2023",
+      "updated_at": "31/12/2023"
+    },
+    {
+      "id": 123467,
+      "product_name": "Dell XPS 13",
+      "category_id": 1234568,
+      "favorite": false,
+      "description": "The Dell XPS 13 offers a high-resolution display, slim design, and powerful performance, making it a top choice for professionals and students.",
+      "unit_price": 999,
+      "stock_quantity": 10,
+      "product_image": "https://laptops.vn/uploads/dell-xps-13-1_1697364639.jpg",
+      "created_at": "01/01/2024",
+      "updated_at": "15/01/2024"
+    },
+    {
+      "id": 123468,
+      "product_name": "MacBook Pro",
+      "category_id": 1234568,
+      "favorite": false,
+      "description": "Apple's MacBook Pro features the latest M1 chip, a stunning Retina display, and long battery life, providing a seamless computing experience.",
+      "unit_price": 1299,
+      "stock_quantity": 8,
+      "product_image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkiiIrR8qOKd4qK2hCQx9iOqJcikWp9mYO1Q&s",
+      "created_at": "02/01/2024",
+      "updated_at": "16/01/2024"
+    },
+    {
+      "id": 123469,
+      "product_name": "HP Spectre x360",
+      "category_id": 1234568,
+      "favorite": false,
+      "description": "The HP Spectre x360 is a versatile 2-in-1 laptop with a stunning design, high-resolution display, and powerful performance for all your computing needs.",
+      "unit_price": 1099,
+      "stock_quantity": 12,
+      "product_image": "https://img-cdn.tnwcdn.com/image?fit=1280%2C720&url=https%3A%2F%2Fcdn0.tnwcdn.com%2Fwp-content%2Fblogs.dir%2F1%2Ffiles%2F2021%2F08%2FHP-Spectre-x360-14-1-of-7.jpg&signature=b273734ba382a58d403431a960fd1708",
+      "created_at": "03/01/2024",
+      "updated_at": "17/01/2024"
+    },
+    {
+      "id": 123470,
+      "product_name": "Lenovo ThinkPad X1 Carbon",
+      "category_id": 1234568,
+      "favorite": false,
+      "description": "The Lenovo ThinkPad X1 Carbon is a lightweight, durable laptop with a high-resolution display, excellent keyboard, and strong security features.",
+      "unit_price": 1399,
+      "stock_quantity": 5,
+      "product_image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCB6hZhFTGGL_exf0cE3_vtHCWpUpFyPRCJQ&s",
+      "created_at": "04/01/2024",
+      "updated_at": "18/01/2024"
+    },
+    {
+      "id": 123471,
+      "product_name": "Asus ZenBook 14",
+      "category_id": 1234568,
+      "favorite": false,
+      "description": "The Asus ZenBook 14 offers a compact design, powerful performance, and a vibrant display, making it a great choice for on-the-go productivity.",
+      "unit_price": 899,
+      "stock_quantity": 15,
+      "product_image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzbiS5UTdDFZ22AhDUNlfwtDpnMBF7RvqRbQ&s",
+      "created_at": "05/01/2024",
+      "updated_at": "19/01/2024"
+    },
+    {
+      "id": 123472,
+      "product_name": "Microsoft Surface Laptop 4",
+      "category_id": 1234568,
+      "favorite": false,
+      "description": "The Microsoft Surface Laptop 4 combines a sleek design with powerful hardware, a high-resolution touchscreen, and long battery life.",
+      "unit_price": 1199,
+      "stock_quantity": 9,
+      "product_image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkogBJ211vWiTsTq6yr9WIWHQ1xhAmPOiNhw&s",
+      "created_at": "06/01/2024",
+      "updated_at": "20/01/2024"
+    },
+    {
+      "id": 123473,
+      "product_name": "Acer Swift 3",
+      "category_id": 1234568,
+      "favorite": false,
+      "description": "The Acer Swift 3 offers great performance, a lightweight design, and a long-lasting battery at an affordable price, making it ideal for students and professionals.",
+      "unit_price": 699,
+      "stock_quantity": 20,
+      "product_image": "https://laptoptld.com/wp-content/uploads/2022/05/Laptop-Acer-Swift-3-SF314-56G-78QS-COREI5-1.jpg",
+      "created_at": "07/01/2024",
+      "updated_at": "21/01/2024"
+    },
+    {
+      "id": 123474,
+      "product_name": "Razer Blade 15",
+      "category_id": 1234568,
+      "favorite": false,
+      "description": "The Razer Blade 15 is a high-performance gaming laptop with a sleek design, powerful graphics, and a high refresh rate display for a superior gaming experience.",
+      "unit_price": 1599,
+      "stock_quantity": 7,
+      "product_image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqc0XI_ZmODZscpTnRTHqi0bWWk2OSm-hE_g&s",
+      "created_at": "08/01/2024",
+      "updated_at": "22/01/2024"
+    },
+    {
+      "id": 123475,
+      "product_name": "LG Gram 17",
+      "category_id": 1234568,
+      "favorite": false,
+      "description": "The LG Gram 17 is an ultra-lightweight laptop with a large high-resolution display, long battery life, and excellent performance for productivity on the go.",
+      "unit_price": 1299,
+      "stock_quantity": 10,
+      "product_image": "https://cdn.tgdd.vn/Products/Images/44/306795/lg-gram-2023-i7-17z90rgah78a5-thumb-600x600.jpg",
+      "created_at": "09/01/2024",
+      "updated_at": "23/01/2024"
+    },
+    {
+      "id": 123476,
+      "product_name": "MSI GS66 Stealth",
+      "category_id": 1234568,
+      "favorite": false,
+      "description": "The MSI GS66 Stealth is a powerful gaming laptop with a sleek design, high refresh rate display, and advanced cooling system for intense gaming sessions.",
+      "unit_price": 1499,
+      "stock_quantity": 6,
+      "product_image": "https://assets-prd.ignimgs.com/2021/02/10/heaven-1612974037187.jpg",
+      "created_at": "10/01/2024",
+      "updated_at": "24/01/2024"
+    },
+    {
+      "id": 123477,
+      "product_name": "Wireless Earbuds",
+      "category_id": 1234569,
+      "favorite": false,
+      "description": "High-quality wireless earbuds with noise-canceling technology and a long-lasting battery for an exceptional audio experience.",
+      "unit_price": 199,
+      "stock_quantity": 50,
+      "product_image": "https://cdn.mos.cms.futurecdn.net/iVu7tJS8kEkKJRTgerUaEm.jpg",
+      "created_at": "01/02/2024",
+      "updated_at": "15/02/2024"
+    },
+    {
+      "id": 123478,
+      "product_name": "Smartphone Case",
+      "category_id": 1234569,
+      "favorite": false,
+      "description": "Durable and stylish smartphone case that offers excellent protection against drops and scratches, available in various colors.",
+      "unit_price": 29,
+      "stock_quantity": 200,
+      "product_image": "https://www.lifewire.com/thmb/dho8VU799HYkWVWpyrG_EC4iObI=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/youmaker-the-ultimate-guardian-galaxys21-tamara-staples-07.jpg-d833f8cfbd544f0f9b9a8a102c7a6e63.jpg",
+      "created_at": "02/02/2024",
+      "updated_at": "16/02/2024"
+    },
+    {
+      "id": 123479,
+      "product_name": "Portable Charger",
+      "category_id": 1234569,
+      "favorite": false,
+      "description": "Compact and high-capacity portable charger to keep your devices powered up on the go, compatible with multiple devices.",
+      "unit_price": 49,
+      "stock_quantity": 100,
+      "product_image": "https://www.travelandleisure.com/thmb/eIzZNIMJ76dCqn8p2R_YH2JdRas=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Best-Portable-Chargers-of-2024-tout-bd0829ba3e8b404db7b89ea04d10ed9a.jpg",
+      "created_at": "03/02/2024",
+      "updated_at": "17/02/2024"
+    },
+    {
+      "id": 123480,
+      "product_name": "Bluetooth Speaker",
+      "category_id": 1234569,
+      "favorite": false,
+      "description": "Portable Bluetooth speaker with excellent sound quality, waterproof design, and long battery life, perfect for outdoor use.",
+      "unit_price": 129,
+      "stock_quantity": 75,
+      "product_image": "https://m.media-amazon.com/images/I/81Xi7TgdkTL._AC_UF894,1000_QL80_.jpg",
+      "created_at": "04/02/2024",
+      "updated_at": "18/02/2024"
+    },
+    {
+      "id": 123481,
+      "product_name": "Laptop Sleeve",
+      "category_id": 1234569,
+      "favorite": false,
+      "description": "Stylish and protective laptop sleeve made from high-quality materials, designed to fit most laptops up to 15 inches.",
+      "unit_price": 39,
+      "stock_quantity": 120,
+      "product_image": "https://i.ebayimg.com/images/g/gxwAAOSw0LxieoiT/s-l1600.jpg",
+      "created_at": "05/02/2024",
+      "updated_at": "19/02/2024"
+    },
+    {
+      "id": 123482,
+      "product_name": "USB-C Hub",
+      "category_id": 1234569,
+      "favorite": false,
+      "description": "Versatile USB-C hub with multiple ports, including HDMI, USB 3.0, and SD card reader, expanding connectivity options for your laptop.",
+      "unit_price": 59,
+      "stock_quantity": 90,
+      "product_image": "https://images-na.ssl-images-amazon.com/images/I/61hXNgy6NlL.jpg",
+      "created_at": "06/02/2024",
+      "updated_at": "20/02/2024"
+    },
+    {
+      "id": 123483,
+      "product_name": "Wireless Mouse",
+      "category_id": 1234569,
+      "favorite": false,
+      "description": "Ergonomic wireless mouse with adjustable DPI settings, long battery life, and seamless connectivity, ideal for work and gaming.",
+      "unit_price": 49,
+      "stock_quantity": 150,
+      "product_image": "https://cdn.thewirecutter.com/wp-content/media/2023/09/wirelessmouse-2048px-7423.jpg",
+      "created_at": "07/02/2024",
+      "updated_at": "21/02/2024"
+    },
+    {
+      "id": 123484,
+      "product_name": "External Hard Drive",
+      "category_id": 1234569,
+      "favorite": false,
+      "description": "High-capacity external hard drive with fast data transfer speeds, robust build quality, and encryption features for data security.",
+      "unit_price": 89,
+      "stock_quantity": 60,
+      "product_image": "https://www.sweetwater.com/sweetcare/media/2019/04/External-Hard-Drive-Hero.png",
+      "created_at": "08/02/2024",
+      "updated_at": "22/02/2024"
+    },
+    {
+      "id": 123485,
+      "product_name": "Webcam",
+      "category_id": 1234569,
+      "favorite": false,
+      "description": "High-definition webcam with built-in microphone, autofocus, and wide-angle lens, perfect for video conferencing and streaming.",
+      "unit_price": 79,
+      "stock_quantity": 85,
+      "product_image": "https://cdn.thewirecutter.com/wp-content/media/2023/09/webcams-2048px-02093.jpg?auto=webp&quality=75&crop=1.91:1&width=1200",
+      "created_at": "09/02/2024",
+      "updated_at": "23/02/2024"
+    },
+    {
+      "id": 123486,
+      "product_name": "Wireless Keyboard",
+      "category_id": 1234569,
+      "favorite": false,
+      "description": "Slim and lightweight wireless keyboard with responsive keys, long battery life, and compatibility with multiple devices.",
+      "unit_price": 69,
+      "stock_quantity": 110,
+      "product_image": "https://cdn.mos.cms.futurecdn.net/U59t6GpGjmhdUxZZawRjdC.jpg",
+      "created_at": "10/02/2024",
+      "updated_at": "24/02/2024"
     }
   ],
   "orders": [
@@ -328,6 +555,32 @@
       "product_name": "Iphone XX",
       "unit_price": 100,
       "order_quantity": 2
+    }
+  ],
+  "carts": [
+    {
+      "id": 123486,
+      "product_name": "Wireless Keyboard",
+      "category_id": 1234569,
+      "favorite": false,
+      "description": "Slim and lightweight wireless keyboard with responsive keys, long battery life, and compatibility with multiple devices.",
+      "unit_price": 69,
+      "stock_quantity": 110,
+      "product_image": "https://cdn.mos.cms.futurecdn.net/U59t6GpGjmhdUxZZawRjdC.jpg",
+      "created_at": "10/02/2024",
+      "updated_at": "24/02/2024"
+    },
+    {
+      "id": 123467,
+      "product_name": "Dell XPS 13",
+      "category_id": 1234568,
+      "favorite": false,
+      "description": "The Dell XPS 13 offers a high-resolution display, slim design, and powerful performance, making it a top choice for professionals and students.",
+      "unit_price": 999,
+      "stock_quantity": 10,
+      "product_image": "https://laptops.vn/uploads/dell-xps-13-1_1697364639.jpg",
+      "created_at": "01/01/2024",
+      "updated_at": "15/01/2024"
     }
   ]
 }

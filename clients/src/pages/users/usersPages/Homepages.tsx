@@ -7,7 +7,7 @@ import RecomendedUS from "../../../components/usersCpn/homeCpn/RecomendedUS";
 
 export default function Homepages() {
   return (
-    <>
+    <div>
       <BannerUS></BannerUS>
       <FeaturesHomeUS></FeaturesHomeUS>
       <CategoriesHomeUS></CategoriesHomeUS>
@@ -22,6 +22,6 @@ export default function Homepages() {
         </a>
       </div>
       <RecomendedUS></RecomendedUS>
-    </>
+    </div>
   );
 }

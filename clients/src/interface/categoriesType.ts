@@ -9,6 +9,7 @@ export type Category  = {
     category_name: string;
     description: string;
     status: boolean;
+    category_img:string;
     productsInfo: ProductInfo[];
   }
   

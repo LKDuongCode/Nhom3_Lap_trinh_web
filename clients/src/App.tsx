@@ -21,6 +21,7 @@ import CartsUS from "./pages/users/usersPages/CartsUS";
 import AboutUS from "./pages/users/usersPages/AboutUS";
 import SupportUS from "./pages/users/usersPages/SupportUS";
 import Homepages from "./pages/users/usersPages/Homepages";
+import WishList from "./pages/users/usersPages/WishList";
 
 export default function App() {
   return (
@@ -76,6 +77,7 @@ export default function App() {
           ></Route>
 
           <Route path="bills" element={<Bills></Bills>}></Route>
+          <Route path="wishList" element={<WishList></WishList>}></Route>
           <Route path="carts" element={<CartsUS></CartsUS>}></Route>
           <Route path="supports" element={<SupportUS></SupportUS>}></Route>
           <Route path="aboutus" element={<AboutUS></AboutUS>}></Route>

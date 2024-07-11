@@ -57,6 +57,7 @@ export default function ProductsManage() {
     unit_price: 0,
     stock_quantity: 0,
     product_image: "",
+    favorite: false,
     created_at: formatDate(new Date()),
     updated_at: formatDate(new Date()),
   });

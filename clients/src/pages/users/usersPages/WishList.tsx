@@ -1,68 +1,63 @@
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { CombineType } from "../../../interface/combineType";
-import { useEffect, useState } from "react";
 import { Product } from "../../../interface/productsType";
 import { fetchProducts } from "../../../services/products/getProducts.service";
-import { useLocation } from "react-router-dom";
-import { addAwish } from "../../../services/wishs/addAproductToWishs.service";
-import { addToCarts } from "../../../services/cart/addCarts.service";
+import { deleteAwish } from "../../../services/wishs/deleteFromWishList.service";
 
-export default function ProductList() {
-  let dispatch = useDispatch();
-  //lấy dữ liệu được truyền từ categories
-  let location = useLocation();
-  let categoryInfo = location.state;
-
+export default function WishList() {
   // lấy dữ liệu redux--------------------------------------------
+  const dispatch = useDispatch();
   let products: Product[] = useSelector((state: CombineType) => {
     return state.products.data;
   });
   useEffect(() => {
     dispatch(fetchProducts());
   }, []);
+
+  //mảng chứa các đối tượng yếu thích
+  let [favoProducts, setFavoProduct] = useState<Product[]>([]);
+  useEffect(() => {
+    if (products.length > 0) {
+      let favorites = products.filter((product) => product.favorite === true);
+      setFavoProduct(favorites);
+    }
+  }, [products]);
   // lấy dữ liệu redux-------------------------------------------------
 
-  //tạo mảng chứa các product thuộc category đó--------------------------------------------
-  let [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-
-  useEffect(() => {
-    if (products.length > 0 && categoryInfo) {
-      let matchingProducts = products.filter(
-        (product) => product.category_id === categoryInfo
-      );
-      setFilteredProducts(matchingProducts);
-    }
-  }, [products, categoryInfo]);
-  //tạo mảng chứa các product thuộc category đó--------------------------------------------
-
-  // thêm vào danh sách yêu thích-------------------------------------------------
-  const addToWishList = (id: number) => {
-    dispatch(addAwish(id));
+  //xóa sản phẩm khỏi yêu thích---------------------------------------
+  const handleDeleteFromFavorites = (id: number) => {
+    dispatch(deleteAwish(id));
   };
-  // thêm vào danh sách yêu thích-------------------------------------------------
-
-  // thêm vào giỏ hàng------------------------------------------------------
-  const handleAddToCart = (id: number) => {
-    let newCart = products.find((product: Product) => {
-      return product.id === id;
-    });
-    dispatch(addToCarts(newCart));
-  };
-
-  // thêm vào giỏ hàng------------------------------------------------------
+  //xóa sản phẩm khỏi yêu thích---------------------------------------
 
   return (
     <div>
       <div className="py-14 ">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="rounded-lg shadow-md mb-12 flex justify-between bg-white p-4 ">
-            <p className="font-manrope font-bold text-4xl text-black max-xl:text-center ">
-              Products List
+          <div className="rounded-lg shadow-md mb-12 flex justify-between  p-4 items-center bg-red-50 ">
+            <p className="font-manrope font-bold text-4xl text-red-500 flex gap-1 items-center">
+              <svg
+                className={`size-20 bg-red-400 border-2 text-red-100 border-solid rounded-full`}
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="currentColor"
+                fill="none"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                {" "}
+                <path stroke="none" d="M0 0h24v24H0z" />{" "}
+                <path d="M12 20l-7 -7a4 4 0 0 1 6.5 -6a.9 .9 0 0 0 1 0a4 4 0 0 1 6.5 6l-7 7" />
+              </svg>
+              Wist List
             </p>
             <input
               type="text"
               placeholder="Search your products..."
-              className="w-[400px] outline-none border-2 rounded-md border-stone-300 border-solid text-base p-2"
+              className="w-[400px] outline-none border-2 rounded-md text-red-500 border-red-300 border-solid text-base p-2 h-max"
             />
             <div className="flex gap-7">
               <div className="flex gap-4 items-center">
@@ -70,7 +65,7 @@ export default function ProductList() {
                 <select
                   name=""
                   id=""
-                  className="p-1 border-2 rounded-md border-stone-300 border-solid"
+                  className="p-1 border-2 rounded-md border-red-300 border-solid"
                 >
                   <option value="">Cheapest</option>
                   <option value="">The most expensive</option>
@@ -78,10 +73,10 @@ export default function ProductList() {
                   <option value="">Oldest</option>
                 </select>
               </div>
-              <div className="flex items-center justify-center p-2 border-2 rounded-md border-stone-300 border-solid">
+              <div className="flex items-center justify-center p-2 border-2 rounded-md border-red-300 border-solid h-max">
                 <div className="flex items-center gap-2">
                   <svg
-                    className="h-6 w-6 text-indigo-500"
+                    className="h-6 w-6 text-red-500"
                     width="24"
                     height="24"
                     viewBox="0 0 24 24"
@@ -106,11 +101,11 @@ export default function ProductList() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-8">
-            {filteredProducts.map((product: Product) => {
+            {favoProducts.map((product: Product) => {
               return (
                 <div
                   key={product.id}
-                  className="relative bg-cover group rounded-lg bg-center overflow-hidden border-solid border-2 border-stone-300 p-1 cursor-pointer flex justify-center items-center w-[280px]"
+                  className="relative bg-cover group rounded-lg bg-center overflow-hidden border-solid border-2 border-red-300 p-1 cursor-pointer flex justify-center items-center w-[280px]"
                 >
                   <img
                     className="h-[200px] w-full rounded"
@@ -132,12 +127,10 @@ export default function ProductList() {
                       </p>
                       <div className="flex gap-2 items-center">
                         <svg
-                          onClick={() => addToWishList(product.id)}
-                          className={`size-6 ${
-                            product.favorite
-                              ? "text-white bg-red-400"
-                              : "text-indigo-500  hover:text-white hover:bg-red-400"
-                          } border-2 border-solid rounded-full`}
+                          onClick={() => handleDeleteFromFavorites(product.id)}
+                          className={`size-6 text-indigo-500  hover:text-white hover:bg-red-400 border-2 border-solid rounded-full ${
+                            product.favorite ? "bg-red-400 text-white" : ""
+                          }`}
                           width="24"
                           height="24"
                           viewBox="0 0 24 24"
@@ -152,7 +145,6 @@ export default function ProductList() {
                           <path d="M12 20l-7 -7a4 4 0 0 1 6.5 -6a.9 .9 0 0 0 1 0a4 4 0 0 1 6.5 6l-7 7" />
                         </svg>
                         <svg
-                          onClick={() => handleAddToCart(product.id)}
                           className="h-6 w-6 text-indigo-500 border-2 border-solid  hover:text-white hover:bg-indigo-500 rounded-full "
                           fill="none"
                           viewBox="0 0 24 24"
@@ -176,7 +168,4 @@ export default function ProductList() {
       </div>
     </div>
   );
-}
-function dispatch(arg0: any) {
-  throw new Error("Function not implemented.");
 }

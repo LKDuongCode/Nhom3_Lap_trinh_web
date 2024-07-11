@@ -8,7 +8,9 @@ export default function UsersHome() {
       <HeaderUser></HeaderUser>
 
       {/* outlet---------------------------------- */}
-      <Outlet></Outlet>
+      <div className="mt-10">
+        <Outlet></Outlet>
+      </div>
       {/* outlet---------------------------------- */}
 
       <FooterUser></FooterUser>
