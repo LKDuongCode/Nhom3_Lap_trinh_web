@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { Category } from "../../../interface/categoriesType";
 import { useDispatch, useSelector } from "react-redux";
 import { CombineType } from "../../../interface/combineType";
@@ -7,6 +7,11 @@ import "../../../style/modal/addModal.scss";
 import { addToCategories } from "../../../services/categories/addCategory.service";
 import { deleteAcategory } from "../../../services/categories/deleteCategory.service";
 import { updateAcategory } from "../../../services/categories/updateCategory.service";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { storage } from "../../../config/fireBase";
+import { sortCategoriesUpToDown } from "../../../services/categories/sortCategories.service";
+import { sortCategoriesDownToUp } from "../../../services/categories/sortCategoriesDown.service";
+import { searchCategoriesByName } from "../../../services/categories/searchByName.service";
 
 export default function CategoriesManage() {
   const dispatch = useDispatch();
@@ -15,13 +20,11 @@ export default function CategoriesManage() {
   let [checkAddForm, setCheckAddForm] = useState<boolean>(false);
   let [checkUpdateForm, setCheckUpdateForm] = useState<boolean>(false);
   let [checkDelete, setCheckDelete] = useState<boolean>(false);
-  let [checkLock, setCheckLock] = useState<boolean>(false);
-  let [checkUnlock, setCheckUnlock] = useState<boolean>(false);
 
   // state quản lí mở đóng form-------------------------------------------
 
   // lấy dữ liệu redux--------------------------------------------
-  let categories: Category[] = useSelector((state: CombineType) => {
+  let categories: any = useSelector((state: CombineType) => {
     return state.categories.data;
   });
   useEffect(() => {
@@ -34,6 +37,7 @@ export default function CategoriesManage() {
   let [newCategory, setNewCategory] = useState<any>({
     category_name: "",
     description: "",
+    category_img: "",
     status: true,
     productsInfo: [],
   });
@@ -44,16 +48,66 @@ export default function CategoriesManage() {
       [name]: value,
     }));
   };
+
+  //thêm ảnh+++++++++++++++++++++++++++
+  let [image, setImage] = useState<any>();
+  let [imageUrl, setImageUrl] = useState<any>(null);
+  const handleGetImg = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value: any = e.target.files?.[0];
+    setImage(value);
+  };
+  //hàm upload
+  const uploadImg = () => {
+    //tên không được trùng.
+    const imageRef = ref(storage, `categories/${image.name}`);
+    uploadBytes(imageRef, image).then((snapShot) => {
+      getDownloadURL(snapShot.ref).then((url) => {
+        setImageUrl(url);
+      });
+    });
+  };
+  useEffect(() => {
+    if (image) {
+      uploadImg();
+    }
+  }, [image]);
+  //set lại giá trị sau khi lấy được link
+  useEffect(() => {
+    if (imageUrl !== null) {
+      setNewCategory((pre: any) => ({
+        ...pre,
+        category_img: imageUrl,
+      }));
+    }
+  }, [imageUrl]);
+  //thêm ảnh+++++++++++++++++++++++++++
+
   //nút thêm mới
   const hanleAddCategory = () => {
-    setCheckAddForm(false);
+    if (
+      newCategory.category_img === "" ||
+      newCategory.description === "" ||
+      newCategory.category_name === ""
+    ) {
+      setValidateNew(true);
+      return;
+    }
     dispatch(addToCategories(newCategory));
+    setCheckAddForm(false);
   };
   // thêm mới category------------------------------------------------------
 
   // xóa category----------------------------------------------------------------------------------------
+  let [idDeleted, setIdDeleted] = useState<number>(0);
   const handleDeleteCategory = (id: number) => {
-    dispatch(deleteAcategory(id));
+    setIdDeleted(id);
+    setCheckDelete(true);
+  };
+  const confirmDelete = () => {
+    if (idDeleted !== 0) {
+      dispatch(deleteAcategory(idDeleted));
+    }
+    setCheckDelete(false);
   };
   // xóa category----------------------------------------------------------------------------------------
 
@@ -61,6 +115,7 @@ export default function CategoriesManage() {
   let [updateCategory, setUpdateCategory] = useState<any>({
     id: 0,
     category_name: "",
+    category_img: "",
     description: "",
   });
 
@@ -71,13 +126,48 @@ export default function CategoriesManage() {
         return category.id === id;
       }
     );
-    setUpdateCategory({
-      id: curCategory?.id,
-      category_name: curCategory?.category_name,
-      description: curCategory?.description,
-    });
+    if (curCategory) {
+      setUpdateCategory({
+        id: curCategory.id,
+        category_name: curCategory.category_name,
+        description: curCategory.description,
+        category_img: curCategory.category_img,
+      });
+    }
     setCheckUpdateForm(true);
   };
+  //update ảnh
+  let [imageUpdated, setImageUpdated] = useState<any>();
+  let [imageUrlUpdated, setImageUrlUpdated] = useState<any>(null);
+
+  const handleGetImgUpdated = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value: any = e.target.files?.[0];
+    setImageUpdated(value);
+  };
+
+  const uploadImgUpdated = () => {
+    //tên không được trùng.
+    const imageRef = ref(storage, `categories/${imageUpdated.name}`);
+    uploadBytes(imageRef, imageUpdated).then((snapShot) => {
+      getDownloadURL(snapShot.ref).then((url) => {
+        setImageUrlUpdated(url);
+      });
+    });
+  };
+  useEffect(() => {
+    if (imageUpdated) {
+      uploadImgUpdated();
+    }
+  }, [imageUpdated]);
+
+  useEffect(() => {
+    if (imageUrlUpdated !== null) {
+      setUpdateCategory((pre: any) => ({
+        ...pre,
+        category_img: imageUrlUpdated,
+      }));
+    }
+  }, [imageUrlUpdated]);
 
   //hàm thay đổi input và textarea
   const handleChangeUpdate = (e: any) => {
@@ -90,16 +180,82 @@ export default function CategoriesManage() {
 
   //hàm gọi dispatch thay đổi
   const handleUpdateCategory = () => {
-    setCheckUpdateForm(false);
+    if (
+      updateCategory.category_img === "" ||
+      updateCategory.description === "" ||
+      updateCategory.category_name === ""
+    ) {
+      setValidateUp(true);
+      return;
+    }
     dispatch(updateAcategory(updateCategory));
+    setCheckUpdateForm(false);
+  };
+  //cập nhật category ----------------------------------------------------------------------------
+
+  //sắp xếp--------------------------------------------------------------
+
+  const sortCategories = (e: ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    if (value === "default") {
+      dispatch(fetchCategories());
+    } else if (value === "upToDown") {
+      dispatch(sortCategoriesUpToDown());
+    } else if (value === "downToUp") {
+      dispatch(sortCategoriesDownToUp());
+    }
+  };
+  //sắp xếp--------------------------------------------------------------
+
+  //tìm kiếm------------------------------------------------------------
+  let [searchTerm, setSearchTerm] = useState("");
+  const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
   };
 
-  //cập nhật category ----------------------------------------------------------------------------
+  useEffect(() => {
+    if (searchTerm === "") {
+      dispatch(fetchCategories());
+    } else if (searchTerm !== "") {
+      dispatch(searchCategoriesByName(searchTerm));
+    }
+  }, [searchTerm]);
+  //tìm kiếm------------------------------------------------------------
+
+  //phân trang----------------------------------------------------------
+  // const {
+  //   data: categoriesRe,
+  //   currentPage,
+  //   totalPages,
+  //   itemsPerPage,
+  // } = useSelector((state: any) => state.categories);
+
+  // useEffect(() => {
+  //   dispatch(fetchCategoriesPage(currentPage));
+  // }, [dispatch, currentPage]);
+
+  // const handlePageClick = (selectedPage: { selected: number }) => {
+  //   const pageNumber = selectedPage.selected + 1;
+  //   dispatch(fetchCategoriesPage(pageNumber));
+  // };
+
+  // const handleItemsPerPageChange = (
+  //   e: React.ChangeEvent<HTMLSelectElement>
+  // ) => {
+  //   const itemsPerPage = Number(e.target.value);
+  //   dispatch(setItemsPerPage(itemsPerPage));
+  //   dispatch(fetchCategoriesPage(1)); // Re-fetch the first page with the new items per page
+  // };
+
+  //phân trang----------------------------------------------------------
+
+  let [validateNew, setValidateNew] = useState<boolean>(false);
+  let [validateUp, setValidateUp] = useState<boolean>(false);
   return (
     <>
       <section className="rounded-md  bg-white py-4 shadow-default mt-24 px-5 border-spacing-2 border-stone-300 border-solid mx-5 ">
         <div className=" font-semibold bg-indigo-500 px-5 pt-5 rounded-t-md text-white flex justify-between items-center py-5">
-          <h2>Users Management</h2>
+          <h2>Categories Management</h2>
           <button
             className="
         border-none
@@ -140,20 +296,34 @@ export default function CategoriesManage() {
               type="text"
               className="w-full rounded-md border border-stone-300 border-solid px-5 py-3 outline-none focus:border-blue-500 dark:border-stone-300 text-base font-medium"
               placeholder="Search..."
-              defaultValue=""
+              value={searchTerm}
+              onChange={handleSearch}
             />
           </div>
 
           <div className="flex items-center font-medium">
             <p className=" mr-2 pl-2 text-white dark:text-white">Sort By</p>
-            <select className="bg-indigo-400 pl-2 border-none outline-none font-medium text-base text-stone-100">
-              <option className="text-black bg-slate-100">Username</option>
-              <option className="text-black bg-slate-100">Username</option>
-              <option className="text-black bg-slate-100">Username</option>
+            <select
+              onChange={sortCategories}
+              className="bg-indigo-400 pl-2 border-none outline-none font-medium text-base text-stone-100"
+            >
+              <option className="text-black bg-slate-100" value={"default"}>
+                Default
+              </option>
+              <option className="text-black bg-slate-100" value={"upToDown"}>
+                Name Up-Down
+              </option>
+              <option className="text-black bg-slate-100" value={"downToUp"}>
+                Name Down-Up
+              </option>
             </select>
           </div>
           <div className="flex items-center font-medium">
-            <select className="bg-transparent pl-2 border-none outline-none font-medium text-base text-stone-100">
+            <select
+              className="bg-transparent pl-2 border-none outline-none font-medium text-base text-stone-100"
+              // onChange={handleItemsPerPageChange}
+              // value={itemsPerPage}
+            >
               <option className="text-black" value={5}>
                 5
               </option>
@@ -241,42 +411,6 @@ export default function CategoriesManage() {
 
                   <td className=" text-gray-900  px-6 py-4 whitespace-nowrap">
                     <button
-                      className="
-                border-2
-                border-orange-400
-                border-solid
-                rounded-2xl
-                bg-transparent
-                h-max
-                mr-2
-                px-3
-                py-1
-                hover:text-white
-                hover:bg-orange-100
-              "
-                    >
-                      <svg
-                        className="size-4 text-orange-500 "
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      >
-                        {" "}
-                        <rect
-                          x="3"
-                          y="11"
-                          width="18"
-                          height="11"
-                          rx="2"
-                          ry="2"
-                        />{" "}
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                      </svg>
-                    </button>
-                    <button
                       onClick={() => handleGetACategory(category.id)}
                       className="
                 border-2
@@ -346,6 +480,14 @@ export default function CategoriesManage() {
         </table>
 
         {/* footer --------------------------------------------------------------*/}
+        {/* <ReactPaginate
+          pageCount={totalPages}
+          pageRangeDisplayed={5}
+          marginPagesDisplayed={2}
+          onPageChange={handlePageClick}
+          containerClassName={"pagination"}
+          activeClassName={"active"}
+        /> */}
         <div className="flex justify-between   px-8 pt-5">
           <p className="font-medium text-gray-600">Showing 1 0f 3 pages</p>
           <div className="flex">
@@ -433,17 +575,43 @@ export default function CategoriesManage() {
                     placeholder="Name of category..."
                   />
                 </div>
-                <div>
-                  <label className="block mb-2  font-medium text-gray-900 dark:text-white">
-                    Description
-                  </label>
-                  <textarea
-                    name="description"
-                    onChange={handleCreateCategory}
-                    className="bg-gray-50 border border-gray-300 border-solid text-gray-900 rounded-lg  focus:border-blue-600 block w-full p-2.5 outline-none min-h-32"
-                    placeholder="Write some description...."
-                  ></textarea>
+                <div className="grid grid-cols-3 gap-5">
+                  <div className="col-span-2">
+                    <label className="block mb-2  font-medium text-gray-900 dark:text-white">
+                      Description
+                    </label>
+                    <textarea
+                      name="description"
+                      onChange={handleCreateCategory}
+                      className="bg-gray-50 border border-gray-300 border-solid text-gray-900 rounded-lg  focus:border-blue-600 block w-full p-2.5 outline-none min-h-32"
+                      placeholder="Write some description...."
+                    ></textarea>
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="img-category"
+                      className="bg-indigo-500 text-white px-5 py-1 rounded cursor-pointer"
+                    >
+                      Add image
+                    </label>
+                    <input
+                      type="file"
+                      onChange={handleGetImg}
+                      id="img-category"
+                      className="hidden"
+                    />
+                    <img
+                      src={imageUrl !== null ? newCategory.category_img : ""}
+                      alt=""
+                      className="w-52 h-28 mt-4 rounded"
+                    />
+                  </div>
                 </div>
+                {validateNew && (
+                  <p className="text-red-500 font-medium text-sm bg-red-100 px-2">
+                    Fields cannot be empty !
+                  </p>
+                )}
 
                 <button
                   onClick={hanleAddCategory}
@@ -499,18 +667,44 @@ export default function CategoriesManage() {
                     placeholder="Name of category..."
                   />
                 </div>
-                <div>
-                  <label className="block mb-2  font-medium text-gray-900 dark:text-white">
-                    Description
-                  </label>
-                  <textarea
-                    onChange={handleChangeUpdate}
-                    value={updateCategory.description}
-                    name="description"
-                    className="bg-gray-50 border border-gray-300 border-solid text-gray-900 rounded-lg  focus:border-blue-600 block w-full p-2.5 outline-none min-h-32"
-                    placeholder="Write some description...."
-                  ></textarea>
+                <div className="grid grid-cols-3 gap-5">
+                  <div className="col-span-2">
+                    <label className="block mb-2  font-medium text-gray-900 dark:text-white">
+                      Description
+                    </label>
+                    <textarea
+                      name="description"
+                      value={updateCategory.description}
+                      onChange={handleChangeUpdate}
+                      className="bg-gray-50 border border-gray-300 border-solid text-gray-900 rounded-lg  focus:border-blue-600 block w-full p-2.5 outline-none min-h-32"
+                      placeholder="Write some description...."
+                    ></textarea>
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="img-category-up"
+                      className="bg-green-500 text-white px-5 py-1 rounded cursor-pointer"
+                    >
+                      Update image
+                    </label>
+                    <input
+                      type="file"
+                      onChange={handleGetImgUpdated}
+                      id="img-category-up"
+                      className="hidden"
+                    />
+                    <img
+                      src={updateCategory.category_img}
+                      alt=""
+                      className="w-52 h-28 mt-4 rounded"
+                    />
+                  </div>
                 </div>
+                {validateUp && (
+                  <p className="text-red-500 font-medium text-sm bg-red-100 px-2">
+                    Fields cannot be empty !
+                  </p>
+                )}
 
                 <button
                   className="w-full text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:bg-green-500 font-medium rounded-lg  px-5 py-2.5 text-center border-transparent"
@@ -596,9 +790,7 @@ export default function CategoriesManage() {
                     <button
                       type="button"
                       className=" border-none inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2  font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
-                      onClick={() => {
-                        setCheckDelete(false);
-                      }}
+                      onClick={confirmDelete}
                     >
                       Delete
                     </button>
@@ -607,203 +799,6 @@ export default function CategoriesManage() {
                       className=" border-none mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2  font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
                       onClick={() => {
                         setCheckDelete(false);
-                      }}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      {/* lock modal */}
-      {checkLock && (
-        <div className="z-[0]">
-          <div
-            className={`relative ${checkLock ? "z-[1]" : "z-[-1]"}`}
-            aria-labelledby="modal-title"
-            role="dialog"
-            aria-modal="true"
-          >
-            <div
-              className={`fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity ${
-                checkLock
-                  ? "ease-out duration-300 opacity-100 "
-                  : "ease-in duration-200 opacity-0"
-              } `}
-            ></div>
-
-            <div
-              className={`fixed inset-0 z-10 w-screen overflow-y-auto  ${
-                checkLock
-                  ? "ease-out duration-300 opacity-100 "
-                  : "ease-in duration-200 opacity-0 "
-              }`}
-            >
-              <div
-                className={`flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0 ${
-                  checkLock
-                    ? "ease-out duration-300  translate-y-0 sm:scale-100 "
-                    : "ease-in duration-200  translate-y-4 sm:translate-y-0 sm:scale-95 "
-                }`}
-              >
-                <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-                  <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-                    <div className="sm:flex sm:items-start">
-                      <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-amber-100 sm:mx-0 sm:h-10 sm:w-10">
-                        <svg
-                          className="h-6 w-6 text-amber-500"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth={2}
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          {" "}
-                          <rect
-                            x={3}
-                            y={11}
-                            width={18}
-                            height={11}
-                            rx={2}
-                            ry={2}
-                          />{" "}
-                          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                        </svg>
-                      </div>
-                      <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                        <h3
-                          className="text-base font-semibold leading-6 text-gray-900"
-                          id="modal-title"
-                        >
-                          Warning
-                        </h3>
-                        <div className="mt-2">
-                          <p className=" text-gray-500">
-                            Are you sure you want to lock? This user will be
-                            block. You can unlock if click lock button.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                    <button
-                      type="button"
-                      className=" border-none inline-flex w-full justify-center rounded-md bg-amber-600 px-3 py-2  font-semibold text-white shadow-sm hover:bg-amber-500 sm:ml-3 sm:w-auto"
-                      onClick={() => {
-                        setCheckLock(false);
-                      }}
-                    >
-                      Lock
-                    </button>
-                    <button
-                      type="button"
-                      className=" border-none mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2  font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                      onClick={() => {
-                        setCheckLock(false);
-                      }}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      {/* unlock modal */}
-      {checkUnlock && (
-        <div className="z-[0]">
-          <div
-            className={`relative ${checkUnlock ? "z-[1]" : "z-[-1]"}`}
-            aria-labelledby="modal-title"
-            role="dialog"
-            aria-modal="true"
-          >
-            <div
-              className={`fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity ${
-                checkUnlock
-                  ? "ease-out duration-300 opacity-100 "
-                  : "ease-in duration-200 opacity-0"
-              } `}
-            ></div>
-
-            <div
-              className={`fixed inset-0 z-10 w-screen overflow-y-auto  ${
-                checkUnlock
-                  ? "ease-out duration-300 opacity-100 "
-                  : "ease-in duration-200 opacity-0 "
-              }`}
-            >
-              <div
-                className={`flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0 ${
-                  checkUnlock
-                    ? "ease-out duration-300  translate-y-0 sm:scale-100 "
-                    : "ease-in duration-200  translate-y-4 sm:translate-y-0 sm:scale-95 "
-                }`}
-              >
-                <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-                  <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-                    <div className="sm:flex sm:items-start">
-                      <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-amber-100 sm:mx-0 sm:h-10 sm:w-10">
-                        <svg
-                          className="h-6 w-6 text-amber-500"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        >
-                          {" "}
-                          <rect
-                            x="3"
-                            y="11"
-                            width="18"
-                            height="11"
-                            rx="2"
-                            ry="2"
-                          />{" "}
-                          <path d="M7 11V7a5 5 0 0 1 9.9-1" />
-                        </svg>
-                      </div>
-                      <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                        <h3
-                          className="text-base font-semibold leading-6 text-gray-900"
-                          id="modal-title"
-                        >
-                          Warning
-                        </h3>
-                        <div className="mt-2">
-                          <p className=" text-gray-500">
-                            Are you sure you want to unlock this account? This
-                            user will be unlock. You can lock if click lock
-                            button.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                    <button
-                      type="button"
-                      className=" border-none inline-flex w-full justify-center rounded-md bg-amber-600 px-3 py-2  font-semibold text-white shadow-sm hover:bg-amber-500 sm:ml-3 sm:w-auto"
-                      onClick={() => {
-                        setCheckUnlock(false);
-                      }}
-                    >
-                      Unlock
-                    </button>
-                    <button
-                      type="button"
-                      className=" border-none mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2  font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                      onClick={() => {
-                        setCheckUnlock(false);
                       }}
                     >
                       Cancel

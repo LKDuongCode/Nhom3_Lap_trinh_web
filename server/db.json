@@ -7,8 +7,10 @@
       "password": "123456",
       "role": true,
       "status": true,
+      "favorites": [],
+      "carts": [],
       "full_name": "David Begie Lee",
-      "avata": "",
+      "avata": "https://t4.ftcdn.net/jpg/03/83/25/83/360_F_383258331_D8imaEMl8Q3lf7EKU2Pi78Cn0R7KkW9o.jpg",
       "phone": "0869257506",
       "address": "Ohayo street 1",
       "created_at": "10/10/2023",
@@ -16,17 +18,27 @@
     },
     {
       "id": 12345679,
-      "user_name": "JohnDoe",
+      "user_name": "JohnDo",
       "email": "johnDoe@gmail.com",
       "password": "abcdef",
       "role": false,
       "status": true,
-      "full_name": "John Doe",
-      "avata": "",
+      "favorites": [
+        123468,
+        123470,
+        123461,
+        123466
+      ],
+      "carts": [
+        123457,
+        123458
+      ],
+      "full_name": "John Do",
+      "avata": "https://firebasestorage.googleapis.com/v0/b/project-module4-react.appspot.com/o/users%2FScreenshot%202024-04-07%20111922.png?alt=media&token=3b870294-28ee-4c05-ba74-4bf32711036d",
       "phone": "0869257507",
-      "address": "Maple street 2",
+      "address": "United States",
       "created_at": "11/10/2023",
-      "updated_at": "22/12/2023"
+      "updated_at": "16/07/2024"
     },
     {
       "id": 12345680,
@@ -35,8 +47,10 @@
       "password": "ghijkl",
       "role": false,
       "status": true,
+      "favorites": [],
+      "carts": [],
       "full_name": "Jane Smith",
-      "avata": "",
+      "avata": "https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg",
       "phone": "0869257508",
       "address": "Pine street 3",
       "created_at": "12/10/2023",
@@ -49,8 +63,10 @@
       "password": "mnopqr",
       "role": false,
       "status": true,
+      "favorites": [],
+      "carts": [],
       "full_name": "Alice Johnson",
-      "avata": "",
+      "avata": "https://images.pexels.com/photos/837358/pexels-photo-837358.jpeg?cs=srgb&dl=pexels-olly-837358.jpg&fm=jpg",
       "phone": "0869257509",
       "address": "Birch street 4",
       "created_at": "13/10/2023",
@@ -63,8 +79,10 @@
       "password": "stuvwx",
       "role": false,
       "status": true,
+      "favorites": [],
+      "carts": [],
       "full_name": "Bob Brown",
-      "avata": "",
+      "avata": "https://static.vecteezy.com/system/resources/thumbnails/004/834/925/small_2x/multiracial-group-of-young-people-taking-selfie-photo.jpg",
       "phone": "0869257510",
       "address": "Oak street 5",
       "created_at": "14/10/2023",
@@ -77,8 +95,10 @@
       "password": "yzabcd",
       "role": false,
       "status": true,
+      "favorites": [],
+      "carts": [],
       "full_name": "Charlie Davis",
-      "avata": "",
+      "avata": "https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg?cs=srgb&dl=pexels-stefanstefancik-91227.jpg&fm=jpg",
       "phone": "0869257511",
       "address": "Elm street 6",
       "created_at": "15/10/2023",
@@ -90,63 +110,83 @@
       "password": "1234567",
       "role": false,
       "status": true,
+      "favorites": [
+        123467
+      ],
+      "carts": [
+        123458,
+        123468,
+        123478
+      ],
       "full_name": "Lê Dương",
-      "avatar": "https://vectorified.com/images/unknown-avatar-icon-6.jpg",
+      "avata": "https://cdn.pixabay.com/photo/2014/07/08/10/47/team-386673_640.jpg",
       "phone": "0987654321",
       "address": "Miền Nam",
-      "created_at": "",
-      "updated_at": "",
+      "created_at": "10/10/2000",
+      "updated_at": "12/2/2023",
       "id": 12345684
     },
     {
-      "user_name": "dung",
-      "email": "admin@gmail.com",
-      "password": "1234567",
-      "role": false,
-      "status": true,
-      "full_name": "Lê Dương",
-      "avatar": "https://vectorified.com/images/unknown-avatar-icon-6.jpg",
-      "phone": "0987654321",
-      "address": "Miền Nam",
-      "created_at": "",
-      "updated_at": "",
-      "id": 12345685
-    },
-    {
-      "user_name": "hoang",
-      "email": "duong123@gmail.com",
-      "password": "12345678",
+      "user_name": "hoang dz",
+      "email": "Maivannam2x@gmail.com",
+      "password": "duong123@",
       "role": false,
       "status": true,
       "full_name": "hoang",
-      "avatar": "https://vectorified.com/images/unknown-avatar-icon-6.jpg",
+      "avata": "https://firebasestorage.googleapis.com/v0/b/project-module4-react.appspot.com/o/users%2Fz5633329412551_82739edb93c5b7a0f64dedc0bc8cbf85.jpg?alt=media&token=53bbf300-8098-4a59-9982-20dc380d159a",
       "phone": "0987654321",
-      "address": "Miền Nam",
-      "created_at": "Mon Jul 08 2024",
-      "updated_at": "",
+      "address": "Italy",
+      "favorites": [],
+      "carts": [
+        123486
+      ],
+      "created_at": "15/07/2024",
+      "updated_at": "15/07/2024",
       "id": 12345686
     },
     {
       "user_name": "newAcc",
-      "email": "tran@gmail.com",
-      "password": "123",
+      "email": "duonglee@gmail.com",
+      "password": "123456",
+      "role": false,
+      "carts": [
+        123469
+      ],
+      "favorites": [],
+      "status": true,
+      "full_name": "duong lee",
+      "avata": "https://vectorified.com/images/unknown-avatar-icon-6.jpg",
+      "phone": "0869257506",
+      "address": "unknow",
+      "created_at": "Tue Jul 16 2024",
+      "updated_at": "16/07/2024",
+      "id": 12345687
+    },
+    {
+      "user_name": "david",
+      "email": "d123@gmail.com",
+      "password": "duong123@",
       "role": false,
       "status": true,
-      "full_name": "newAcc fullname",
-      "avatar": "https://vectorified.com/images/unknown-avatar-icon-6.jpg",
-      "phone": "unknow",
-      "address": "unknow",
-      "created_at": "Wed Jul 10 2024",
-      "updated_at": "",
-      "id": 12345687
+      "full_name": "David ngo",
+      "avata": "https://vectorified.com/images/unknown-avatar-icon-6.jpg",
+      "phone": "0987654321",
+      "address": "China",
+      "favorites": [],
+      "carts": [],
+      "created_at": "16/07/2024",
+      "updated_at": "16/07/2024",
+      "id": 12345688
     }
   ],
   "categories": [
     {
       "id": 1234567,
       "category_name": "SmartPhone",
-      "description": "This is the category of smartphones, including a variety of models from different brands known for their advanced features and sleek designs.",
+      "description": "This is the category of smartphones, including a variety of models from different brands known for their advanced features and sleek design123",
       "status": true,
+      "favorites": [],
+      "carts": [],
       "category_img": "https://cdn.24h.com.vn/upload/2-2024/images/2024-06-09/1-1717894093-34-width740height495.jpg"
     },
     {
@@ -154,6 +194,8 @@
       "category_name": "Laptop",
       "description": "This category includes a wide range of laptops, from ultra-portables to high-performance gaming laptops, designed to meet various computing needs.",
       "status": true,
+      "favorites": [],
+      "carts": [],
       "category_img": "https://tiki.vn/blog/wp-content/uploads/2023/08/laptop-cho-sinh-vien-gia-tot.jpg"
     },
     {
@@ -161,7 +203,33 @@
       "category_name": "Accessories",
       "description": "The accessories category features a selection of accessories known for their portability, versatility, and ease of use, suitable for both entertainment and productivity.",
       "status": true,
+      "favorites": [],
+      "carts": [],
       "category_img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeIyy9HB1sa_bi5BTyyyfvolrnctvS9wI9uw&s"
+    },
+    {
+      "category_name": "Pc6",
+      "description": "12343457",
+      "category_img": "https://firebasestorage.googleapis.com/v0/b/project-module4-react.appspot.com/o/categories%2Fz5633329412551_82739edb93c5b7a0f64dedc0bc8cbf85.jpg?alt=media&token=c8e73d44-108a-423f-b148-59f234ef11b6",
+      "status": true,
+      "productsInfo": [],
+      "id": 1234570
+    },
+    {
+      "category_name": "werty5",
+      "description": "cân 5",
+      "category_img": "https://firebasestorage.googleapis.com/v0/b/project-module4-react.appspot.com/o/categories%2Fmeme.png?alt=media&token=ec1b93aa-8692-4e35-8d6a-a7309e48dc2d",
+      "status": true,
+      "productsInfo": [],
+      "id": 1234571
+    },
+    {
+      "category_name": "TV",
+      "description": "123",
+      "category_img": "https://firebasestorage.googleapis.com/v0/b/project-module4-react.appspot.com/o/categories%2Fbackgroud-%20for-vscode1.jpg?alt=media&token=b37ae84c-f80b-4ac6-9979-e37173ca0e02",
+      "status": true,
+      "productsInfo": [],
+      "id": 1234572
     }
   ],
   "products": [
@@ -169,7 +237,6 @@
       "id": 123457,
       "product_name": "iPhone X",
       "category_id": 1234567,
-      "favorite": false,
       "description": "Apple's iPhone X features a stunning OLED display, Face ID, and a powerful A11 Bionic chip, offering a premium smartphone experience.",
       "unit_price": 999,
       "stock_quantity": 15,
@@ -181,7 +248,6 @@
       "id": 123458,
       "product_name": "Samsung Galaxy S21",
       "category_id": 1234567,
-      "favorite": false,
       "description": "Samsung Galaxy S21 comes with a high-resolution display, advanced camera features, and a sleek design, making it a top choice for smartphone enthusiasts.",
       "unit_price": 799,
       "stock_quantity": 20,
@@ -193,7 +259,6 @@
       "id": 123459,
       "product_name": "Google Pixel 6",
       "category_id": 1234567,
-      "favorite": false,
       "description": "The Google Pixel 6 features a unique design, Google's own Tensor chip, and an outstanding camera system for excellent photo and video quality.",
       "unit_price": 699,
       "stock_quantity": 25,
@@ -205,7 +270,6 @@
       "id": 123460,
       "product_name": "OnePlus 9",
       "category_id": 1234567,
-      "favorite": true,
       "description": "OnePlus 9 offers a fast and smooth performance with its Snapdragon 888 processor, 120Hz Fluid AMOLED display, and Hasselblad camera partnership.",
       "unit_price": 729,
       "stock_quantity": 18,
@@ -217,7 +281,6 @@
       "id": 123461,
       "product_name": "Sony Xperia 1 III",
       "category_id": 1234567,
-      "favorite": false,
       "description": "Sony Xperia 1 III delivers an impressive 4K HDR OLED display, a versatile camera system, and high-performance hardware for media enthusiasts.",
       "unit_price": 1299,
       "stock_quantity": 12,
@@ -229,7 +292,6 @@
       "id": 123462,
       "product_name": "Xiaomi Mi 11",
       "category_id": 1234567,
-      "favorite": true,
       "description": "Xiaomi Mi 11 combines flagship performance with a stunning AMOLED display, excellent camera capabilities, and fast charging technology.",
       "unit_price": 749,
       "stock_quantity": 22,
@@ -241,7 +303,6 @@
       "id": 123463,
       "product_name": "Oppo Find X3 Pro",
       "category_id": 1234567,
-      "favorite": false,
       "description": "Oppo Find X3 Pro offers a stunning display, advanced camera features, and powerful performance, making it a top contender in the premium smartphone market.",
       "unit_price": 1099,
       "stock_quantity": 17,
@@ -253,7 +314,6 @@
       "id": 123464,
       "product_name": "Motorola Edge Plus",
       "category_id": 1234567,
-      "favorite": false,
       "description": "Motorola Edge Plus features a curved OLED display, a powerful Snapdragon 865 processor, and a long-lasting battery for an excellent user experience.",
       "unit_price": 999,
       "stock_quantity": 13,
@@ -265,7 +325,6 @@
       "id": 123465,
       "product_name": "Nokia 8.3 5G",
       "category_id": 1234567,
-      "favorite": false,
       "description": "Nokia 8.3 5G offers a reliable and durable design, a clean Android experience, and 5G connectivity, making it a great choice for tech enthusiasts.",
       "unit_price": 649,
       "stock_quantity": 19,
@@ -277,7 +336,6 @@
       "id": 123466,
       "product_name": "Huawei P40 Pro",
       "category_id": 1234567,
-      "favorite": false,
       "description": "Huawei P40 Pro features an advanced camera system, a high-performance Kirin 990 5G chipset, and a beautiful OLED display for an exceptional mobile experience.",
       "unit_price": 899,
       "stock_quantity": 14,
@@ -289,7 +347,6 @@
       "id": 123467,
       "product_name": "Dell XPS 13",
       "category_id": 1234568,
-      "favorite": false,
       "description": "The Dell XPS 13 offers a high-resolution display, slim design, and powerful performance, making it a top choice for professionals and students.",
       "unit_price": 999,
       "stock_quantity": 10,
@@ -301,19 +358,18 @@
       "id": 123468,
       "product_name": "MacBook Pro",
       "category_id": 1234568,
-      "favorite": false,
       "description": "Apple's MacBook Pro features the latest M1 chip, a stunning Retina display, and long battery life, providing a seamless computing experience.",
       "unit_price": 1299,
       "stock_quantity": 8,
       "product_image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkiiIrR8qOKd4qK2hCQx9iOqJcikWp9mYO1Q&s",
       "created_at": "02/01/2024",
-      "updated_at": "16/01/2024"
+      "updated_at": "16/01/2024",
+      "favorite": false
     },
     {
       "id": 123469,
       "product_name": "HP Spectre x360",
       "category_id": 1234568,
-      "favorite": false,
       "description": "The HP Spectre x360 is a versatile 2-in-1 laptop with a stunning design, high-resolution display, and powerful performance for all your computing needs.",
       "unit_price": 1099,
       "stock_quantity": 12,
@@ -325,7 +381,6 @@
       "id": 123470,
       "product_name": "Lenovo ThinkPad X1 Carbon",
       "category_id": 1234568,
-      "favorite": false,
       "description": "The Lenovo ThinkPad X1 Carbon is a lightweight, durable laptop with a high-resolution display, excellent keyboard, and strong security features.",
       "unit_price": 1399,
       "stock_quantity": 5,
@@ -337,7 +392,6 @@
       "id": 123471,
       "product_name": "Asus ZenBook 14",
       "category_id": 1234568,
-      "favorite": false,
       "description": "The Asus ZenBook 14 offers a compact design, powerful performance, and a vibrant display, making it a great choice for on-the-go productivity.",
       "unit_price": 899,
       "stock_quantity": 15,
@@ -349,7 +403,6 @@
       "id": 123472,
       "product_name": "Microsoft Surface Laptop 4",
       "category_id": 1234568,
-      "favorite": false,
       "description": "The Microsoft Surface Laptop 4 combines a sleek design with powerful hardware, a high-resolution touchscreen, and long battery life.",
       "unit_price": 1199,
       "stock_quantity": 9,
@@ -361,7 +414,6 @@
       "id": 123473,
       "product_name": "Acer Swift 3",
       "category_id": 1234568,
-      "favorite": false,
       "description": "The Acer Swift 3 offers great performance, a lightweight design, and a long-lasting battery at an affordable price, making it ideal for students and professionals.",
       "unit_price": 699,
       "stock_quantity": 20,
@@ -373,7 +425,6 @@
       "id": 123474,
       "product_name": "Razer Blade 15",
       "category_id": 1234568,
-      "favorite": false,
       "description": "The Razer Blade 15 is a high-performance gaming laptop with a sleek design, powerful graphics, and a high refresh rate display for a superior gaming experience.",
       "unit_price": 1599,
       "stock_quantity": 7,
@@ -385,7 +436,6 @@
       "id": 123475,
       "product_name": "LG Gram 17",
       "category_id": 1234568,
-      "favorite": false,
       "description": "The LG Gram 17 is an ultra-lightweight laptop with a large high-resolution display, long battery life, and excellent performance for productivity on the go.",
       "unit_price": 1299,
       "stock_quantity": 10,
@@ -397,7 +447,6 @@
       "id": 123476,
       "product_name": "MSI GS66 Stealth",
       "category_id": 1234568,
-      "favorite": false,
       "description": "The MSI GS66 Stealth is a powerful gaming laptop with a sleek design, high refresh rate display, and advanced cooling system for intense gaming sessions.",
       "unit_price": 1499,
       "stock_quantity": 6,
@@ -409,7 +458,6 @@
       "id": 123477,
       "product_name": "Wireless Earbuds",
       "category_id": 1234569,
-      "favorite": false,
       "description": "High-quality wireless earbuds with noise-canceling technology and a long-lasting battery for an exceptional audio experience.",
       "unit_price": 199,
       "stock_quantity": 50,
@@ -421,7 +469,6 @@
       "id": 123478,
       "product_name": "Smartphone Case",
       "category_id": 1234569,
-      "favorite": false,
       "description": "Durable and stylish smartphone case that offers excellent protection against drops and scratches, available in various colors.",
       "unit_price": 29,
       "stock_quantity": 200,
@@ -433,7 +480,6 @@
       "id": 123479,
       "product_name": "Portable Charger",
       "category_id": 1234569,
-      "favorite": false,
       "description": "Compact and high-capacity portable charger to keep your devices powered up on the go, compatible with multiple devices.",
       "unit_price": 49,
       "stock_quantity": 100,
@@ -445,7 +491,6 @@
       "id": 123480,
       "product_name": "Bluetooth Speaker",
       "category_id": 1234569,
-      "favorite": false,
       "description": "Portable Bluetooth speaker with excellent sound quality, waterproof design, and long battery life, perfect for outdoor use.",
       "unit_price": 129,
       "stock_quantity": 75,
@@ -457,7 +502,6 @@
       "id": 123481,
       "product_name": "Laptop Sleeve",
       "category_id": 1234569,
-      "favorite": false,
       "description": "Stylish and protective laptop sleeve made from high-quality materials, designed to fit most laptops up to 15 inches.",
       "unit_price": 39,
       "stock_quantity": 120,
@@ -469,7 +513,6 @@
       "id": 123482,
       "product_name": "USB-C Hub",
       "category_id": 1234569,
-      "favorite": false,
       "description": "Versatile USB-C hub with multiple ports, including HDMI, USB 3.0, and SD card reader, expanding connectivity options for your laptop.",
       "unit_price": 59,
       "stock_quantity": 90,
@@ -481,7 +524,6 @@
       "id": 123483,
       "product_name": "Wireless Mouse",
       "category_id": 1234569,
-      "favorite": false,
       "description": "Ergonomic wireless mouse with adjustable DPI settings, long battery life, and seamless connectivity, ideal for work and gaming.",
       "unit_price": 49,
       "stock_quantity": 150,
@@ -493,7 +535,6 @@
       "id": 123484,
       "product_name": "External Hard Drive",
       "category_id": 1234569,
-      "favorite": false,
       "description": "High-capacity external hard drive with fast data transfer speeds, robust build quality, and encryption features for data security.",
       "unit_price": 89,
       "stock_quantity": 60,
@@ -505,7 +546,6 @@
       "id": 123485,
       "product_name": "Webcam",
       "category_id": 1234569,
-      "favorite": false,
       "description": "High-definition webcam with built-in microphone, autofocus, and wide-angle lens, perfect for video conferencing and streaming.",
       "unit_price": 79,
       "stock_quantity": 85,
@@ -517,70 +557,129 @@
       "id": 123486,
       "product_name": "Wireless Keyboard",
       "category_id": 1234569,
-      "favorite": false,
       "description": "Slim and lightweight wireless keyboard with responsive keys, long battery life, and compatibility with multiple devices.",
-      "unit_price": 69,
+      "unit_price": 70,
       "stock_quantity": 110,
       "product_image": "https://cdn.mos.cms.futurecdn.net/U59t6GpGjmhdUxZZawRjdC.jpg",
       "created_at": "10/02/2024",
       "updated_at": "24/02/2024"
     }
   ],
-  "orders": [
+  "bills": [
     {
-      "order_id": 12345,
-      "serial_number": 12345678910,
-      "id": 12345678,
-      "order_at": "12/6/2024",
-      "total_price": 200,
-      "order_status": 4,
-      "order_note": "this is very good for you",
-      "order_details": [
+      "id": 9876543210,
+      "user_id": 12345679,
+      "full_name": "John Doe",
+      "address": "Viet Nam",
+      "detailAddress": "Apt 4B",
+      "email": "johndoe@example.com",
+      "user_name": "johndoe",
+      "phone": "12345678901",
+      "created_at": "12/06/2024",
+      "productIn": [
         {
-          "order_detail_id": 1234,
-          "id": 123456
+          "name": "X phone",
+          "totalTemp": 50,
+          "price": 25
+        },
+        {
+          "name": "Z-lap",
+          "totalTemp": 75,
+          "price": 25
+        },
+        {
+          "name": "GG-gaming",
+          "totalTemp": 100,
+          "price": 50
         }
       ],
-      "receive_name": "Duong",
-      "receive_address": "New Yek ,USS",
-      "receive_phone": "0345350131",
-      "created_at": "10/10/2023",
-      "updated_at": "21/12/2023"
-    }
-  ],
-  "order_detail": [
-    {
-      "order_detail_id": 1234,
-      "id": 123456,
-      "product_name": "Iphone XX",
-      "unit_price": 100,
-      "order_quantity": 2
-    }
-  ],
-  "carts": [
-    {
-      "id": 123486,
-      "product_name": "Wireless Keyboard",
-      "category_id": 1234569,
-      "favorite": false,
-      "description": "Slim and lightweight wireless keyboard with responsive keys, long battery life, and compatibility with multiple devices.",
-      "unit_price": 69,
-      "stock_quantity": 110,
-      "product_image": "https://cdn.mos.cms.futurecdn.net/U59t6GpGjmhdUxZZawRjdC.jpg",
-      "created_at": "10/02/2024",
-      "updated_at": "24/02/2024"
+      "total_price": 225
     },
     {
-      "id": 123467,
-      "product_name": "Dell XPS 13",
-      "category_id": 1234568,
-      "favorite": false,
-      "description": "The Dell XPS 13 offers a high-resolution display, slim design, and powerful performance, making it a top choice for professionals and students.",
-      "unit_price": 999,
-      "stock_quantity": 10,
-      "product_image": "https://laptops.vn/uploads/dell-xps-13-1_1697364639.jpg",
-      "created_at": "01/01/2024",
-      "updated_at": "15/01/2024"
+      "user_id": 12345679,
+      "full_name": "John Do",
+      "address": "United States",
+      "detailAddress": "Ha Noi",
+      "email": "johnDoe@gmail.com",
+      "user_name": "JohnDo",
+      "phone": "0869257507",
+      "created_at": "15/07/2024",
+      "productIn": [
+        {
+          "name": "iPhone X",
+          "price": 999,
+          "totalTemp": 999
+        },
+        {
+          "name": "Samsung Galaxy S21",
+          "price": 799,
+          "totalTemp": 799
+        },
+        {
+          "name": "Google Pixel 6",
+          "price": 699,
+          "totalTemp": 699
+        }
+      ],
+      "total_price": 2497,
+      "id": 9876543211
+    },
+    {
+      "user_id": 12345686,
+      "full_name": "hoang",
+      "address": "Italy",
+      "detailAddress": "lord adeland",
+      "email": "Maivannam2x@gmail.com",
+      "user_name": "hoang dz",
+      "phone": "0987654321",
+      "created_at": "15/07/2024",
+      "productIn": [
+        {
+          "name": "Wireless Keyboard",
+          "price": "70",
+          "totalTemp": 70
+        }
+      ],
+      "total_price": "070",
+      "id": 9876543212
+    },
+    {
+      "user_id": 12345686,
+      "full_name": "hoang",
+      "address": "Italy",
+      "detailAddress": "Ha Noi",
+      "email": "Maivannam2x@gmail.com",
+      "user_name": "hoang dz",
+      "phone": "0987654321",
+      "created_at": "15/07/2024",
+      "productIn": [
+        {
+          "name": "Wireless Keyboard",
+          "price": 70,
+          "totalTemp": 70
+        }
+      ],
+      "total_price": 70,
+      "id": 9876543213
+    },
+    {
+      "user_id": 12345687,
+      "full_name": "duong",
+      "address": "United States",
+      "detailAddress": "Ha Noi",
+      "email": "duongleeaaa@gmail.com",
+      "user_name": "duong",
+      "phone": "0869257506",
+      "created_at": "16/07/2024",
+      "productIn": [
+        {
+          "name": "HP Spectre x360",
+          "price": 1099,
+          "totalTemp": 1099
+        }
+      ],
+      "total_price": 1099,
+      "id": 9876543214
     }
   ]
 }

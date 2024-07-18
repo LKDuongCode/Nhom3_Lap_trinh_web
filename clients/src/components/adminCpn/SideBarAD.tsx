@@ -1,7 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Product } from "../../interface/productsType";
+import { useDispatch, useSelector } from "react-redux";
+import { CombineType } from "../../interface/combineType";
+import { fetchProducts } from "../../services/products/getProducts.service";
+import { Category } from "../../interface/categoriesType";
+import { fetchCategories } from "../../services/categories/getCategories.service";
+import { fetchUsers } from "../../services/users/getUsers.service";
 
 export default function SideBarAD() {
+  const dispatch = useDispatch();
+  let products: Product[] = useSelector((state: CombineType) => {
+    return state.products.data;
+  });
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, []);
+
+  let categories: Category[] = useSelector((state: CombineType) => {
+    return state.categories.data;
+  });
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, []);
+  let users = useSelector((state: CombineType) => state.users.data);
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, []);
   // kiểm soát hiệu ứng---------------------------------------------------------------
   const [sideBar, setSideBar] = useState(false);
   //thanh cuộn ngang hiện ra mất thẩm mĩ => hàm này sẽ khắc phục
@@ -243,6 +268,9 @@ export default function SideBarAD() {
                       <span className="flex-1 ml-3 whitespace-nowrap">
                         Users
                       </span>
+                      <span className="inline-flex items-center justify-center w-3 h-3 p-3 ml-3 text-sm font-medium text-white bg-gray-700 rounded-full">
+                        {users.length}
+                      </span>
                     </>
                   )}
                 </div>
@@ -273,7 +301,7 @@ export default function SideBarAD() {
                         Category
                       </span>
                       <span className="inline-flex items-center justify-center w-3 h-3 p-3 ml-3 text-sm font-medium text-white bg-gray-700 rounded-full">
-                        3
+                        {categories.length}
                       </span>
                     </>
                   )}
@@ -302,6 +330,9 @@ export default function SideBarAD() {
                     <>
                       <span className="flex-1 ml-3 whitespace-nowrap">
                         Products
+                      </span>
+                      <span className="inline-flex items-center justify-center w-3 h-3 p-3 ml-3 text-sm font-medium text-white bg-gray-700 rounded-full">
+                        {products.length}
                       </span>
                     </>
                   )}

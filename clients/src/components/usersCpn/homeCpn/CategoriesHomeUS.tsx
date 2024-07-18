@@ -3,6 +3,7 @@ import { Category } from "../../../interface/categoriesType";
 import { CombineType } from "../../../interface/combineType";
 import { useEffect, useState } from "react";
 import { fetchCategories } from "../../../services/categories/getCategories.service";
+import { useNavigate } from "react-router-dom";
 
 export default function CategoriesHomeUS() {
   // lấy dữ liệu redux--------------------------------------------
@@ -21,6 +22,12 @@ export default function CategoriesHomeUS() {
     let selected = categories.slice(0, 3);
     setRandomCategories(selected);
   }, [categories]);
+  //hàm điều hướng
+  const navigate = useNavigate();
+  const handleNavigate = (category: Category) => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    navigate(`/productsList?${category.id}`, { state: category.id });
+  };
 
   // lấy dữ liệu redux-------------------------------------------------
   return (
@@ -32,6 +39,7 @@ export default function CategoriesHomeUS() {
         {randomCategories.map((category: Category) => {
           return (
             <div
+              onClick={() => handleNavigate(category)}
               className="relative rounded-md overflow-hidden group "
               key={category.id}
             >

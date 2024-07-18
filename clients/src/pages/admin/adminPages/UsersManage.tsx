@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { CombineType } from "../../../interface/combineType";
 import { User } from "../../../interface/usersType";
@@ -9,8 +9,19 @@ import {
   lockAnUser,
   unlockAnUser,
 } from "../../../services/users/lockUsers.service";
+import { formatDate, validatePhoneNumber } from "../../../func/format";
+import countries from "../../../func/countries";
+import { validateEmail } from "../../../func/validateEmail";
+import { validatePassword } from "../../../func/validatePass";
+import { useNavigate } from "react-router-dom";
+import {
+  sortUsersDownToUp,
+  sortUsersUpToDown,
+} from "../../../services/users/sortUser.service";
+import { searchUsersByName } from "../../../services/users/searchUsers.service";
 export default function UsersManage() {
   // state quản lí mở đóng form-------------------------------------------
+  let [checkLogin, setCheckLogin] = useState<boolean>(false);
   let [checkSucccess, setCheckSuccess] = useState<boolean>(false);
   let [checkAddForm, setCheckAddForm] = useState<boolean>(false);
   let [checkDelete, setCheckDelete] = useState<boolean>(false);
@@ -21,12 +32,58 @@ export default function UsersManage() {
   const dispatch = useDispatch();
 
   //lấy dữ liệu từ redux-------------------------------------------------
-  let users: User[] = useSelector((state: CombineType) => {
+  let usersDb: User[] = useSelector((state: CombineType) => {
     return state.users.data;
   });
   useEffect(() => {
     dispatch(fetchUsers());
   }, []);
+  //lấy user hiện tại-----------------------------------------------
+  let [curAdminLogin, setCurAdminLogin] = useState<User>({
+    id: 0,
+    user_name: "",
+    email: "",
+    password: "",
+    role: true,
+    status: true,
+    full_name: "",
+    avata: "",
+    phone: "",
+    address: "",
+    created_at: "",
+    updated_at: "",
+    favorites: [],
+    carts: [],
+  });
+  useEffect(() => {
+    if (usersDb.length > 0) {
+      let curAdmin = localStorage.getItem("curAdmin");
+      if (curAdmin) {
+        let adminObj = JSON.parse(curAdmin);
+        let adminFound = usersDb.find((admin: User) => {
+          return admin.email === adminObj.email;
+        });
+        // Set lại sau khi tìm thấy
+        if (adminFound) {
+          setCurAdminLogin(adminFound);
+        }
+      } else {
+        // Thông báo cần đăng nhập
+        setCheckLogin(true);
+      }
+    }
+  }, [usersDb]);
+  //lấy user hiện tại-----------------------------------------------
+  //tạo tạo mảng users trừ người đăng nhập ra
+  let [users, setUsers] = useState<User[]>([]);
+  useEffect(() => {
+    if (curAdminLogin.email !== "") {
+      let newArr: User[] = usersDb.filter(
+        (user: User) => user.id !== curAdminLogin.id
+      );
+      setUsers(newArr);
+    }
+  }, [curAdminLogin, usersDb]);
   //lấy dữ liệu từ redux-------------------------------------------------
 
   //thêm mới user-----------------------------------------------
@@ -37,36 +94,164 @@ export default function UsersManage() {
     role: false,
     status: true,
     full_name: "",
-    avatar: "https://vectorified.com/images/unknown-avatar-icon-6.jpg",
+    avata: "https://vectorified.com/images/unknown-avatar-icon-6.jpg",
     phone: "",
     address: "",
-    created_at: new Date().toDateString(),
-    updated_at: "",
+    favorites: [],
+    carts: [],
+    created_at: formatDate(new Date()),
+    updated_at: formatDate(new Date()),
   });
   //hàm lấy dữ liệu
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: any) => {
     const { value, name } = e.target;
     setNewUser((preUser: any) => ({
       ...preUser,
       [name]: value,
     }));
   };
-
+  //validate
+  let [validate, setValidate] = useState<any>({
+    empty: false,
+    wrongEmail: false,
+    wrongPhone: false,
+    existEmail: false,
+    matchPass: false,
+    wrongPass: false,
+  });
+  // state lưu giá trị pass để so sánh
+  let [confrimPass, setConfirmPass] = useState<string>("");
   //hàm thêm
   const clickAdd = () => {
+    if (
+      newUser.user_name === "" ||
+      newUser.full_name === "" ||
+      newUser.password === "" ||
+      newUser.phone === "" ||
+      newUser.address === "" ||
+      confrimPass === ""
+    ) {
+      setValidate((pre: any) => ({
+        ...pre,
+        empty: true,
+      }));
+      return;
+    } else if (!validateEmail(newUser.email)) {
+      setValidate((pre: any) => ({
+        ...pre,
+        wrongEmail: true,
+      }));
+      return;
+    } else if (!validatePhoneNumber(newUser.phone)) {
+      setValidate((pre: any) => ({
+        ...pre,
+        wrongPhone: true,
+      }));
+      return;
+    }
+    //validate email đã tồn tại chưa
+    // Lọc mảng trừ email đang đăng nhập ra
+    let newArrUsers = users.filter(
+      (user) => user.email !== curAdminLogin.email
+    );
+    // Duyệt mảng để tìm email trùng
+    let emailFound = newArrUsers.find((user) => user.email === newUser.email);
+    if (emailFound) {
+      setValidate((pre: any) => ({
+        ...pre,
+        existEmail: true,
+      }));
+      return;
+    }
+    //match pass
+    if (newUser.password !== confrimPass) {
+      setValidate((pre: any) => ({
+        ...pre,
+        matchPass: true,
+      }));
+      return;
+    } else if (!validatePassword(newUser.password)) {
+      setValidate((pre: any) => ({
+        ...pre,
+        wrongPass: true,
+      }));
+      return;
+    }
     dispatch(addToUsers(newUser));
+    setCheckAddForm(false);
   };
   //thêm user mới-----------------------------------------------
 
   // khóa tài khoản và mở khóa -------------------------------------------------------------------
+  //state lưu lại id đối tượng cần khóa và id đối tượng được mở
+  let [userIdToLock, setUserIdToLock] = useState<number>(0);
+  let [userIdToUnLock, setUserIdToUnLock] = useState<number>(0);
   const handleLock = (id: number) => {
-    dispatch(lockAnUser(id));
+    setUserIdToLock(id);
+    setCheckLock(true);
   };
-
+  const confirmLock = () => {
+    if (userIdToLock !== 0) {
+      dispatch(lockAnUser(userIdToLock));
+    }
+    setCheckLock(false);
+  };
+  //mở khóa
   const handleUnlock = (id: number) => {
-    dispatch(unlockAnUser(id));
+    setUserIdToUnLock(id);
+    setCheckUnlock(true);
+  };
+  const confirmUnlock = () => {
+    if (userIdToUnLock !== 0) {
+      dispatch(unlockAnUser(userIdToUnLock));
+    }
+    setCheckUnlock(false);
   };
   // khóa tài khoản và mở khóa -------------------------------------------------------------------
+
+  //xem tài khoản ---------------------------------------------------------------------
+  const navigate = useNavigate();
+  const handleCheckAcc = (idUser: number) => {
+    //tìm đối tượng đó
+    let accFound = users.find((user: User) => user.id === idUser);
+    console.log(accFound);
+    if (accFound) {
+      navigate("/adminHome/otherAccChecked", { state: accFound });
+    } else {
+      //không xem được
+      return;
+    }
+  };
+  //xem tài khoản ---------------------------------------------------------------------
+
+  //sắp xếp--------------------------------------------------------------
+
+  const sortUsers = (e: ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    if (value === "default") {
+      dispatch(fetchUsers());
+    } else if (value === "upToDown") {
+      dispatch(sortUsersUpToDown());
+    } else if (value === "downToUp") {
+      dispatch(sortUsersDownToUp());
+    }
+  };
+  //sắp xếp--------------------------------------------------------------
+
+  //tìm kiếm------------------------------------------------------------
+  let [searchTerm, setSearchTerm] = useState("");
+  const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
+  useEffect(() => {
+    if (searchTerm === "") {
+      dispatch(fetchUsers());
+    } else if (searchTerm !== "") {
+      dispatch(searchUsersByName(searchTerm));
+    }
+  }, [searchTerm]);
+  //tìm kiếm------------------------------------------------------------
 
   return (
     <>
@@ -113,16 +298,26 @@ export default function UsersManage() {
               type="text"
               className="w-full rounded-md border border-stone-300 border-solid px-5 py-3 outline-none focus:border-blue-500 dark:border-stone-300 text-base font-medium"
               placeholder="Search..."
-              defaultValue=""
+              value={searchTerm}
+              onChange={handleSearch}
             />
           </div>
 
           <div className="flex items-center font-medium">
             <p className=" mr-2 pl-2 text-white dark:text-white">Sort By</p>
-            <select className="bg-indigo-400 pl-2 border-none outline-none font-medium text-base text-stone-100">
-              <option className="text-black bg-slate-100">Username</option>
-              <option className="text-black bg-slate-100">Username</option>
-              <option className="text-black bg-slate-100">Username</option>
+            <select
+              onChange={sortUsers}
+              className="bg-indigo-400 pl-2 border-none outline-none font-medium text-base text-stone-100"
+            >
+              <option className="text-black bg-slate-100" value={"default"}>
+                Default
+              </option>
+              <option className="text-black bg-slate-100" value={"upToDown"}>
+                Name Up-Down
+              </option>
+              <option className="text-black bg-slate-100" value={"downToUp"}>
+                Name Down-Up
+              </option>
             </select>
           </div>
           <div className="flex items-center font-medium">
@@ -310,6 +505,7 @@ export default function UsersManage() {
                     )}
 
                     <button
+                      onClick={() => handleCheckAcc(user.id)}
                       className="
                 border-2
                 border-lime-500
@@ -436,6 +632,16 @@ export default function UsersManage() {
                     <input
                       name="full_name"
                       onChange={handleChange}
+                      onClick={() =>
+                        setValidate({
+                          empty: false,
+                          wrongEmail: false,
+                          wrongPhone: false,
+                          existEmail: false,
+                          matchPass: false,
+                          wrongPass: false,
+                        })
+                      }
                       type="text"
                       className="bg-gray-50 border border-gray-300 border-solid text-gray-900 rounded-lg  focus:border-blue-600 block w-full p-2.5 "
                       placeholder="your full name..."
@@ -451,6 +657,16 @@ export default function UsersManage() {
                       Username
                     </label>
                     <input
+                      onClick={() =>
+                        setValidate({
+                          empty: false,
+                          wrongEmail: false,
+                          wrongPhone: false,
+                          existEmail: false,
+                          matchPass: false,
+                          wrongPass: false,
+                        })
+                      }
                       name="user_name"
                       onChange={handleChange}
                       type="text"
@@ -463,6 +679,16 @@ export default function UsersManage() {
                       Email
                     </label>
                     <input
+                      onClick={() =>
+                        setValidate({
+                          empty: false,
+                          wrongEmail: false,
+                          wrongPhone: false,
+                          existEmail: false,
+                          matchPass: false,
+                          wrongPass: false,
+                        })
+                      }
                       name="email"
                       onChange={handleChange}
                       type="email"
@@ -477,6 +703,16 @@ export default function UsersManage() {
                       Phone numbers
                     </label>
                     <input
+                      onClick={() =>
+                        setValidate({
+                          empty: false,
+                          wrongEmail: false,
+                          wrongPhone: false,
+                          existEmail: false,
+                          matchPass: false,
+                          wrongPass: false,
+                        })
+                      }
                       name="phone"
                       onChange={handleChange}
                       type="text"
@@ -485,14 +721,32 @@ export default function UsersManage() {
                   </div>
                   <div className="flex-1">
                     <label className="block mb-2  font-medium text-gray-900 dark:text-white">
-                      Address
+                      Country
                     </label>
-                    <input
+                    <select
+                      onClick={() =>
+                        setValidate({
+                          empty: false,
+                          wrongEmail: false,
+                          wrongPhone: false,
+                          existEmail: false,
+                          matchPass: false,
+                          wrongPass: false,
+                        })
+                      }
                       name="address"
-                      onChange={handleChange}
-                      type="text"
+                      id=""
+                      value={newUser.address}
                       className="bg-gray-50 border border-gray-300 border-solid text-gray-900 rounded-lg  focus:border-blue-600 block w-full p-2.5 "
-                    />
+                      onChange={handleChange}
+                    >
+                      <option value="">Choose your Country</option>
+                      {countries.map((country, index: number) => (
+                        <option key={index} value={country.name}>
+                          {country.name}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
                 <div className="flex gap-3">
@@ -501,6 +755,16 @@ export default function UsersManage() {
                       Password
                     </label>
                     <input
+                      onClick={() =>
+                        setValidate({
+                          empty: false,
+                          wrongEmail: false,
+                          wrongPhone: false,
+                          existEmail: false,
+                          matchPass: false,
+                          wrongPass: false,
+                        })
+                      }
                       name="password"
                       onChange={handleChange}
                       type="text"
@@ -512,16 +776,58 @@ export default function UsersManage() {
                       Confirm Password
                     </label>
                     <input
+                      onClick={() =>
+                        setValidate({
+                          empty: false,
+                          wrongEmail: false,
+                          wrongPhone: false,
+                          existEmail: false,
+                          matchPass: false,
+                          wrongPass: false,
+                        })
+                      }
                       type="text"
+                      onChange={(e) => setConfirmPass(e.target.value)}
                       className="bg-gray-50 border border-gray-300 border-solid text-gray-900 rounded-lg  focus:border-blue-600 block w-full p-2.5 "
                     />
                   </div>
                 </div>
+                <div>
+                  {validate.wrongEmail && (
+                    <p className="text-red-500 font-medium text-sm bg-red-100 px-2">
+                      Email is in wrong format
+                    </p>
+                  )}
+                  {validate.existEmail && (
+                    <p className="text-red-500 font-medium text-sm bg-red-100 px-2">
+                      Email is exits
+                    </p>
+                  )}
+                  {validate.empty && (
+                    <p className="text-red-500 font-medium text-sm bg-red-100 px-2">
+                      Fields cannot be left blank
+                    </p>
+                  )}
+                  {validate.wrongPhone && (
+                    <p className="text-red-500 font-medium text-sm bg-red-100 px-2">
+                      Phone number is in wrong format
+                    </p>
+                  )}
+                  {validate.wrongPass && (
+                    <p className="text-red-500 font-medium text-sm bg-red-100 px-2">
+                      Minimum 6-character password includes at least one number,
+                      at least one letter and at least one special character
+                    </p>
+                  )}
+                  {validate.matchPass && (
+                    <p className="text-red-500 font-medium text-sm bg-red-100 px-2">
+                      Password are not match
+                    </p>
+                  )}
+                </div>
 
                 <button
-                  onClick={() => {
-                    clickAdd(), setCheckAddForm(false);
-                  }}
+                  onClick={clickAdd}
                   className="w-full text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:outline-none focus:bg-indigo-500 font-medium rounded-lg  px-5 py-2.5 text-center border-transparent"
                 >
                   ADD
@@ -702,18 +1008,14 @@ export default function UsersManage() {
                     <button
                       type="button"
                       className=" border-none inline-flex w-full justify-center rounded-md bg-amber-600 px-3 py-2  font-semibold text-white shadow-sm hover:bg-amber-500 sm:ml-3 sm:w-auto"
-                      onClick={() => {
-                        setCheckLock(false);
-                      }}
+                      onClick={confirmLock}
                     >
                       Lock
                     </button>
                     <button
                       type="button"
                       className=" border-none mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2  font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                      onClick={() => {
-                        setCheckLock(false);
-                      }}
+                      onClick={() => setCheckLock(false)}
                     >
                       Cancel
                     </button>
@@ -801,9 +1103,7 @@ export default function UsersManage() {
                     <button
                       type="button"
                       className=" border-none inline-flex w-full justify-center rounded-md bg-amber-600 px-3 py-2  font-semibold text-white shadow-sm hover:bg-amber-500 sm:ml-3 sm:w-auto"
-                      onClick={() => {
-                        setCheckUnlock(false);
-                      }}
+                      onClick={confirmUnlock}
                     >
                       Unlock
                     </button>

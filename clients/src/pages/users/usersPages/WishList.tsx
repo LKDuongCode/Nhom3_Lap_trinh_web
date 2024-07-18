@@ -1,9 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { CombineType } from "../../../interface/combineType";
 import { Product } from "../../../interface/productsType";
 import { fetchProducts } from "../../../services/products/getProducts.service";
 import { deleteAwish } from "../../../services/wishs/deleteFromWishList.service";
+import { User } from "../../../interface/usersType";
+import { fetchUsers } from "../../../services/users/getUsers.service";
+import { useNavigate } from "react-router-dom";
+import { searchProductByName } from "../../../services/products/searchProduct.service";
+import {
+  sortProductsDownToUp,
+  sortProductsUpToDown,
+} from "../../../services/products/sortProduct.service";
 
 export default function WishList() {
   // lấy dữ liệu redux--------------------------------------------
@@ -15,21 +23,114 @@ export default function WishList() {
     dispatch(fetchProducts());
   }, []);
 
-  //mảng chứa các đối tượng yếu thích
-  let [favoProducts, setFavoProduct] = useState<Product[]>([]);
-  useEffect(() => {
-    if (products.length > 0) {
-      let favorites = products.filter((product) => product.favorite === true);
-      setFavoProduct(favorites);
-    }
-  }, [products]);
   // lấy dữ liệu redux-------------------------------------------------
 
+  //lấy user hiện tại-----------------------------------------------
+  //lấy mảng user
+  let users = useSelector((state: CombineType) => state.users.data);
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, [dispatch]);
+  let [checkLogin, setCheckLogin] = useState<boolean>(false);
+  const navigate = useNavigate();
+  let [curUserLogin, setCurUserLogin] = useState<User>({
+    id: 0,
+    user_name: "",
+    email: "",
+    password: "",
+    role: true,
+    status: true,
+    full_name: "",
+    avata: "",
+    phone: "",
+    address: "",
+    created_at: "",
+    updated_at: "",
+    favorites: [],
+    carts: [],
+  });
+  useEffect(() => {
+    let curUser = localStorage.getItem("curUserLogin");
+
+    if (curUser) {
+      let userObj = JSON.parse(curUser);
+
+      // Kiểm tra nếu userObj là một đối tượng rỗng
+      if (Object.keys(userObj).length === 0 && userObj.constructor === Object) {
+        setCheckLogin(true);
+      } else {
+        let userFound = users.find((admin: User) => {
+          return admin.email === userObj.email;
+        });
+
+        // Set lại sau khi tìm thấy
+        if (userFound) {
+          setCurUserLogin(userFound);
+        }
+      }
+    } else {
+      // Thông báo cần đăng nhập
+      setCheckLogin(true);
+    }
+  }, [users]);
+
+  //lấy user hiện tại-----------------------------------------------
+
+  //tạo mảng yêu thích----------------------------------------------
+  let [favoProducts, setFavoProduct] = useState<Product[]>([]);
+  useEffect(() => {
+    if (products.length > 0 && users.length && curUserLogin.email !== "") {
+      let filterFavorites: Product[] = products.filter((product: Product) => {
+        return curUserLogin.favorites.includes(product.id);
+      });
+      setFavoProduct(filterFavorites);
+    }
+  }, [products, users]);
+
   //xóa sản phẩm khỏi yêu thích---------------------------------------
-  const handleDeleteFromFavorites = (id: number) => {
-    dispatch(deleteAwish(id));
+
+  const handleDeleteFromFavorites = (userId: number, proId: number) => {
+    // Loại bỏ id của sản phẩm khỏi mảng favorites
+    let deletedFavs = curUserLogin.favorites.filter(
+      (favId: number) => favId !== proId
+    );
+    setCurUserLogin((pre: any) => ({
+      ...pre,
+      favorites: deletedFavs,
+    }));
+
+    dispatch(deleteAwish({ userId: userId, arrDeleted: deletedFavs }));
   };
   //xóa sản phẩm khỏi yêu thích---------------------------------------
+
+  //tìm kiếm------------------------------------------------------------
+  let [searchTerm, setSearchTerm] = useState("");
+  const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
+  useEffect(() => {
+    if (searchTerm === "") {
+      dispatch(fetchProducts());
+    } else if (searchTerm !== "") {
+      dispatch(searchProductByName(searchTerm));
+    }
+  }, [searchTerm]);
+  //tìm kiếm------------------------------------------------------------
+
+  //sắp xếp--------------------------------------------------------------
+
+  const sortProducts = (e: ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    if (value === "default") {
+      dispatch(fetchProducts());
+    } else if (value === "upToDown") {
+      dispatch(sortProductsUpToDown());
+    } else if (value === "downToUp") {
+      dispatch(sortProductsDownToUp());
+    }
+  };
+  //sắp xếp--------------------------------------------------------------
 
   return (
     <div>
@@ -58,19 +159,31 @@ export default function WishList() {
               type="text"
               placeholder="Search your products..."
               className="w-[400px] outline-none border-2 rounded-md text-red-500 border-red-300 border-solid text-base p-2 h-max"
+              value={searchTerm}
+              onChange={handleSearch}
             />
             <div className="flex gap-7">
               <div className="flex gap-4 items-center">
                 <p>Sort by</p>
                 <select
-                  name=""
-                  id=""
-                  className="p-1 border-2 rounded-md border-red-300 border-solid"
+                  onChange={sortProducts}
+                  className="p-1 border-2 rounded-md border-stone-300 border-solid"
                 >
-                  <option value="">Cheapest</option>
-                  <option value="">The most expensive</option>
-                  <option value="">Latest</option>
-                  <option value="">Oldest</option>
+                  <option className="text-black bg-slate-100" value={"default"}>
+                    Default
+                  </option>
+                  <option
+                    className="text-black bg-slate-100"
+                    value={"upToDown"}
+                  >
+                    Cheapest
+                  </option>
+                  <option
+                    className="text-black bg-slate-100"
+                    value={"downToUp"}
+                  >
+                    Most Expensive
+                  </option>
                 </select>
               </div>
               <div className="flex items-center justify-center p-2 border-2 rounded-md border-red-300 border-solid h-max">
@@ -105,7 +218,7 @@ export default function WishList() {
               return (
                 <div
                   key={product.id}
-                  className="relative bg-cover group rounded-lg bg-center overflow-hidden border-solid border-2 border-red-300 p-1 cursor-pointer flex justify-center items-center w-[280px]"
+                  className="relative bg-cover group rounded-lg bg-center overflow-hidden border-solid border-2 border-red-300 p-1  flex justify-center items-center w-[280px]"
                 >
                   <img
                     className="h-[200px] w-full rounded"
@@ -127,10 +240,13 @@ export default function WishList() {
                       </p>
                       <div className="flex gap-2 items-center">
                         <svg
-                          onClick={() => handleDeleteFromFavorites(product.id)}
-                          className={`size-6 text-indigo-500  hover:text-white hover:bg-red-400 border-2 border-solid rounded-full ${
-                            product.favorite ? "bg-red-400 text-white" : ""
-                          }`}
+                          onClick={() =>
+                            handleDeleteFromFavorites(
+                              curUserLogin.id,
+                              product.id
+                            )
+                          }
+                          className={`size-6 text-white bg-red-500 hover:text-indigo-500 hover:bg-indigo-400 border-2 border-solid rounded-full  cursor-pointer`}
                           width="24"
                           height="24"
                           viewBox="0 0 24 24"
@@ -166,6 +282,93 @@ export default function WishList() {
           </div>
         </div>
       </div>
+      {/* form check info */}
+      {checkLogin && (
+        <div className="z-[0]">
+          {/* modal delete */}
+
+          <div
+            className={`relative ${checkLogin ? "z-[50]" : "z-[-1]"}`}
+            aria-labelledby="modal-title"
+            role="dialog"
+            aria-modal="true"
+          >
+            <div
+              className={`fixed inset-0 bg-black bg-opacity-75 transition-opacity ${
+                checkLogin
+                  ? "ease-out duration-300 opacity-100 "
+                  : "ease-in duration-200 opacity-0"
+              } `}
+            ></div>
+
+            <div
+              className={`fixed inset-0 z-10 w-screen overflow-y-auto  ${
+                checkLogin
+                  ? "ease-out duration-300 opacity-100 "
+                  : "ease-in duration-200 opacity-0 "
+              }`}
+            >
+              <div
+                className={`flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0 ${
+                  checkLogin
+                    ? "ease-out duration-300  translate-y-0 sm:scale-100 "
+                    : "ease-in duration-200  translate-y-4 sm:translate-y-0 sm:scale-95 "
+                }`}
+              >
+                <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                  <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                    <div className="sm:flex sm:items-start">
+                      <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                        <svg
+                          className="h-6 w-6 text-red-600"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
+                          />
+                        </svg>
+                      </div>
+                      <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                        <h3
+                          className="text-base font-semibold leading-6 text-gray-900"
+                          id="modal-title"
+                        >
+                          Login Warning
+                        </h3>
+                        <div className="mt-2">
+                          <p className=" text-gray-500">
+                            You are not logged in. To be able to use this
+                            service, you need to be granted or create an account
+                            for yourself.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                    <button
+                      type="button"
+                      className=" border-none inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2  font-semibold text-white shadow-sm hover:bg-indigo-500 sm:ml-3 sm:w-auto"
+                      onClick={() => {
+                        setCheckLogin(false);
+                        navigate("/usersLogin");
+                      }}
+                    >
+                      Login Now
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

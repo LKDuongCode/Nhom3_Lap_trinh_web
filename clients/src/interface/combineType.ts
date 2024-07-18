@@ -1,5 +1,6 @@
+import { StateBillType } from "./billsType";
 import { Category, StateCategoryType } from "./categoriesType";
-import { StateCartType, StateProductType } from "./productsType";
+import { StateProductType } from "./productsType";
 import { StateUserType } from "./usersType";
 
 
@@ -11,5 +12,5 @@ export interface CombineType {
     users:StateUserType;
     categories:StateCategoryType;
     products:StateProductType;
-    carts:StateCartType;
+    bills:StateBillType;
 }

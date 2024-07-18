@@ -22,6 +22,11 @@ import AboutUS from "./pages/users/usersPages/AboutUS";
 import SupportUS from "./pages/users/usersPages/SupportUS";
 import Homepages from "./pages/users/usersPages/Homepages";
 import WishList from "./pages/users/usersPages/WishList";
+import UserProfile from "./pages/users/usersPages/UserProfile";
+import PayInfo from "./pages/users/usersPages/PayInfo";
+import BillInfo from "./pages/users/usersPages/BillInfo";
+import PoliciesAndTerms from "./pages/PoliciesAndTerms";
+import OtherAcc from "./pages/admin/adminPages/OtherAcc";
 
 export default function App() {
   return (
@@ -56,7 +61,8 @@ export default function App() {
             path="detailAcc"
             element={<DetailAccount></DetailAccount>}
           ></Route>
-          <Route path="adminBillsManage" element={<BillsAD></BillsAD>}></Route>
+          {/* <Route path="adminBillsManage" element={<BillsAD></BillsAD>}></Route> */}
+          <Route path="otherAccChecked" element={<OtherAcc></OtherAcc>}></Route>
         </Route>
         {/* admin router----------------------------------------------------------------------------- */}
 
@@ -77,15 +83,23 @@ export default function App() {
           ></Route>
 
           <Route path="bills" element={<Bills></Bills>}></Route>
+          <Route path="billInfo" element={<BillInfo></BillInfo>}></Route>
           <Route path="wishList" element={<WishList></WishList>}></Route>
           <Route path="carts" element={<CartsUS></CartsUS>}></Route>
           <Route path="supports" element={<SupportUS></SupportUS>}></Route>
           <Route path="aboutus" element={<AboutUS></AboutUS>}></Route>
+          <Route path="profile" element={<UserProfile></UserProfile>}></Route>
+          <Route path="payInfo" element={<PayInfo></PayInfo>}></Route>
         </Route>
         {/* users router----------------------------------------------------------------------------- */}
 
-        {/* not found page */}
+        {/* not found page and other */}
+
         <Route path="*" element={<NotFoundPage></NotFoundPage>}></Route>
+        <Route
+          path="terms"
+          element={<PoliciesAndTerms></PoliciesAndTerms>}
+        ></Route>
       </Routes>
     </div>
   );

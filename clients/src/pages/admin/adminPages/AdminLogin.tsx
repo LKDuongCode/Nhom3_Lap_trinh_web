@@ -1,11 +1,19 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CombineType } from "../../../interface/combineType";
 import { fetchUsers } from "../../../services/users/getUsers.service";
 import { User } from "../../../interface/usersType";
+import { validateEmail } from "../../../func/validateEmail";
 
 export default function AdminLogin() {
+  //state alert validate----------------------------------------
+  let [validateForm, setValidateForm] = useState<any>({
+    empty: false,
+    wrongEmailOrPass: false,
+  });
+  let [checkSucccess, setCheckSuccess] = useState<boolean>(false);
+
   // Lấy danh sách users về từ Redux store------------------------------------
   let users = useSelector((state: CombineType) => state.users.data);
   const dispatch = useDispatch();
@@ -15,39 +23,76 @@ export default function AdminLogin() {
   }, []);
   // Lấy danh sách users về từ Redux store------------------------------------
 
-  // Tính toán danh sách admins dựa trên users, sử dụng useMemo để tránh tính toán lại khi users thay đổi
-  let admins: User[] = useMemo(() => {
-    return users.filter((user: User) => user.role === true);
-  }, [users]);
-
   // Tạo state kiểm soát trạng thái đăng nhập người dùng
-  let [currentUser, setCurrentUser] = useState<any>({
+  let [currentAdmin, setCurrentAdmin] = useState<any>({
     email: "",
     password: "",
     role: true,
   });
-  // lưu giá trị admin tìm được
-  let admin = admins.find((user: User) => {
-    return user.email === currentUser.email;
-  });
 
   // Hàm xử lý đăng nhập------------------------------------------------------------
   const handleLoginAdmin = () => {
-    //nếu tìm thấy
-    if (admin) {
-      // kiểm tra mật khẩu
-      if (admin.password === currentUser.password) {
-        localStorage.setItem("curEmail", JSON.stringify(currentUser.email));
-        localStorage.setItem("curRole", JSON.stringify(currentUser.role));
-        navigate("/adminHome");
-      } else {
-        console.log("password false");
-      }
-    } else {
-      console.log("not found");
+    //validate trống
+    if (currentAdmin.email === "" || currentAdmin.password === "") {
+      setValidateForm((pre: any) => ({
+        ...pre,
+        empty: true,
+      }));
+      return;
     }
+    if (!validateEmail(currentAdmin.email)) {
+      setValidateForm((pre: any) => ({
+        ...pre,
+        wrongEmailOrPass: true,
+      }));
+      return;
+    }
+    // validate tồn tại
+    let userFound = users.find((user: User) => {
+      return user.email === currentAdmin.email && user.role === true;
+    });
+    if (!userFound) {
+      return;
+    }
+
+    //validate password
+
+    if (userFound.password !== currentAdmin.password) {
+      setValidateForm((pre: any) => ({
+        ...pre,
+        wrongEmailOrPass: true,
+      }));
+      return;
+    }
+
+    localStorage.setItem(
+      "curAdmin",
+      JSON.stringify({ email: currentAdmin.email, role: currentAdmin.role })
+    );
+    setCheckSuccess(true);
+    setTimeout(() => {
+      setCheckSuccess(false);
+      navigate("/adminHome");
+    }, 1500);
   };
   // Hàm xử lý đăng nhập------------------------------------------------------------
+
+  //lấy user hiện tại-----------------------------------------------
+  useEffect(() => {
+    let curAdmin = localStorage.getItem("curAdmin");
+    if (curAdmin) {
+      let adminObj = JSON.parse(curAdmin);
+      let adminFound = users.find((admin: User) => {
+        return admin.email === adminObj.email;
+      });
+      //set lại sau khi tìm thấy
+      if (adminFound) {
+        setCurrentAdmin(adminFound);
+      }
+    }
+  }, [users]);
+
+  //lấy user hiện tại-----------------------------------------------
 
   const navigate = useNavigate();
   return (
@@ -96,12 +141,20 @@ export default function AdminLogin() {
                   Email
                 </label>
                 <input
+                  onClick={() =>
+                    setValidateForm((pre: any) => ({
+                      ...pre,
+                      wrongEmailOrPass: false,
+                      empty: false,
+                    }))
+                  }
                   onChange={(e) =>
-                    setCurrentUser((prevUser: any) => ({
+                    setCurrentAdmin((prevUser: any) => ({
                       ...prevUser,
                       email: e.target.value,
                     }))
                   }
+                  value={currentAdmin.email}
                   type="text"
                   name="adminID"
                   className="bg-gray-50 border-transparent focus:border-[#bc78ff81] focus:border-2 boder-solid text-gray-900 rounded-lg  block w-full p-2.5 h-12 text-base"
@@ -117,8 +170,16 @@ export default function AdminLogin() {
                   Password
                 </label>
                 <input
+                  value={currentAdmin.password}
+                  onClick={() =>
+                    setValidateForm((pre: any) => ({
+                      ...pre,
+                      wrongEmailOrPass: false,
+                      empty: false,
+                    }))
+                  }
                   onChange={(e) =>
-                    setCurrentUser((prePass: any) => ({
+                    setCurrentAdmin((prePass: any) => ({
                       ...prePass,
                       password: e.target.value,
                     }))
@@ -129,15 +190,24 @@ export default function AdminLogin() {
                   placeholder="• • • • • •"
                   className="bg-gray-50 border-transparent focus:border-[#bc78ff81] focus:border-2 boder-solid text-gray-900 rounded-lg block w-full p-2.5 h-12  font-extrabold text-2xl"
                 />
+                {validateForm.empty && (
+                  <p className="text-red-500 font-medium text-sm bg-red-100 px-2">
+                    Fields cannot be empty !
+                  </p>
+                )}
+                {validateForm.wrongEmailOrPass && (
+                  <p className="text-red-500 font-medium text-sm bg-red-100 px-2">
+                    Email or password is wrong !
+                  </p>
+                )}
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-start">
                   <div className="flex items-center h-5">
                     <input
-                      id="remember"
                       aria-describedby="remember"
                       type="checkbox"
-                      className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-violet-300"
+                      className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-violet-300 "
                     />
                   </div>
                   <div className="ml-3 text-sm">
@@ -158,18 +228,85 @@ export default function AdminLogin() {
               </button>
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                 Haven't admin account?{" "}
-                <a
-                  href="#"
+                <Link
+                  to={"/terms"}
                   className="font-medium text-primary-600 hover:underline dark:text-primary-500"
                 >
                   Our terms and conditions
-                </a>
+                </Link>
               </p>
             </div>
             {/* main form */}
           </div>
         </div>
       </div>
+      {/* success modal */}
+      {checkSucccess && (
+        <div
+          className={`relative ${checkSucccess ? "z-10" : "z-[-1]"}`}
+          aria-labelledby="modal-title"
+          role="dialog"
+          aria-modal="true"
+          onClick={() => setCheckSuccess(false)}
+        >
+          <div
+            className={`fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity ${
+              checkSucccess
+                ? "ease-out duration-300 opacity-100 "
+                : "ease-in duration-200 opacity-0"
+            } `}
+          ></div>
+
+          <div
+            className={`fixed inset-0 z-10 w-screen overflow-y-auto  ${
+              checkSucccess
+                ? "ease-out duration-300 opacity-100 "
+                : "ease-in duration-200 opacity-0 "
+            }`}
+          >
+            <div
+              className={`flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0  ${
+                checkSucccess
+                  ? "ease-out duration-300  translate-y-0 sm:scale-100 "
+                  : "ease-in duration-200  translate-y-4 sm:translate-y-0 sm:scale-95 "
+              }`}
+            >
+              <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-96">
+                <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4 ">
+                  <div className="sm:flex flex-col gap-4 sm:items-center">
+                    <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
+                      <svg
+                        className="h-6 w-6 text-green-600"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    </div>
+                    <div className="mt-3 text-center sm:ml-4 sm:mt-0 ">
+                      <h3
+                        className="text-base text-center font-semibold leading-6 text-gray-900"
+                        id="modal-title"
+                      >
+                        Logged in successfully
+                      </h3>
+                      <div className="mt-2">
+                        <p className=" text-gray-500 text-center">
+                          Going to the home page....
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

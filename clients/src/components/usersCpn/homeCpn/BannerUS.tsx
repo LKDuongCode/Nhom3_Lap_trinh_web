@@ -21,7 +21,7 @@ export default function BannerUS() {
         </p>
         <div className="mt-12">
           <Link
-            to={""}
+            to={"categories"}
             className=" border-2 border-cyan-200 border-solid bg-cyan-500  text-white px-8 py-3 font-medium 
             rounded-md hover:bg-transparent  transition-colors hover:text-cyan-600"
           >

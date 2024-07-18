@@ -1,6 +1,35 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { User } from "../../interface/usersType";
+import { CombineType } from "../../interface/combineType";
+import { fetchUsers } from "../../services/users/getUsers.service";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProducts } from "../../services/products/getProducts.service";
+import { Product } from "../../interface/productsType";
+import { Link } from "react-router-dom";
 
 export default function StatisticsAD() {
+  //lấy dữ liệu từ redux-------------------------------------------------
+  let dispatch = useDispatch();
+  let users: User[] = useSelector((state: CombineType) => {
+    return state.users.data;
+  });
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, []);
+  let products: Product[] = useSelector((state: CombineType) => {
+    return state.products.data;
+  });
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, []);
+  //lấy dữ liệu từ redux------------------------------------------------
+
+  let [topUser, setTopUser] = useState<User[]>([]);
+  useEffect(() => {
+    let arr = users.slice(0, 5);
+    setTopUser(arr);
+  }, [users]);
+
   return (
     <>
       <div className=" ml-4 grid grid-cols-[1fr,1fr,1fr,2fr]  mt-4 gap-2 p-5 grid-rows-[1fr 1fr] grid-flow-row ">
@@ -22,7 +51,7 @@ export default function StatisticsAD() {
                 />
               </svg>
             </p>
-            <h2>300,000,000</h2>
+            <h2>300,425,000</h2>
           </div>
         </div>
         <div className="shadow-md p-2 flex flex-col gap-5">
@@ -45,7 +74,7 @@ export default function StatisticsAD() {
                 <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
               </svg>
             </p>
-            <h2>100,000,120</h2>
+            <h2>{users.length}</h2>
           </div>
         </div>
         <div className="shadow-md p-2 flex flex-col gap-5">
@@ -66,7 +95,7 @@ export default function StatisticsAD() {
                 <path d="M16 10a4 4 0 0 1-8 0" />
               </svg>
             </p>
-            <h2>1,234,500,000</h2>
+            <h2>{products.length}</h2>
           </div>
         </div>
 
@@ -81,69 +110,32 @@ export default function StatisticsAD() {
                   username
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  joining time
+                  created
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  total payment
+                  email
                 </th>
               </tr>
             </thead>
             <tbody>
-              <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                <th
-                  scope="row"
-                  className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                >
-                  1
-                </th>
-                <td className="px-6 py-4">Silver</td>
-                <td className="px-6 py-4">17/12/2003</td>
-                <td className="px-6 py-4">$2999</td>
-              </tr>
-              <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                <th
-                  scope="row"
-                  className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                >
-                  1
-                </th>
-                <td className="px-6 py-4">Silver</td>
-                <td className="px-6 py-4">17/12/2003</td>
-                <td className="px-6 py-4">$2999</td>
-              </tr>
-              <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                <th
-                  scope="row"
-                  className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                >
-                  1
-                </th>
-                <td className="px-6 py-4">Silver</td>
-                <td className="px-6 py-4">17/12/2003</td>
-                <td className="px-6 py-4">$2999</td>
-              </tr>
-              <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                <th
-                  scope="row"
-                  className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                >
-                  1
-                </th>
-                <td className="px-6 py-4">Silver</td>
-                <td className="px-6 py-4">17/12/2003</td>
-                <td className="px-6 py-4">$2999</td>
-              </tr>
-              <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                <th
-                  scope="row"
-                  className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                >
-                  1
-                </th>
-                <td className="px-6 py-4">Silver</td>
-                <td className="px-6 py-4">17/12/2003</td>
-                <td className="px-6 py-4">$2999</td>
-              </tr>
+              {topUser.map((user: User, index: number) => {
+                return (
+                  <tr
+                    className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
+                    key={user.id}
+                  >
+                    <th
+                      scope="row"
+                      className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                    >
+                      {index + 1}
+                    </th>
+                    <td className="px-6 py-4">{user.user_name}</td>
+                    <td className="px-6 py-4">{user.created_at}</td>
+                    <td className="px-6 py-4 truncate">{user.email}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -155,7 +147,8 @@ export default function StatisticsAD() {
             corrections,...
           </p>
           <div>
-            <button
+            <Link
+              to={"/terms"}
               className="
     
             font-semibold
@@ -175,10 +168,13 @@ export default function StatisticsAD() {
           "
             >
               Go to about us
-            </button>
+            </Link>
           </div>
         </div>
       </div>
     </>
   );
+}
+function dispatch(arg0: any) {
+  throw new Error("Function not implemented.");
 }

@@ -2,11 +2,10 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import baseURL from "../../api";
 
 export const deleteAwish : any = createAsyncThunk(
-    "products/deleteAwish",
-    async (id:number) => {
-        let response = await baseURL.patch(`/products/${id}`, {
-            favorite:false,
+    "users/deleteAwish",
+    async ({ userId, arrDeleted }: { userId: number; arrDeleted: number[] } ) => {
+        let response = await baseURL.patch(`/users/${userId}`, {
+          favorites: arrDeleted,
         });
         return response.data;
-      }
-  );
+      });

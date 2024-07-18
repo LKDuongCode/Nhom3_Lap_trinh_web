@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import "../../../style/modal/addModal.scss";
 import { Product } from "../../../interface/productsType";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,6 +10,13 @@ import { updateAproduct } from "../../../services/products/updateProducts.servic
 import { formatDate } from "../../../func/format";
 import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
 import { storage } from "../../../config/fireBase";
+import { fetchCategories } from "../../../services/categories/getCategories.service";
+import { Category } from "../../../interface/categoriesType";
+import { searchProductByName } from "../../../services/products/searchProduct.service";
+import {
+  sortProductsDownToUp,
+  sortProductsUpToDown,
+} from "../../../services/products/sortProduct.service";
 
 export default function ProductsManage() {
   const dispatch = useDispatch();
@@ -18,8 +25,7 @@ export default function ProductsManage() {
   let [checkAddForm, setCheckAddForm] = useState<boolean>(false);
   let [checkUpdateForm, setCheckUpdateForm] = useState<boolean>(false);
   let [checkDelete, setCheckDelete] = useState<boolean>(false);
-  let [checkLock, setCheckLock] = useState<boolean>(false);
-  let [checkUnlock, setCheckUnlock] = useState<boolean>(false);
+
   // state quản lí mở đóng form-------------------------------------------
 
   // lấy dữ liệu redux--------------------------------------------
@@ -29,6 +35,17 @@ export default function ProductsManage() {
   useEffect(() => {
     dispatch(fetchProducts());
   }, []);
+
+  let categories: Category[] = useSelector((state: CombineType) => {
+    return state.categories.data;
+  });
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, []);
+
+  //state lấy category product được chọn
+  let [curCategory, setCurCategory] = useState<any>({});
+
   // lấy dữ liệu redux-------------------------------------------------
 
   // thêm mới product------------------------------------------------------
@@ -49,6 +66,12 @@ export default function ProductsManage() {
       });
     });
   };
+  useEffect(() => {
+    if (image) {
+      uploadImg();
+    }
+  }, [image]);
+
   //state upload ảnh++++++++++++++++++++++
 
   let [newProduct, setNewProduct] = useState<any>({
@@ -57,7 +80,7 @@ export default function ProductsManage() {
     unit_price: 0,
     stock_quantity: 0,
     product_image: "",
-    favorite: false,
+    category_id: 0,
     created_at: formatDate(new Date()),
     updated_at: formatDate(new Date()),
   });
@@ -77,18 +100,57 @@ export default function ProductsManage() {
       [name]: value,
     }));
   };
+  //do select trả về chuỗi nên id trả về không chính xác cần hàm riêng để chuyển
+  const handleGetCategoryOfProduct = (e: ChangeEvent<HTMLSelectElement>) => {
+    setNewProduct((preProduct: any) => ({
+      ...preProduct,
+      category_id: Number(e.target.value),
+    }));
+  };
+  //do input quantity và price vẫn có thể để người dùng trả về string nên cần hàm riêng
+  const numberToPirceAndQuantity = (e: any) => {
+    let { value, name } = e.target;
+    setNewProduct((preProduct: any) => ({
+      ...preProduct,
+      [name]: Number(value),
+    }));
+  };
 
   //nút thêm mới
   const hanleAddProduct = () => {
+    if (
+      newProduct.product_name === "" ||
+      newProduct.description === "" ||
+      newProduct.product_image === "" ||
+      newProduct.category_id === 0
+    ) {
+      setValidateNew((pre: any) => ({ ...pre, empty: true }));
+      return;
+    } else if (newProduct.unit_price <= 0 || newProduct.stock_quantity <= 0) {
+      setValidateNew((pre: any) => ({ ...pre, priceAndQuantityWrong: true }));
+      return;
+    }
     setImageUrl(null);
     setCheckAddForm(false);
     dispatch(addToProducts(newProduct));
   };
+
+  //validate
+  let [validateNew, setValidateNew] = useState<any>({
+    empty: false,
+    priceAndQuantityWrong: false,
+  });
   // thêm mới product------------------------------------------------------
 
   // xóa product----------------------------------------------------------------------------------------
+  let [idDelete, setIdDelete] = useState<number>(0);
   const handleDeleteProduct = (id: number) => {
-    dispatch(deleteAproduct(id));
+    setIdDelete(id);
+    setCheckDelete(true);
+  };
+  const confirmDelete = () => {
+    dispatch(deleteAproduct(idDelete));
+    setCheckDelete(false);
   };
   // xóa product----------------------------------------------------------------------------------------
 
@@ -103,6 +165,8 @@ export default function ProductsManage() {
     unit_price: 0,
     stock_quantity: 0,
     product_image: "",
+    category_id: 0,
+    created_at: "",
     updated_at: formatDate(new Date()),
   });
 
@@ -121,6 +185,11 @@ export default function ProductsManage() {
       });
     }
   };
+  useEffect(() => {
+    if (imageUpdate) {
+      uploadImgUpdate();
+    }
+  }, [imageUpdate]);
 
   useEffect(() => {
     if (imageUrlUpdate) {
@@ -134,26 +203,34 @@ export default function ProductsManage() {
   //hàm update ảnh++++++++++++++++++++++++++++++++++
 
   //hàm lấy dữ liệu phần tử được click và hiện form.
-  const handleGetAProduct = (id: number) => {
+  const handleGetAProduct = (id: number, cateId: number) => {
     let curProduct: Product | undefined = products.find((product: Product) => {
       return product.id === id;
     });
-
     if (curProduct) {
-      setUpdateProduct({
+      setUpdateProduct((pre: any) => ({
+        ...pre,
         id: curProduct.id,
         product_name: curProduct.product_name,
         description: curProduct.description,
         unit_price: curProduct.unit_price,
         stock_quantity: curProduct.stock_quantity,
         product_image: curProduct.product_image,
-        updated_at: formatDate(new Date()),
-      });
+        category_id: curProduct.category_id,
+        created_at: curProduct.created_at,
+      }));
     } else {
       console.error("Product not found");
     }
+    let categoryFound = categories.find(
+      (category: Category) => category.id === cateId
+    );
+    if (categoryFound) {
+      setCurCategory(categoryFound);
+    }
     setCheckUpdateForm(true);
   };
+
   //hàm thay đổi input
   const handleChangeUpdate = (e: any) => {
     let { value, name } = e.target;
@@ -162,22 +239,80 @@ export default function ProductsManage() {
       [name]: value,
     }));
   };
-
-  console.log(updateProduct.product_image);
-
+  //do select trả về chuỗi nên id trả về không chính xác cần hàm riêng để chuyển
+  const handleGetCategoryOfProductUpdated = (
+    e: ChangeEvent<HTMLSelectElement>
+  ) => {
+    setUpdateProduct((preProduct: any) => ({
+      ...preProduct,
+      category_id: Number(e.target.value),
+    }));
+  };
+  //do input quantity và price vẫn có thể để người dùng trả về string nên cần hàm riêng
+  const numberToPirceAndQuantityUpdated = (e: any) => {
+    let { value, name } = e.target;
+    setUpdateProduct((preProduct: any) => ({
+      ...preProduct,
+      [name]: Number(value),
+    }));
+  };
+  let [validateUp, setValidateUp] = useState<any>({
+    empty: false,
+    wrongPriceQuantity: false,
+  });
   //hàm gọi dispatch thay đổi
   const handleUpdateProduct = () => {
+    if (updateProduct.product_name === "" || updateProduct.description === "") {
+      setValidateUp((pre: any) => ({ ...pre, empty: true }));
+      return;
+    } else if (
+      updateProduct.unit_price <= 0 ||
+      updateProduct.stock_quantity <= 0
+    ) {
+      setValidateUp((pre: any) => ({ ...pre, wrongPriceQuantity: true }));
+      return;
+    }
+
     setImageUrlUpdate(null);
     setCheckUpdateForm(false);
     dispatch(updateAproduct(updateProduct));
   };
 
   //cập nhật product ----------------------------------------------------------------------------
+
+  //tìm kiếm------------------------------------------------------------
+  let [searchTerm, setSearchTerm] = useState("");
+  const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
+  useEffect(() => {
+    if (searchTerm === "") {
+      dispatch(fetchProducts());
+    } else if (searchTerm !== "") {
+      dispatch(searchProductByName(searchTerm));
+    }
+  }, [searchTerm]);
+  //tìm kiếm------------------------------------------------------------
+
+  //sắp xếp--------------------------------------------------------------
+
+  const sortProducts = (e: ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    if (value === "default") {
+      dispatch(fetchProducts());
+    } else if (value === "upToDown") {
+      dispatch(sortProductsUpToDown());
+    } else if (value === "downToUp") {
+      dispatch(sortProductsDownToUp());
+    }
+  };
+  //sắp xếp--------------------------------------------------------------
   return (
     <>
-      <section className="rounded-md  bg-white py-4 shadow-default mt-24 px-5 border-spacing-2 border-stone-300 border-solid mx-5 ">
+      <section className="rounded-md  bg-white py-4 shadow-default mt-24 px-5 border-spacing-2 border-stone-300 border-solid ">
         <div className=" font-semibold bg-indigo-500 px-5 pt-5 rounded-t-md text-white flex justify-between items-center py-5">
-          <h2>Users Management</h2>
+          <h2>Products Management</h2>
           <button
             className="
         border-none
@@ -218,16 +353,26 @@ export default function ProductsManage() {
               type="text"
               className="w-full rounded-md border border-stone-300 border-solid px-5 py-3 outline-none focus:border-blue-500 dark:border-stone-300 text-base font-medium"
               placeholder="Search..."
-              defaultValue=""
+              value={searchTerm}
+              onChange={handleSearch}
             />
           </div>
 
           <div className="flex items-center font-medium">
             <p className=" mr-2 pl-2 text-white dark:text-white">Sort By</p>
-            <select className="bg-indigo-400 pl-2 border-none outline-none font-medium text-base text-stone-100">
-              <option className="text-black bg-slate-100">Username</option>
-              <option className="text-black bg-slate-100">Username</option>
-              <option className="text-black bg-slate-100">Username</option>
+            <select
+              onChange={sortProducts}
+              className="bg-indigo-400 pl-2 border-none outline-none font-medium text-base text-stone-100"
+            >
+              <option className="text-black bg-slate-100" value={"default"}>
+                Default
+              </option>
+              <option className="text-black bg-slate-100" value={"upToDown"}>
+                Price Up-Down
+              </option>
+              <option className="text-black bg-slate-100" value={"downToUp"}>
+                Price Down-Up
+              </option>
             </select>
           </div>
           <div className="flex items-center font-medium">
@@ -251,7 +396,7 @@ export default function ProductsManage() {
         {/* thanh tìm kiếm và số trang phân -------------------------------------*/}
 
         {/* bảng */}
-        <table className="min-w-full border-y-stone-300 border-2 border-solid border-x-transparent">
+        <table className="w-full border-y-stone-300 border-2 border-solid border-x-transparent">
           <thead className="bg-gray-100 border-b">
             <tr>
               <th
@@ -311,25 +456,25 @@ export default function ProductsManage() {
                   <td className="px-6 py-4 whitespace-nowrap  font-medium text-gray-900">
                     {index + 1}
                   </td>
-                  <td className=" text-gray-900  px-6 py-4 whitespace-nowrap">
+                  <td className=" text-gray-900 p-4 whitespace-nowrap">
                     {product.product_name}
                   </td>
-                  <td className=" text-gray-900  px-6 py-4 max-w-[600px]  overflow-hidden text-ellipsis whitespace-nowrap">
+                  <td className=" text-gray-900   p-4 max-w-[500px] truncate">
                     {product.description}
                   </td>
-                  <td className=" text-gray-900  px-6 py-4 max-w-[600px]">
-                    {product.unit_price}
+                  <td className=" text-gray-900  p-4 flex-nowrap ">
+                    $ {product.unit_price}
                   </td>
-                  <td className=" text-gray-900  px-6 py-4 max-w-[600px]">
+                  <td className=" text-gray-900 p-4 text-center">
                     {product.stock_quantity}
                   </td>
-                  <td className=" text-gray-900  px-6 py-4 max-w-[600px]">
-                    {product.updated_at}
-                  </td>
+                  <td className=" text-gray-900 p-4 ">{product.updated_at}</td>
 
                   <td className=" text-gray-900  px-6 py-4 whitespace-nowrap">
                     <button
-                      onClick={() => handleGetAProduct(product.id)}
+                      onClick={() =>
+                        handleGetAProduct(product.id, product.category_id)
+                      }
                       className="
                 border-2
                 border-indigo-400
@@ -494,7 +639,7 @@ export default function ProductsManage() {
                     <textarea
                       name="description"
                       onChange={handleCreateProduct}
-                      className="bg-gray-50 border border-gray-300 border-solid text-gray-900 rounded-lg  focus:border-blue-600 block w-full p-2.5 outline-none min-h-28"
+                      className="bg-gray-50 border border-gray-300 border-solid text-gray-900 rounded-lg  focus:border-blue-600 block w-full p-2.5 outline-none h-[90%]"
                       placeholder="Write some description...."
                     ></textarea>
                   </div>
@@ -505,7 +650,7 @@ export default function ProductsManage() {
                       </label>
                       <div className="flex gap-1">
                         <input
-                          onChange={handleCreateProduct}
+                          onChange={numberToPirceAndQuantity}
                           min={0}
                           name="unit_price"
                           type="number"
@@ -519,7 +664,7 @@ export default function ProductsManage() {
                         Quantity
                       </label>
                       <input
-                        onChange={handleCreateProduct}
+                        onChange={numberToPirceAndQuantity}
                         min={0}
                         name="stock_quantity"
                         type="number"
@@ -528,57 +673,55 @@ export default function ProductsManage() {
                     </div>
 
                     <div className="col-span-3 ">
-                      <div className="file-upload-wrapper mt-3 flex flex-col">
-                        <div className="flex gap-3 items-center">
+                      <div className="file-upload-wrapper mt-3 flex gap-2 ">
+                        <div>
                           <label
                             htmlFor="file-upload"
-                            className=" bg-indigo-500 font-semibold text-white py-2 px-4 rounded cursor-pointer"
+                            className=" bg-indigo-500 font-medium text-sm text-white py-1 px-3 rounded cursor-pointer"
                           >
-                            Image
+                            Add image
                           </label>
-                          {image && (
-                            <button
-                              className="size-max border-transparent cursor-pointer bg-green-500 rounded px-2 py-1"
-                              onClick={uploadImg}
-                            >
-                              <svg
-                                className="size-6 text-white"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                              >
-                                {" "}
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />{" "}
-                                <polyline points="17 8 12 3 7 8" />{" "}
-                                <line x1="12" y1="3" x2="12" y2="15" />
-                              </svg>
-                            </button>
-                          )}
-                          {imageUrl && (
-                            <p className="font-medium text-sm text-green-500">
-                              Upload Success !
-                            </p>
-                          )}
+                          <input
+                            id="file-upload"
+                            onChange={handleGetImg}
+                            type="file"
+                            className="hidden"
+                          />
                         </div>
-                        <input
-                          id="file-upload"
-                          onChange={handleGetImg}
-                          type="file"
-                          className="hidden"
+
+                        <img
+                          src={newProduct.product_image}
+                          alt=""
+                          className="w-52 h-28  rounded"
                         />
-                        <span
-                          id="file-name"
-                          className="ml-2 text-gray-900 overflow-hidden text-ellipsis whitespace-nowrap mt-3"
-                        >
-                          {imageUrl === null ? "No file chosen" : image.name}
-                        </span>
                       </div>
                     </div>
                   </div>
                 </div>
+                <select
+                  onChange={handleGetCategoryOfProduct}
+                  defaultValue={0}
+                  className="w-full border-stone-200 border-solid border-2 p-1 text-center rounded font-medium"
+                >
+                  <option value={0}>Choose A Categories</option>
+                  {categories.map((category: Category) => {
+                    return (
+                      <option value={category.id} key={category.id}>
+                        {category.category_name}
+                      </option>
+                    );
+                  })}
+                </select>
+                {validateNew.empty && (
+                  <p className="text-red-500 font-medium text-sm bg-red-100 px-2">
+                    Fields cannot be empty !
+                  </p>
+                )}
+                {validateNew.priceAndQuantityWrong && (
+                  <p className="text-red-500 font-medium text-sm bg-red-100 px-2">
+                    Price and quantity need to be greater than 0 !
+                  </p>
+                )}
 
                 <button
                   onClick={hanleAddProduct}
@@ -627,8 +770,8 @@ export default function ProductsManage() {
                     Product's name
                   </label>
                   <input
-                    value={updateProduct.product_name}
                     onChange={handleChangeUpdate}
+                    value={updateProduct.product_name}
                     name="product_name"
                     type="text"
                     className="bg-gray-50 border border-gray-300 border-solid text-gray-900 rounded-lg  focus:border-blue-600 block w-full p-2.5 "
@@ -641,10 +784,10 @@ export default function ProductsManage() {
                       Description
                     </label>
                     <textarea
-                      value={updateProduct.description}
                       name="description"
                       onChange={handleChangeUpdate}
-                      className="bg-gray-50 border border-gray-300 border-solid text-gray-900 rounded-lg  focus:border-blue-600 block w-full p-2.5 outline-none min-h-[300px]"
+                      value={updateProduct.description}
+                      className="bg-gray-50 border border-gray-300 border-solid text-gray-900 rounded-lg  focus:border-blue-600 block w-full p-2.5 outline-none h-[90%]"
                       placeholder="Write some description...."
                     ></textarea>
                   </div>
@@ -655,9 +798,9 @@ export default function ProductsManage() {
                       </label>
                       <div className="flex gap-1">
                         <input
-                          onChange={handleChangeUpdate}
-                          value={updateProduct.unit_price}
+                          onChange={numberToPirceAndQuantityUpdated}
                           min={0}
+                          value={updateProduct.unit_price}
                           name="unit_price"
                           type="number"
                           className="bg-gray-50 border border-gray-300 border-solid text-green-600 rounded-lg  focus:border-blue-600 block w-full p-2.5 text-center font-semibold "
@@ -670,9 +813,9 @@ export default function ProductsManage() {
                         Quantity
                       </label>
                       <input
-                        value={updateProduct.stock_quantity}
-                        onChange={handleChangeUpdate}
+                        onChange={numberToPirceAndQuantityUpdated}
                         min={0}
+                        value={updateProduct.stock_quantity}
                         name="stock_quantity"
                         type="number"
                         className="bg-gray-50 border border-gray-300 border-solid text-gray-900 rounded-lg  focus:border-blue-600 block w-full p-2.5 text-center font-semibold "
@@ -680,72 +823,63 @@ export default function ProductsManage() {
                     </div>
 
                     <div className="col-span-3 ">
-                      <div className="file-upload-wrapper mt-3 flex flex-col">
-                        <div className="flex gap-3 items-center">
+                      <div className="file-upload-wrapper mt-3 flex gap-2 ">
+                        <div>
                           <label
                             htmlFor="file-upload"
-                            className=" bg-indigo-500 font-semibold text-white py-2 px-4 rounded cursor-pointer"
+                            className=" bg-green-500 font-medium text-sm text-white py-1 px-3 rounded cursor-pointer"
                           >
-                            Image
+                            Change Image
                           </label>
-                          {imageUpdate && (
-                            <button
-                              className="size-max border-transparent cursor-pointer bg-green-500 rounded px-2 py-1"
-                              onClick={uploadImgUpdate}
-                            >
-                              <svg
-                                className="size-6 text-white"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                              >
-                                {" "}
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />{" "}
-                                <polyline points="17 8 12 3 7 8" />{" "}
-                                <line x1="12" y1="3" x2="12" y2="15" />
-                              </svg>
-                            </button>
-                          )}
-                          {imageUrlUpdate && (
-                            <p className="font-medium text-sm text-green-500">
-                              Upload Success !
-                            </p>
-                          )}
+                          <input
+                            id="file-upload"
+                            onChange={handleGetImgUpdate}
+                            type="file"
+                            className="hidden"
+                          />
                         </div>
-                        <input
-                          id="file-upload"
-                          name="product_image"
-                          onChange={handleGetImgUpdate}
-                          type="file"
-                          className="hidden"
-                        />
-                        <span
-                          id="file-name"
-                          className="ml-2 text-gray-900 overflow-hidden text-ellipsis whitespace-nowrap mt-3"
-                        >
-                          {imageUrlUpdate === null
-                            ? "No file chosen"
-                            : imageUpdate.name}
-                        </span>
 
                         <img
                           src={updateProduct.product_image}
                           alt=""
-                          className="w-56 h-40 border-solid mt-3 rounded"
+                          className="w-52 h-28  rounded"
                         />
                       </div>
                     </div>
                   </div>
                 </div>
+                <select
+                  onChange={handleGetCategoryOfProductUpdated}
+                  defaultValue={updateProduct.category_id}
+                  className="w-full border-stone-200 border-solid border-2 p-1 text-center rounded font-medium"
+                >
+                  <option value={updateProduct.category_id}>
+                    {curCategory.category_name}
+                  </option>
+                  {categories.map((category: Category) => {
+                    return (
+                      <option value={category.id} key={category.id}>
+                        {category.category_name}
+                      </option>
+                    );
+                  })}
+                </select>
+                {validateUp.empty && (
+                  <p className="text-red-500 font-medium text-sm bg-red-100 px-2">
+                    Fields cannot be empty !
+                  </p>
+                )}
+                {validateUp.wrongPriceQuantity && (
+                  <p className="text-red-500 font-medium text-sm bg-red-100 px-2">
+                    Price and quantity need to be greater than 0 !
+                  </p>
+                )}
 
                 <button
                   onClick={handleUpdateProduct}
                   className="w-full text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:bg-green-500 font-medium rounded-lg  px-5 py-2.5 text-center border-transparent"
                 >
-                  UPDATE NOW
+                  UPDATE
                 </button>
               </div>
             </div>
@@ -825,9 +959,7 @@ export default function ProductsManage() {
                     <button
                       type="button"
                       className=" border-none inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2  font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
-                      onClick={() => {
-                        setCheckDelete(false);
-                      }}
+                      onClick={confirmDelete}
                     >
                       Delete
                     </button>

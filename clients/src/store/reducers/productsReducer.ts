@@ -6,6 +6,9 @@ import { updateAproduct } from "../../services/products/updateProducts.service";
 import { StateProductType } from "../../interface/productsType";
 import { deleteAwish } from "../../services/wishs/deleteFromWishList.service";
 import { addAwish } from "../../services/wishs/addAproductToWishs.service";
+import { searchProductByName } from "../../services/products/searchProduct.service";
+import { sortProductsDownToUp, sortProductsUpToDown } from "../../services/products/sortProduct.service";
+import { filterProducts } from "../../services/products/filterProducts.service";
 
 let initProducts: StateProductType = {
   loading: false,
@@ -56,24 +59,26 @@ const productsReducer = createSlice({
           state.data[index] = action.payload;
         }
       })
-      .addCase(deleteAwish.fulfilled, (state, action) => {
-        //xóa khỏi danh sách yêu thích
-        let index = state.data.findIndex(
-            (category) => category.id === action.payload.id
-          );
-          if (index !== -1) {
-            state.data[index] = action.payload;
-          }
+      .addCase(searchProductByName.fulfilled, (state, action) => {
+        //tìm kiếm
+        state.loading = false;
+        state.data = action.payload;
       })
-      .addCase(addAwish.fulfilled, (state, action) => {
-        //thêm vào danh sách yêu thích 
-        let index = state.data.findIndex(
-          (category) => category.id === action.payload.id
-        );
-        if (index !== -1) {
-          state.data[index] = action.payload;
-        }
-      });
+      .addCase(sortProductsUpToDown.fulfilled, (state, action) => {
+        //sắp xếp cao đến thấp
+        state.loading = false;
+        state.data = action.payload;
+      })
+      .addCase(sortProductsDownToUp.fulfilled, (state, action) => {
+        //sắp xếp thấp đến cao
+        state.loading = false;
+        state.data = action.payload;
+      })
+      .addCase(filterProducts.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload; 
+      })
+
   },
 });
 

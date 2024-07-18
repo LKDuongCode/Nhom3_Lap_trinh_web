@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export default function BannerAD() {
   return (
@@ -10,7 +11,8 @@ export default function BannerAD() {
           <p className="font-base text-xl text-white">
             Duong's Shop - Your Best Choice
           </p>
-          <button
+          <Link
+            to={"/terms"}
             className="
     
             font-semibold
@@ -29,7 +31,7 @@ export default function BannerAD() {
           "
           >
             Learn More
-          </button>
+          </Link>
         </div>
       </div>
     </>

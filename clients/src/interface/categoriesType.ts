@@ -16,6 +16,9 @@ export type Category  = {
 // type cho state categories------------------------------------------------
 export type StateCategoryType = {
   loading:boolean;
+  // currentPage: number;
+  // totalPages: number;
   data:Category[];
   error:string | null;
+  // itemsPerPage:number;
 }

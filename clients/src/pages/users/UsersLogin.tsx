@@ -83,8 +83,10 @@ export default function UsersLogin() {
     }
 
     // Đăng nhập thành công
-    localStorage.setItem("curEmailUS", JSON.stringify(currentUser.email));
-    localStorage.setItem("curRoleUS", JSON.stringify(currentUser.role));
+    localStorage.setItem(
+      "curUserLogin",
+      JSON.stringify({ email: currentUser.email, role: currentUser.role })
+    );
     setCheckSuccess(true);
     setTimeout(() => {
       setCheckSuccess(false);
@@ -92,6 +94,23 @@ export default function UsersLogin() {
     }, 1500);
   };
   // Hàm xử lý đăng nhập------------------------------------------------------------
+
+  //lấy user hiện tại nếu đã đăng nhập từ trước-----------------------------------------------
+  useEffect(() => {
+    let curUser = localStorage.getItem("curUserLogin");
+    if (curUser) {
+      let userObj = JSON.parse(curUser);
+      let userFound = users.find((user: User) => {
+        return user.email === userObj.email;
+      });
+      //set lại sau khi tìm thấy
+      if (userFound) {
+        setCurrentUser(userFound);
+      }
+    }
+  }, [users]);
+
+  //lấy user hiện tại-----------------------------------------------
 
   return (
     <>
@@ -172,6 +191,7 @@ export default function UsersLogin() {
                       type="email"
                       name="email"
                       onChange={handleGetInfo}
+                      value={currentUser.email}
                       className="bg-gray-50 border-transparent focus:border-[#bc78ff81] focus:border-2 boder-solid text-gray-900 rounded-lg  block w-full p-2.5 h-12 text-base"
                       placeholder="name@company.com"
                     />
@@ -189,6 +209,7 @@ export default function UsersLogin() {
                       Password
                     </label>
                     <input
+                      value={currentUser.password}
                       onClick={() => {
                         setCheckWrongPass(false);
                         setCheckValidate({
