@@ -5,6 +5,7 @@ Dự án e-commerce về bán đồ công nghệ.
 ## Thư viện sử dụng
 
 1. client :
+   - cài đặt : npm create vite@latest
    - Tailwind : https://tailwindcss.com/docs/guides/vite
      `npm install -D tailwindcss postcss autoprefixer`
    - ReduxToolKit :` npm i @reduxjs/toolkit react-redux`
@@ -12,7 +13,7 @@ Dự án e-commerce về bán đồ công nghệ.
    - Router :` npm i react-router-dom`
    - Firebase : https://console.firebase.google.com/u/0/project/project-module4-react/overview
      `npm i firebase`
-2. server :
+3. server :
 
    - `npm install json-server@0.17.4` => `json-server --w db.json --p 8000`
    - `npm init --y`
