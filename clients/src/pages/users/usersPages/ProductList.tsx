@@ -11,7 +11,6 @@ import {
   sortProductsDownToUp,
   sortProductsUpToDown,
 } from "../../../services/products/sortProduct.service";
-import { filterProducts } from "../../../services/products/filterProducts.service";
 
 export default function ProductList() {
   let dispatch = useDispatch();
@@ -20,12 +19,20 @@ export default function ProductList() {
   let categoryInfo = location.state;
   //check login-------------------------------------------------
   let [checkLogin, setCheckLogin] = useState<boolean>(false);
+  let [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+
+  const [minPrice, setMinPrice] = useState(""); // Giá trị từ người dùng nhập
+  const [maxPrice, setMaxPrice] = useState(""); // Giá trị từ người dùng nhập
 
   // lấy dữ liệu redux--------------------------------------------
   let products = useSelector((state: CombineType) => state.products.data);
   useEffect(() => {
     dispatch(fetchProducts());
   }, []);
+
+  useEffect(() => {
+    setProductPrice(filteredProducts);
+  }, [filteredProducts]);
 
   //lấy mảng user
   let users = useSelector((state: CombineType) => state.users.data);
@@ -71,7 +78,7 @@ export default function ProductList() {
   //lấy user hiện tại-----------------------------------------------
 
   //tạo mảng chứa các product thuộc category đó--------------------------------------------
-  let [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+
   useEffect(() => {
     if (products.length > 0 && categoryInfo) {
       let matchingProducts = products.filter(
@@ -112,44 +119,18 @@ export default function ProductList() {
   //sắp xếp--------------------------------------------------------------
 
   // lọc--------------------------------------------------------
-  let [priceRange, setPriceRange] = useState<string>("default");
-  useEffect(() => {
-    if (priceRange === "default") {
-      dispatch(fetchProducts());
-    }
-  }, [priceRange]);
-  const handlePriceRangeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    let selectedValue = e.target.value;
-    setPriceRange(selectedValue);
+  const [productPrice, setProductPrice] = useState<Product[]>([]);
 
-    let minPrice = 0;
-    let maxPrice = 0;
+  const handleFilter = () => {
+    const min = parseInt(minPrice, 10); // Chuyển đổi chuỗi sang số
+    const max = parseInt(maxPrice, 10);
 
-    switch (selectedValue) {
-      case "100-200":
-        minPrice = 100;
-        maxPrice = 200;
-        break;
-      case "200-500":
-        minPrice = 200;
-        maxPrice = 500;
-        break;
-      case "500-1000":
-        minPrice = 500;
-        maxPrice = 1000;
-        break;
-      case "moreThan1000":
-        minPrice = 1000;
-        maxPrice = 10000;
-        break;
-      default:
-        break;
-    }
-
-    dispatch(filterProducts({ minPrice, maxPrice }));
+    const filtered = filteredProducts.filter((product: Product) => {
+      const price = product.unit_price;
+      return price >= min && price <= max;
+    });
+    setProductPrice(filtered); // Lưu các sản phẩm đã lọc
   };
-
-  // lọc--------------------------------------------------------
   //hàm điều hướng
   const navigate = useNavigate();
   const handleNavigate = (product: Product) => {
@@ -161,7 +142,7 @@ export default function ProductList() {
     <div>
       <div className="py-14 ">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="rounded-lg shadow-md mb-12 flex justify-between bg-white p-4 ">
+          <div className="rounded-lg shadow-md mb-12 flex justify-between items-center bg-white p-4 ">
             <p className="font-manrope font-bold text-4xl text-black max-xl:text-center ">
               Products List
             </p>
@@ -197,115 +178,113 @@ export default function ProductList() {
                   </option>
                 </select>
               </div>
-              <div className="flex items-center justify-center p-2 border-2 rounded-md border-stone-300 border-solid">
+              <div className=" p-2 border-2 rounded-md border-stone-300">
+                <span>Lọc theo giá</span>
                 <div className="flex items-center gap-2">
-                  <svg
-                    className="h-6 w-6 text-indigo-500"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    stroke-width="2"
-                    stroke="currentColor"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                  <input
+                    type="text"
+                    placeholder="Từ"
+                    value={minPrice}
+                    className="w-20 h-10 p-3 rounded-md"
+                    onChange={(e) => setMinPrice(e.target.value)}
+                  />
+                  <span>-</span>
+                  <input
+                    type="text"
+                    placeholder="Đến"
+                    value={maxPrice}
+                    className="w-20 h-10 p-3 rounded-md"
+                    onChange={(e) => setMaxPrice(e.target.value)}
+                  />
+                  <button
+                    className="w-20 h-10 bg-green-500 text-white rounded-md"
+                    onClick={handleFilter}
                   >
-                    {" "}
-                    <path stroke="none" d="M0 0h24v24H0z" />{" "}
-                    <path d="M5.5 5h13a1 1 0 0 1 0.5 1.5L14 12L14 19L10 16L10 12L5 6.5a1 1 0 0 1 0.5 -1.5" />
-                  </svg>
-                  <select
-                    name="priceRange"
-                    id="priceRange"
-                    className="border-none bg-transparent"
-                    value={priceRange}
-                    onChange={handlePriceRangeChange}
-                  >
-                    <option value="default">Choose price</option>
-                    <option value="100-200">100-200</option>
-                    <option value="200-500">200-500</option>
-                    <option value="500-1000">500-1000</option>
-                    <option value="moreThan1000">more than 1000</option>
-                  </select>
+                    Áp dụng
+                  </button>
                 </div>
               </div>
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-8">
-            {filteredProducts.map((product: Product) => {
-              return (
-                <div
-                  onClick={() => handleNavigate(product)}
-                  key={product.id}
-                  className="relative bg-cover group rounded-lg bg-center overflow-hidden border-solid border-2 border-stone-300 p-1 cursor-pointer flex justify-center items-center w-[280px]"
-                >
-                  <img
-                    className="h-[200px] w-full rounded"
-                    src={product.product_image}
-                  />
-                  <div className="absolute z-10 bottom-3 left-0 mx-3 p-3 bg-white w-[calc(100%-24px)] rounded-lg shadow-sm shadow-transparent transition-all duration-500 group-hover:shadow-indigo-200 group-hover:bg-indigo-50">
-                    <div className="flex items-center justify-between mb-2">
-                      <h6 className="font-semibold text-base leading-7 text-black truncate max-w-40">
-                        {product.product_name}
-                      </h6>
-                      <h6 className="font-semibold text-base leading-7 text-indigo-600 text-right">
-                        {product.unit_price} $
-                      </h6>
-                    </div>
+            {productPrice.length > 0 ? (
+              productPrice.map((product: Product) => {
+                return (
+                  <div
+                    onClick={() => handleNavigate(product)}
+                    key={product.id}
+                    className="relative bg-cover group rounded-lg bg-center overflow-hidden border-solid border-2 border-stone-300 p-1 cursor-pointer flex justify-center items-center w-[280px]"
+                  >
+                    <img
+                      className="h-[200px] w-full rounded"
+                      src={product.product_image}
+                    />
+                    <div className="absolute z-10 bottom-3 left-0 mx-3 p-3 bg-white w-[calc(100%-24px)] rounded-lg shadow-sm shadow-transparent transition-all duration-500 group-hover:shadow-indigo-200 group-hover:bg-indigo-50">
+                      <div className="flex items-center justify-between mb-2">
+                        <h6 className="font-semibold text-base leading-7 text-black truncate max-w-40">
+                          {product.product_name}
+                        </h6>
+                        <h6 className="font-semibold text-base leading-7 text-indigo-600 text-right">
+                          {product.unit_price} $
+                        </h6>
+                      </div>
 
-                    <div className="flex justify-between">
-                      <p className="text-xs leading-5 text-gray-500 truncate max-w-40">
-                        {product.description}
-                      </p>
-                      <div className="flex gap-2 items-center">
-                        {checkLogin && (
-                          <>
-                            <svg
-                              className={`size-6 text-indigo-500  border-2 border-solid rounded-full ${
-                                curUserLogin.favorites.includes(product.id)
-                                  ? "bg-red-400 text-white"
-                                  : ""
-                              }`}
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              stroke-width="2"
-                              stroke="currentColor"
-                              fill="none"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            >
-                              {" "}
-                              <path stroke="none" d="M0 0h24v24H0z" />{" "}
-                              <path d="M12 20l-7 -7a4 4 0 0 1 6.5 -6a.9 .9 0 0 0 1 0a4 4 0 0 1 6.5 6l-7 7" />
-                            </svg>
-
-                            <svg
-                              className={`h-6 w-6 text-indigo-500 border-2 border-solid rounded-full ${
-                                curUserLogin.carts.includes(product.id)
-                                  ? "bg-green-500 text-white border-green-500"
-                                  : ""
-                              }`}
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
+                      <div className="flex justify-between">
+                        <p className="text-xs leading-5 text-gray-500 truncate max-w-40">
+                          {product.description}
+                        </p>
+                        <div className="flex gap-2 items-center">
+                          {checkLogin && (
+                            <>
+                              <svg
+                                className={`size-6 text-indigo-500  border-2 border-solid rounded-full ${
+                                  curUserLogin.favorites.includes(product.id)
+                                    ? "bg-red-400 text-white"
+                                    : ""
+                                }`}
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                stroke-width="2"
+                                stroke="currentColor"
+                                fill="none"
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-                              />
-                            </svg>
-                          </>
-                        )}
+                              >
+                                {" "}
+                                <path stroke="none" d="M0 0h24v24H0z" />{" "}
+                                <path d="M12 20l-7 -7a4 4 0 0 1 6.5 -6a.9 .9 0 0 0 1 0a4 4 0 0 1 6.5 6l-7 7" />
+                              </svg>
+
+                              <svg
+                                className={`h-6 w-6 text-indigo-500 border-2 border-solid rounded-full ${
+                                  curUserLogin.carts.includes(product.id)
+                                    ? "bg-green-500 text-white border-green-500"
+                                    : ""
+                                }`}
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                                />
+                              </svg>
+                            </>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })
+            ) : (
+              <p>Không có sản phẩm nào trong phạm vi giá này.</p>
+            )}
           </div>
         </div>
       </div>
