@@ -111,7 +111,7 @@ export default function SideBarAD() {
           <div className="py-4 overflow-y-auto">
             <ul className="space-y-2 font-medium flex flex-col justify-center items-center border-solid border-x-transparent border-t-transparent border-[1px] border-b-slate-500 pb-4">
               <li className="w-full" onClick={() => navigate("")}>
-                <div className="flex items-center  p-2 text-white rounded-lg hover:bg-gray-700">
+                <div className="flex items-center  p-2 text-white rounded-lg hover:bg-gray-700 cursor-pointer">
                   <svg
                     className="flex-shrink-0 w-5 h-5 text-white transition duration-75"
                     xmlns="http://www.w3.org/2000/svg"
@@ -126,7 +126,7 @@ export default function SideBarAD() {
               </li>
 
               <li className="w-full" onClick={() => navigate("calendar")}>
-                <div className="flex items-center p-2 text-white rounded-lg hover:bg-gray-700 group">
+                <div className="flex items-center p-2 text-white rounded-lg hover:bg-gray-700 group cursor-pointer">
                   <svg
                     className="flex-shrink-0 w-5 h-5 text-white transition duration-75"
                     width="24"
@@ -159,7 +159,7 @@ export default function SideBarAD() {
                 </div>
               </li>
               <li className="w-full" onClick={() => navigate("predium")}>
-                <div className="flex items-center p-2 text-white rounded-lg hover:bg-gray-700 group">
+                <div className="flex items-center p-2 text-white rounded-lg hover:bg-gray-700 group cursor-pointer">
                   <svg
                     className="flex-shrink-0 w-5 h-5 text-white transition duration-75"
                     width="24"
@@ -190,7 +190,7 @@ export default function SideBarAD() {
                 </div>
               </li>
               <li className="w-full" onClick={() => navigate("predium")}>
-                <div className="flex items-center p-2 text-white rounded-lg hover:bg-gray-700 group">
+                <div className="flex items-center p-2 text-white rounded-lg hover:bg-gray-700 group cursor-pointer">
                   <svg
                     className="flex-shrink-0 w-5 h-5 text-white transition duration-75"
                     xmlns="http://www.w3.org/2000/svg"
@@ -212,7 +212,7 @@ export default function SideBarAD() {
                 </div>
               </li>
               <li className="w-full" onClick={() => navigate("predium")}>
-                <div className="flex items-center p-2 text-white rounded-lg hover:bg-gray-700 group">
+                <div className="flex items-center p-2 text-white rounded-lg hover:bg-gray-700 group cursor-pointer">
                   <svg
                     className="flex-shrink-0 w-5 h-5 text-white transition duration-75"
                     viewBox="0 0 24 24"
@@ -244,7 +244,7 @@ export default function SideBarAD() {
                 className="w-full"
                 onClick={() => navigate("adminUsersManage")}
               >
-                <div className="flex items-center p-2 text-white rounded-lg hover:bg-gray-700 group">
+                <div className="flex items-center p-2 text-white rounded-lg hover:bg-gray-700 group cursor-pointer">
                   <svg
                     className="flex-shrink-0 w-5 h-5 text-white transition duration-75"
                     width="24"
@@ -279,7 +279,7 @@ export default function SideBarAD() {
                 className="w-full"
                 onClick={() => navigate("adminCategoriesManage")}
               >
-                <div className="flex items-center p-2 text-white rounded-lg hover:bg-gray-700 group">
+                <div className="flex items-center p-2 text-white rounded-lg hover:bg-gray-700 group cursor-pointer">
                   <svg
                     className="flex-shrink-0 w-5 h-5 text-white transition duration-75"
                     viewBox="0 0 24 24"
@@ -311,7 +311,7 @@ export default function SideBarAD() {
                 className="w-full"
                 onClick={() => navigate("adminProductsManage")}
               >
-                <div className="flex items-center p-2 text-white rounded-lg hover:bg-gray-700 group">
+                <div className="flex items-center p-2 text-white rounded-lg hover:bg-gray-700 group cursor-pointer">
                   <svg
                     className="flex-shrink-0 w-5 h-5 text-white transition duration-75"
                     viewBox="0 0 24 24"
@@ -342,7 +342,7 @@ export default function SideBarAD() {
                 className="w-full"
                 onClick={() => navigate("adminBillsManage")}
               >
-                <div className="flex items-center p-2 text-white rounded-lg hover:bg-gray-700 group">
+                <div className="flex items-center p-2 text-white rounded-lg hover:bg-gray-700 group cursor-pointer">
                   <svg
                     className="h-5 w-5 text-white flex-shrink-0"
                     fill="none"
@@ -372,7 +372,7 @@ export default function SideBarAD() {
               <li className="w-full">
                 <a
                   href="#"
-                  className="flex items-center p-2 text-white rounded-lg hover:bg-gray-700 group"
+                  className="flex items-center p-2 text-white rounded-lg hover:bg-gray-700 group cursor-pointer"
                 >
                   <svg
                     className="flex-shrink-0 w-5 h-5 text-white transition duration-75"

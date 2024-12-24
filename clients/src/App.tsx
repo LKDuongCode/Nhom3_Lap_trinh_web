@@ -27,6 +27,7 @@ import PayInfo from "./pages/users/usersPages/PayInfo";
 import BillInfo from "./pages/users/usersPages/BillInfo";
 import PoliciesAndTerms from "./pages/PoliciesAndTerms";
 import OtherAcc from "./pages/admin/adminPages/OtherAcc";
+import BillInfoAdmin from "./pages/admin/adminPages/BillInfoAdmin";
 
 export default function App() {
   return (
@@ -61,7 +62,11 @@ export default function App() {
             path="detailAcc"
             element={<DetailAccount></DetailAccount>}
           ></Route>
-          {/* <Route path="adminBillsManage" element={<BillsAD></BillsAD>}></Route> */}
+          <Route path="adminBillsManage" element={<BillsAD></BillsAD>}></Route>
+          <Route
+            path="billInfoAdmin"
+            element={<BillInfoAdmin></BillInfoAdmin>}
+          ></Route>
           <Route path="otherAccChecked" element={<OtherAcc></OtherAcc>}></Route>
         </Route>
         {/* admin router----------------------------------------------------------------------------- */}

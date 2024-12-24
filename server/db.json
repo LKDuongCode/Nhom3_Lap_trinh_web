@@ -23,17 +23,8 @@
       "password": "abcdef",
       "role": false,
       "status": true,
-      "favorites": [
-        123468,
-        123470,
-        123461,
-        123466
-      ],
-      "carts": [
-        123457,
-        123458,
-        123468
-      ],
+      "favorites": [123468, 123470, 123461, 123466],
+      "carts": [123458, 123459],
       "full_name": "John Do",
       "avata": "https://firebasestorage.googleapis.com/v0/b/project-module4-react.appspot.com/o/users%2FScreenshot%202024-04-07%20111922.png?alt=media&token=3b870294-28ee-4c05-ba74-4bf32711036d",
       "phone": "0869257507",
@@ -111,14 +102,8 @@
       "password": "1234567",
       "role": false,
       "status": true,
-      "favorites": [
-        123467
-      ],
-      "carts": [
-        123458,
-        123468,
-        123478
-      ],
+      "favorites": [123467],
+      "carts": [123458, 123468, 123478],
       "full_name": "Lê Dương",
       "avata": "https://cdn.pixabay.com/photo/2014/07/08/10/47/team-386673_640.jpg",
       "phone": "0987654321",
@@ -138,9 +123,7 @@
       "phone": "0987654321",
       "address": "Italy",
       "favorites": [],
-      "carts": [
-        123486
-      ],
+      "carts": [123486],
       "created_at": "15/07/2024",
       "updated_at": "15/07/2024",
       "id": 12345686
@@ -150,9 +133,7 @@
       "email": "duonglee@gmail.com",
       "password": "123456",
       "role": false,
-      "carts": [
-        123469
-      ],
+      "carts": [123469],
       "favorites": [],
       "status": true,
       "full_name": "duong lee",
@@ -218,7 +199,7 @@
     },
     {
       "category_name": "werty5",
-      "description": "cân 5",
+      "description": "cân 5+",
       "category_img": "https://firebasestorage.googleapis.com/v0/b/project-module4-react.appspot.com/o/categories%2Fmeme.png?alt=media&token=ec1b93aa-8692-4e35-8d6a-a7309e48dc2d",
       "status": true,
       "productsInfo": [],
@@ -369,14 +350,14 @@
     },
     {
       "id": 123469,
-      "product_name": "HP Spectre x360",
+      "product_name": "HP Spectre x360+",
       "category_id": 1234568,
       "description": "The HP Spectre x360 is a versatile 2-in-1 laptop with a stunning design, high-resolution display, and powerful performance for all your computing needs.",
       "unit_price": 1099,
       "stock_quantity": 12,
       "product_image": "https://img-cdn.tnwcdn.com/image?fit=1280%2C720&url=https%3A%2F%2Fcdn0.tnwcdn.com%2Fwp-content%2Fblogs.dir%2F1%2Ffiles%2F2021%2F08%2FHP-Spectre-x360-14-1-of-7.jpg&signature=b273734ba382a58d403431a960fd1708",
       "created_at": "03/01/2024",
-      "updated_at": "17/01/2024"
+      "updated_at": "16/12/2024"
     },
     {
       "id": 123470,
@@ -553,17 +534,6 @@
       "product_image": "https://cdn.thewirecutter.com/wp-content/media/2023/09/webcams-2048px-02093.jpg?auto=webp&quality=75&crop=1.91:1&width=1200",
       "created_at": "09/02/2024",
       "updated_at": "23/02/2024"
-    },
-    {
-      "id": 123486,
-      "product_name": "Wireless Keyboard",
-      "category_id": 1234569,
-      "description": "Slim and lightweight wireless keyboard with responsive keys, long battery life, and compatibility with multiple devices.",
-      "unit_price": 70,
-      "stock_quantity": 110,
-      "product_image": "https://cdn.mos.cms.futurecdn.net/U59t6GpGjmhdUxZZawRjdC.jpg",
-      "created_at": "10/02/2024",
-      "updated_at": "24/02/2024"
     }
   ],
   "bills": [
@@ -681,6 +651,30 @@
       ],
       "total_price": 1099,
       "id": 9876543214
+    },
+    {
+      "user_id": 12345679,
+      "full_name": "John Do",
+      "address": "United States",
+      "detailAddress": "fsfdsfdsfsfs",
+      "email": "johnDoe@gmail.com",
+      "user_name": "JohnDo",
+      "phone": "0869257507",
+      "created_at": "23/12/2024",
+      "productIn": [
+        {
+          "name": "Samsung Galaxy S21",
+          "price": 799,
+          "totalTemp": 799
+        },
+        {
+          "name": "Google Pixel 6",
+          "price": 699,
+          "totalTemp": 699
+        }
+      ],
+      "total_price": 1498,
+      "id": 9876543215
     }
   ]
 }

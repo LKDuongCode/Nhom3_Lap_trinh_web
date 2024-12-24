@@ -307,7 +307,25 @@ export default function ProductsManage() {
       dispatch(sortProductsDownToUp());
     }
   };
-  //sắp xếp--------------------------------------------------------------
+  //Phân trang--------------------------------------------------------------
+  const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
+  const itemsPerPage = 5; // Số lượng user mỗi trang
+
+  // Tính tổng số trang
+  const totalPages = Math.ceil(products.length / itemsPerPage);
+
+  // Lấy dữ liệu user cho trang hiện tại
+  const currentProducts = products.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  // Xử lý khi nhấn vào nút chuyển trang
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
   return (
     <>
       <section className="rounded-md  bg-white py-4 shadow-default mt-24 px-5 border-spacing-2 border-stone-300 border-solid ">
@@ -445,7 +463,7 @@ export default function ProductsManage() {
             </tr>
           </thead>
           <tbody>
-            {products.map((product: Product, index: number) => {
+            {currentProducts.map((product: Product, index: number) => {
               return (
                 <tr
                   className={`${
@@ -543,10 +561,17 @@ export default function ProductsManage() {
         </table>
 
         {/* footer --------------------------------------------------------------*/}
-        <div className="flex justify-between   px-8 pt-5">
-          <p className="font-medium text-gray-600">Showing 1 0f 3 pages</p>
+        <div className="flex justify-between px-8 pt-5">
+          <p className="font-medium text-gray-600">
+            Showing {currentPage} of {totalPages} pages
+          </p>
           <div className="flex">
-            <button className="flex cursor-pointer items-center justify-center rounded-md p-1 px-2 hover:bg-indigo-500 hover:text-white border-transparent font-medium text-base">
+            {/* Nút "Previous" */}
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              className="flex cursor-pointer items-center justify-center rounded-md p-1 px-2 hover:bg-indigo-500 hover:text-white border-transparent font-medium text-base"
+              disabled={currentPage === 1} // Vô hiệu hóa nếu là trang đầu tiên
+            >
               <svg
                 className="fill-current"
                 width={18}
@@ -561,16 +586,26 @@ export default function ProductsManage() {
                 />
               </svg>
             </button>
-            <button className="bg-indigo-500 text-white mx-1 flex cursor-pointer items-center justify-center rounded-md p-1 px-3 hover:bg-indigo-500 hover:text-white border-transparent text-base font-medium ">
-              1
-            </button>
-            <button className="false mx-1 flex cursor-pointer items-center justify-center rounded-md p-1 px-3 hover:bg-indigo-500 hover:text-white border-transparent text-base font-medium ">
-              2
-            </button>
-            <button className="false mx-1 flex cursor-pointer items-center justify-center rounded-md p-1 px-3 hover:bg-indigo-500 hover:text-white border-transparent text-base font-medium ">
-              3
-            </button>
-            <button className="flex cursor-pointer items-center justify-center rounded-md p-1 px-2 hover:bg-indigo-500 hover:text-white border-transparent text-base font-medium ">
+
+            {/* Các nút số trang */}
+            {[...Array(totalPages)].map((_, index) => (
+              <button
+                key={index + 1}
+                onClick={() => handlePageChange(index + 1)}
+                className={`mx-1 flex cursor-pointer items-center justify-center rounded-md p-1 px-3 hover:bg-indigo-500 hover:text-white border-transparent text-base font-medium ${
+                  currentPage === index + 1 ? "bg-indigo-500 text-white" : ""
+                }`}
+              >
+                {index + 1}
+              </button>
+            ))}
+
+            {/* Nút "Next" */}
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              className="flex cursor-pointer items-center justify-center rounded-md p-1 px-2 hover:bg-indigo-500 hover:text-white border-transparent text-base font-medium"
+              disabled={currentPage === totalPages} // Vô hiệu hóa nếu là trang cuối cùng
+            >
               <svg
                 className="fill-current"
                 width={18}
