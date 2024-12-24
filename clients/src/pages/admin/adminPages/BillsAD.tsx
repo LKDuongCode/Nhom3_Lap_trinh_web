@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchBills } from "../../../services/bills/getBills.service";
 import { CombineType } from "../../../interface/combineType";
 import { Bill } from "../../../interface/billsType";
 
 export default function () {
+  const dispatch = useDispatch();
   //lấy redux
   let bills = useSelector((state: CombineType) => state.bills.data);
   useEffect(() => {
@@ -36,7 +37,4 @@ export default function () {
       </div>
     </div>
   );
-}
-function dispatch(arg0: any) {
-  throw new Error("Function not implemented.");
 }
