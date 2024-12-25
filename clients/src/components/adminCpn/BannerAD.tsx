@@ -9,7 +9,7 @@ export default function BannerAD() {
         <div className="bg-[url('https://wallpaperaccess.com/full/1575754.jpg')] bg-no-repeat bg-cover p-5 flex flex-col gap-5 rounded-lg shadow-xl">
           <h1 className="text-white">Welcome Back!</h1>
           <p className="font-base text-xl text-white">
-            Duong's Shop - Your Best Choice
+            Tech Shop - Your Best Choice
           </p>
           <Link
             to={"/terms"}

@@ -7,6 +7,8 @@ import { fetchProducts } from "../../services/products/getProducts.service";
 import { Category } from "../../interface/categoriesType";
 import { fetchCategories } from "../../services/categories/getCategories.service";
 import { fetchUsers } from "../../services/users/getUsers.service";
+import { Bill } from "../../interface/billsType";
+import { fetchBills } from "../../services/bills/getBills.service";
 
 export default function SideBarAD() {
   const dispatch = useDispatch();
@@ -26,6 +28,12 @@ export default function SideBarAD() {
   let users = useSelector((state: CombineType) => state.users.data);
   useEffect(() => {
     dispatch(fetchUsers());
+  }, []);
+  let bills: Bill[] = useSelector((state: CombineType) => {
+    return state.bills.data;
+  });
+  useEffect(() => {
+    dispatch(fetchBills());
   }, []);
   // kiểm soát hiệu ứng---------------------------------------------------------------
   const [sideBar, setSideBar] = useState(false);
@@ -78,7 +86,7 @@ export default function SideBarAD() {
               alt=""
             />
             {timeShow && (
-              <p className="text-white font-bold text-xl">Duong's Shop</p>
+              <p className="text-white font-bold text-xl">Tech Shop</p>
             )}
           </div>
           {timeShow && (
@@ -132,11 +140,11 @@ export default function SideBarAD() {
                     width="24"
                     height="24"
                     viewBox="0 0 24 24"
-                    stroke-width="2"
+                    strokeWidth="2"
                     stroke="currentColor"
                     fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   >
                     {" "}
                     <path stroke="none" d="M0 0h24v24H0z" />{" "}
@@ -165,11 +173,11 @@ export default function SideBarAD() {
                     width="24"
                     height="24"
                     viewBox="0 0 24 24"
-                    stroke-width="2"
+                    strokeWidth="2"
                     stroke="currentColor"
                     fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   >
                     {" "}
                     <path stroke="none" d="M0 0h24v24H0z" />{" "}
@@ -218,9 +226,9 @@ export default function SideBarAD() {
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   >
                     {" "}
                     <path d="M21 2H3v16h5v4l4-4h5l4-4V2zM11 11V7M16 11V7" />
@@ -250,11 +258,11 @@ export default function SideBarAD() {
                     width="24"
                     height="24"
                     viewBox="0 0 24 24"
-                    stroke-width="2"
+                    strokeWidth="2"
                     stroke="currentColor"
                     fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   >
                     {" "}
                     <path stroke="none" d="M0 0h24v24H0z" />{" "}
@@ -285,9 +293,9 @@ export default function SideBarAD() {
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   >
                     {" "}
                     <line x1="16.5" y1="9.4" x2="7.5" y2="4.21" />{" "}
@@ -317,9 +325,9 @@ export default function SideBarAD() {
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   >
                     {" "}
                     <circle cx="9" cy="21" r="1" />{" "}
@@ -362,6 +370,9 @@ export default function SideBarAD() {
                       <span className="flex-1 ml-3 whitespace-nowrap">
                         Bills
                       </span>
+                      <span className="inline-flex items-center justify-center w-3 h-3 p-3 ml-3 text-sm font-medium text-white bg-gray-700 rounded-full">
+                        {bills.length}
+                      </span>
                     </>
                   )}
                 </div>
@@ -379,9 +390,9 @@ export default function SideBarAD() {
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   >
                     {" "}
                     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />

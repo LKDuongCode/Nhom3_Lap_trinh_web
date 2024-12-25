@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "../../services/products/getProducts.service";
 import { Product } from "../../interface/productsType";
 import { Link } from "react-router-dom";
+import { Bill } from "../../interface/billsType";
+import { fetchBills } from "../../services/bills/getBills.service";
 
 export default function StatisticsAD() {
   //lấy dữ liệu từ redux-------------------------------------------------
@@ -22,6 +24,23 @@ export default function StatisticsAD() {
   useEffect(() => {
     dispatch(fetchProducts());
   }, []);
+  let bills: Bill[] = useSelector((state: CombineType) => {
+    return state.bills.data;
+  });
+  useEffect(() => {
+    dispatch(fetchBills());
+  }, []);
+
+  const [totalPrice, setTotalPrice] = useState(0);
+  useEffect(() => {
+    let total = 0;
+    bills.forEach((bill) => {
+      const price = Number(bill.total_price);
+      total += price;
+    });
+    setTotalPrice(total);
+  }, [bills]);
+
   //lấy dữ liệu từ redux------------------------------------------------
 
   let [topUser, setTopUser] = useState<User[]>([]);
@@ -44,14 +63,14 @@ export default function StatisticsAD() {
                 stroke="currentColor"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
                   d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
             </p>
-            <h2>300,425,000</h2>
+            <h2>{totalPrice} $</h2>
           </div>
         </div>
         <div className="shadow-md p-2 flex flex-col gap-5">
@@ -61,11 +80,11 @@ export default function StatisticsAD() {
               <svg
                 className="h-8 w-8 text-indigo-500"
                 viewBox="0 0 24 24"
-                stroke-width="2"
+                strokeWidth="2"
                 stroke="currentColor"
                 fill="none"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
                 <path stroke="none" d="M0 0h24v24H0z" />
                 <circle cx="9" cy="7" r="4" />
@@ -86,9 +105,9 @@ export default function StatisticsAD() {
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
                 <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
                 <line x1="3" y1="6" x2="21" y2="6" />

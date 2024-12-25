@@ -35,9 +35,7 @@ export default function BillInfo() {
               src="https://firebasestorage.googleapis.com/v0/b/project-module4-react.appspot.com/o/logoPJ.png?alt=media&token=22c13780-c3e2-4039-b539-f70386cea016"
               alt="Logo"
             />
-            <div className="text-gray-700 font-semibold text-lg">
-              Duong's Shop
-            </div>
+            <div className="text-gray-700 font-semibold text-lg">Tech Shop</div>
           </div>
           <div className="text-gray-700">
             <div className="font-bold text-xl mb-2">INVOICE</div>

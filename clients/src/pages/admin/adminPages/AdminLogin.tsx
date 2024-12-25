@@ -123,7 +123,7 @@ export default function AdminLogin() {
             />
           </p>
           <p className="text-4xl font-semibold mt-2 text-violet-200">
-            Duong's Shop
+            Tech Shop
           </p>
         </div>
         <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700 opacity-[90%]">
@@ -280,9 +280,9 @@ export default function AdminLogin() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <polyline points="20 6 9 17 4 12" />
                       </svg>

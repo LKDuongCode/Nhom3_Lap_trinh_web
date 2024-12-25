@@ -33,10 +33,10 @@ export default function PoliciesAndTerms() {
             1. Introduction
           </h2>
           <p className="font-medium text-base">
-            Welcome to Duong's Shop. By accessing and using our website, you
-            agree to be bound by the following terms and conditions. Please read
-            them carefully. If you do not agree to these terms, you should not
-            use our website.
+            Welcome to Tech Shop. By accessing and using our website, you agree
+            to be bound by the following terms and conditions. Please read them
+            carefully. If you do not agree to these terms, you should not use
+            our website.
           </p>
         </div>
 

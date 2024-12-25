@@ -13,9 +13,7 @@ export default function IntroduceWeb() {
               alt=""
             />
           </p>
-          <p className="text-3xl font-bold mt-2 text-violet-100">
-            Duong's Shop
-          </p>
+          <p className="text-3xl font-bold mt-2 text-violet-100">Tech Shop</p>
         </div>
         <div className="pl-8 flex flex-col gap-10">
           <div className="flex gap-2">
@@ -27,9 +25,9 @@ export default function IntroduceWeb() {
                 stroke="currentColor"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
                   d="M5 13l4 4L19 7"
                 />
               </svg>
@@ -56,9 +54,9 @@ export default function IntroduceWeb() {
                 stroke="currentColor"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
                   d="M5 13l4 4L19 7"
                 />
               </svg>
@@ -84,9 +82,9 @@ export default function IntroduceWeb() {
                 stroke="currentColor"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
                   d="M5 13l4 4L19 7"
                 />
               </svg>

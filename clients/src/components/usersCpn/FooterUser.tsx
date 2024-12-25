@@ -14,7 +14,7 @@ export default function FooterUser() {
                 alt="Logo"
                 className="size-12 bg-purple-300 rounded-full"
               />
-              <p className="font-extrabold text-3xl">DUONG'S SHOP</p>
+              <p className="font-extrabold text-3xl">Tech Shop</p>
             </a>
             <div className="mr-2">
               <p className="text-gray-500">

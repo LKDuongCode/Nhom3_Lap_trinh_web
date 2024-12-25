@@ -23,14 +23,22 @@
       "password": "abcdef",
       "role": false,
       "status": true,
-      "favorites": [123468, 123470, 123461, 123466],
-      "carts": [123458, 123459],
+      "favorites": [
+        123468,
+        123470,
+        123461
+      ],
+      "carts": [
+        123458,
+        123459,
+        123473
+      ],
       "full_name": "John Do",
-      "avata": "https://firebasestorage.googleapis.com/v0/b/project-module4-react.appspot.com/o/users%2FScreenshot%202024-04-07%20111922.png?alt=media&token=3b870294-28ee-4c05-ba74-4bf32711036d",
+      "avata": "https://firebasestorage.googleapis.com/v0/b/project-module4-react.appspot.com/o/users%2Fple11.webp?alt=media&token=51e29670-39be-4357-a1eb-f74b6f331a14",
       "phone": "0869257507",
       "address": "United States",
       "created_at": "11/10/2023",
-      "updated_at": "16/07/2024"
+      "updated_at": "24/12/2024"
     },
     {
       "id": 12345680,
@@ -102,8 +110,14 @@
       "password": "1234567",
       "role": false,
       "status": true,
-      "favorites": [123467],
-      "carts": [123458, 123468, 123478],
+      "favorites": [
+        123467
+      ],
+      "carts": [
+        123458,
+        123468,
+        123478
+      ],
       "full_name": "Lê Dương",
       "avata": "https://cdn.pixabay.com/photo/2014/07/08/10/47/team-386673_640.jpg",
       "phone": "0987654321",
@@ -123,7 +137,9 @@
       "phone": "0987654321",
       "address": "Italy",
       "favorites": [],
-      "carts": [123486],
+      "carts": [
+        123486
+      ],
       "created_at": "15/07/2024",
       "updated_at": "15/07/2024",
       "id": 12345686
@@ -133,7 +149,9 @@
       "email": "duonglee@gmail.com",
       "password": "123456",
       "role": false,
-      "carts": [123469],
+      "carts": [
+        123469
+      ],
       "favorites": [],
       "status": true,
       "full_name": "duong lee",
@@ -173,7 +191,7 @@
     },
     {
       "id": 1234568,
-      "category_name": "Laptop",
+      "category_name": "Laptop 2",
       "description": "This category includes a wide range of laptops, from ultra-portables to high-performance gaming laptops, designed to meet various computing needs.",
       "status": true,
       "favorites": [],
@@ -220,11 +238,11 @@
       "product_name": "iPhone X",
       "category_id": 1234567,
       "description": "Apple's iPhone X features a stunning OLED display, Face ID, and a powerful A11 Bionic chip, offering a premium smartphone experience.",
-      "unit_price": 999,
+      "unit_price": 1000,
       "stock_quantity": 15,
       "product_image": "https://cdn.24h.com.vn/upload/2-2024/images/2024-06-05/1717562587-279-iphone-x-vs-iphone-12-pro-chenh-nhau-5-trieu-khac-biet-the-nao-1-1711760254-550-width800height533-1717562587-width800height533.jpg",
       "created_at": "10/11/2023",
-      "updated_at": "22/12/2023"
+      "updated_at": "24/12/2024"
     },
     {
       "id": 123458,
@@ -675,6 +693,35 @@
       ],
       "total_price": 1498,
       "id": 9876543215
+    },
+    {
+      "user_id": 12345679,
+      "full_name": "John Do",
+      "address": "United States",
+      "detailAddress": "Hà Nội",
+      "email": "johnDoe@gmail.com",
+      "user_name": "JohnDo",
+      "phone": "0869257507",
+      "created_at": "24/12/2024",
+      "productIn": [
+        {
+          "name": "Samsung Galaxy S21",
+          "price": 799,
+          "totalTemp": 799
+        },
+        {
+          "name": "Google Pixel 6",
+          "price": 699,
+          "totalTemp": 699
+        },
+        {
+          "name": "Acer Swift 3",
+          "price": 699,
+          "totalTemp": 699
+        }
+      ],
+      "total_price": 2197,
+      "id": 9876543216
     }
   ]
 }

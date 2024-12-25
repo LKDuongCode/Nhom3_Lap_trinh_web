@@ -284,11 +284,11 @@ export default function DetailProducts() {
                       width="24"
                       height="24"
                       viewBox="0 0 24 24"
-                      stroke-width="2"
+                      strokeWidth="2"
                       stroke="currentColor"
                       fill="none"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     >
                       {" "}
                       <path stroke="none" d="M0 0h24v24H0z" />{" "}
@@ -318,11 +318,11 @@ export default function DetailProducts() {
                       width="24"
                       height="24"
                       viewBox="0 0 24 24"
-                      stroke-width="2"
+                      strokeWidth="2"
                       stroke="currentColor"
                       fill="none"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     >
                       {" "}
                       <path stroke="none" d="M0 0h24v24H0z" />{" "}
@@ -364,7 +364,7 @@ export default function DetailProducts() {
                   Login Now
                 </Link>
                 <p className="text-xs font-medium">
-                  Don't have a Duong's shop account yet? {"  "}
+                  Don't have a Tech Shop account yet? {"  "}
                   <Link to={""} className="text-blue-500">
                     creat an account !
                   </Link>
@@ -440,11 +440,11 @@ export default function DetailProducts() {
                   width="24"
                   height="24"
                   viewBox="0 0 24 24"
-                  stroke-width="2"
+                  strokeWidth="2"
                   stroke="currentColor"
                   fill="none"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 >
                   {" "}
                   <path stroke="none" d="M0 0h24v24H0z" />{" "}

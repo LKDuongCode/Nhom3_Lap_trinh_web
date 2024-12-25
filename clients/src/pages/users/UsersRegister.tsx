@@ -287,8 +287,8 @@ export default function UsersRegister() {
                           htmlFor="remember"
                           className="text-gray-500 dark:text-gray-300"
                         >
-                          By signing up, you are creating a Duong's Shop
-                          account, and you agree to{" "}
+                          By signing up, you are creating a Tech Shop account,
+                          and you agree to{" "}
                           <a href="#" className="font-semibold">
                             our Terms of Use
                           </a>{" "}
@@ -365,9 +365,9 @@ export default function UsersRegister() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
